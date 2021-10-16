@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31606.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS", "Shopaholic.CMS\Shopaholic.CMS.csproj", "{22543425-1E3F-477E-89D0-87ADA15B60DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Base", "Shopaholic.Base\Shopaholic.Base.csproj", "{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Service", "Shopaholic.Service\Shopaholic.Service.csproj", "{DDF72718-29A3-4E7D-8026-F958941CC7DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Web", "Shopaholic.Web\Shopaholic.Web.csproj", "{44CA04FE-C10F-4F26-843F-B5184864F1EE}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Shopaholic.DB", "Shopaholic.DB\Shopaholic.DB.sqlproj", "{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Entity", "Shopaholic.Entity\Shopaholic.Entity.csproj", "{E2803A0C-C773-422E-98E1-A6573887D38E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22543425-1E3F-477E-89D0-87ADA15B60DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22543425-1E3F-477E-89D0-87ADA15B60DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22543425-1E3F-477E-89D0-87ADA15B60DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22543425-1E3F-477E-89D0-87ADA15B60DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF72718-29A3-4E7D-8026-F958941CC7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF72718-29A3-4E7D-8026-F958941CC7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF72718-29A3-4E7D-8026-F958941CC7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF72718-29A3-4E7D-8026-F958941CC7DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44CA04FE-C10F-4F26-843F-B5184864F1EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44CA04FE-C10F-4F26-843F-B5184864F1EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44CA04FE-C10F-4F26-843F-B5184864F1EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44CA04FE-C10F-4F26-843F-B5184864F1EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E2803A0C-C773-422E-98E1-A6573887D38E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2803A0C-C773-422E-98E1-A6573887D38E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2803A0C-C773-422E-98E1-A6573887D38E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2803A0C-C773-422E-98E1-A6573887D38E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3458A3A2-8936-4DF4-9B15-CFAC6EF5C53A}
+	EndGlobalSection
+EndGlobal
