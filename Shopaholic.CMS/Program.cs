@@ -1,7 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using Shopaholic.Entity.Models;
+using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ShopaholicContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Dev"));
+});
+
+builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddScoped<ICategoryService, CategorySer>();
 
 var app = builder.Build();
 

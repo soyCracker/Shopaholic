@@ -3,17 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS", "Shopaholic.CMS\Shopaholic.CMS.csproj", "{22543425-1E3F-477E-89D0-87ADA15B60DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.CMS", "Shopaholic.CMS\Shopaholic.CMS.csproj", "{22543425-1E3F-477E-89D0-87ADA15B60DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Base", "Shopaholic.Base\Shopaholic.Base.csproj", "{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Base", "Shopaholic.Base\Shopaholic.Base.csproj", "{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Service", "Shopaholic.Service\Shopaholic.Service.csproj", "{DDF72718-29A3-4E7D-8026-F958941CC7DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Service", "Shopaholic.Service\Shopaholic.Service.csproj", "{DDF72718-29A3-4E7D-8026-F958941CC7DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Web", "Shopaholic.Web\Shopaholic.Web.csproj", "{44CA04FE-C10F-4F26-843F-B5184864F1EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Web", "Shopaholic.Web\Shopaholic.Web.csproj", "{44CA04FE-C10F-4F26-843F-B5184864F1EE}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Shopaholic.DB", "Shopaholic.DB\Shopaholic.DB.sqlproj", "{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Entity", "Shopaholic.Entity\Shopaholic.Entity.csproj", "{E2803A0C-C773-422E-98E1-A6573887D38E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Entity", "Shopaholic.Entity\Shopaholic.Entity.csproj", "{E2803A0C-C773-422E-98E1-A6573887D38E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CMS", "CMS", "{E3B9BB0F-B01C-4020-8722-1E57614418EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{5E180828-F7DE-4CA8-A011-55E7EBF50233}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{52FDF074-A939-40D0-99DA-8E16E56F492B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{D438FC32-A094-48C5-9C10-AB138960B6A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entity", "Entity", "{E89EE003-5411-4B99-A0CF-44A665F0325E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{314DC361-E664-4018-8D42-D64640DC7FE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS.Model", "Shopaholic.CMS.Model\Shopaholic.CMS.Model.csproj", "{A8F02A84-640C-4377-A7F9-44F07FF8F052}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,9 +61,22 @@ Global
 		{E2803A0C-C773-422E-98E1-A6573887D38E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2803A0C-C773-422E-98E1-A6573887D38E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2803A0C-C773-422E-98E1-A6573887D38E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{22543425-1E3F-477E-89D0-87ADA15B60DC} = {E3B9BB0F-B01C-4020-8722-1E57614418EC}
+		{348E6C9D-7ECE-42EB-BA47-6D02728C8EEE} = {52FDF074-A939-40D0-99DA-8E16E56F492B}
+		{DDF72718-29A3-4E7D-8026-F958941CC7DA} = {D438FC32-A094-48C5-9C10-AB138960B6A3}
+		{44CA04FE-C10F-4F26-843F-B5184864F1EE} = {5E180828-F7DE-4CA8-A011-55E7EBF50233}
+		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E} = {314DC361-E664-4018-8D42-D64640DC7FE3}
+		{E2803A0C-C773-422E-98E1-A6573887D38E} = {E89EE003-5411-4B99-A0CF-44A665F0325E}
+		{A8F02A84-640C-4377-A7F9-44F07FF8F052} = {E3B9BB0F-B01C-4020-8722-1E57614418EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3458A3A2-8936-4DF4-9B15-CFAC6EF5C53A}
