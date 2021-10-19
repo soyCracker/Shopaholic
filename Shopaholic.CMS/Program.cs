@@ -14,7 +14,7 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
 });
 
 builder.Services.AddScoped<IProductService, ProductService>();
-//builder.Services.AddScoped<ICategoryService, CategorySer>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 

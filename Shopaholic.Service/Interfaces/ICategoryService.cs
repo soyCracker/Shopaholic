@@ -4,7 +4,7 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface ICategoryService
     {
-        List<Category> GetCategoriesList();
+        List<Category> GetCategoryList();
 
         Category GetCategory(int id);
 
