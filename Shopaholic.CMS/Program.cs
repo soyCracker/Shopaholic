@@ -1,12 +1,30 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.OpenApi.Models;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddMvc();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "API Document", 
+        Version = "v1",
+        Description = "API Document For Shopaholic.CMS"
+    });
+    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+    var fileName = typeof(Program).GetTypeInfo().Assembly.GetName().Name + ".xml";
+    c.IncludeXmlComments(Path.Combine(basePath, fileName));
+    c.EnableAnnotations();
+});
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
@@ -28,6 +46,18 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint(
+        // url: 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
+        // name: 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
+        url: "/swagger/v1/swagger.json",
+        name: "Shopaholic.CMS api v1"
+    );
+    c.RoutePrefix = "swagger";
+});
 
 app.UseRouting();
 

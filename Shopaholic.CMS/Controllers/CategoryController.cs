@@ -3,6 +3,7 @@ using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.Response;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopaholic.CMS.Controllers
 {
@@ -22,7 +23,10 @@ namespace Shopaholic.CMS.Controllers
             return View();
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 新增商品類別
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<Category> Add([FromBody] CategoryAddRequest req)
         {
@@ -39,7 +43,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 刪除商品類別
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<CategoryDeleteRequest> Delete([FromBody] CategoryDeleteRequest req)
         {
@@ -52,7 +59,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 取得單一商品類別
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<Category> Get([FromBody] CategoryGetRequest req)
         {
@@ -65,7 +75,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 取得商品類別清單
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<List<Category>> GetList()
         {
@@ -78,7 +91,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 修改商品類別
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<Category> Update([FromBody] CategoryUpdateRequest req)
         {

@@ -23,7 +23,10 @@ namespace Shopaholic.CMS.Controllers
             return View();
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 新增商品
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<Product> Add([FromBody]ProductAddRequest req)
         {
@@ -46,7 +49,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 刪除商品
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<ProductDeleteRequest> Delete([FromBody] ProductDeleteRequest req)
         {          
@@ -59,7 +65,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 取得單一商品
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<Product> Get([FromBody] ProductGetRequest req)
         {
@@ -72,7 +81,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 取得全部商品清單
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<List<Product>> GetList()
         {
@@ -85,7 +97,10 @@ namespace Shopaholic.CMS.Controllers
             };
         }
 
-        [Route("api/[controller]/[action]")]
+        /// <summary>
+        /// 修改商品
+        /// </summary>
+        [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<Product> Update([FromBody] ProductUpdateRequest req)
         {

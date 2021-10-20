@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Shopaholic.CMS.Model.Requests
 {
     public class ProductDeleteRequest
     {
+        [SwaggerSchema("商品ID")]
         public int Id { get; set; }
     }
 }
