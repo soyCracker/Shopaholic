@@ -12,13 +12,24 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
-        public bool AddProduct(Product product)
+        public bool AddProduct(string name, string description, int categoryId, string content, string image, int price, 
+            int stock)
         {
             using(dbContext)
             {
-                Product exist = dbContext.Products.SingleOrDefault(x => x.Name == product.Name);
+                Product exist = dbContext.Products.SingleOrDefault(x => x.Name == name);
                 if(exist == null)
                 {
+                    Product product = new Product
+                    {
+                        Name = name,
+                        Description = description,
+                        CategoryId = categoryId,
+                        Content = content,
+                        Image = image,
+                        Price = price,
+                        Stock = stock
+                    };
                     dbContext.Products.Add(product);
                     dbContext.SaveChanges();
                     return true;
@@ -58,20 +69,30 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public bool UpdateProduct(Product product)
+        public List<Product> SearchProduct(string name, string description, string content)
+        {
+            using(dbContext)
+            {
+                return dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) || 
+                    x.Content.Contains(content) ).ToList();
+            }
+        }
+
+        public bool UpdateProduct(int id, string name, string description, int categoryId, string content, string image, 
+            int price, int stock)
         {
             using (dbContext)
             {
-                Product origin = dbContext.Products.SingleOrDefault(x => x.Id == product.Id);
+                Product origin = dbContext.Products.SingleOrDefault(x => x.Id == id);
                 if(origin!=null)
                 {
-                    origin.Name = product.Name;
-                    origin.Description = product.Description;
-                    origin.CategoryId = product.CategoryId;
-                    origin.Price = product.Price;
-                    origin.Content = product.Content;
-                    origin.Stock = product.Stock;
-                    origin.Image = product.Image;
+                    origin.Name = name;
+                    origin.Description = description;
+                    origin.CategoryId = categoryId;
+                    origin.Price = price;
+                    origin.Content = content;
+                    origin.Stock = stock;
+                    origin.Image = image;
                     dbContext.SaveChanges();
                     return true;
                 }

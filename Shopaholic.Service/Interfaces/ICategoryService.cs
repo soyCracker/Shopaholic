@@ -8,9 +8,9 @@ namespace Shopaholic.Service.Interfaces
 
         Category GetCategory(int id);
 
-        bool AddCategory(Category category);
+        bool AddCategory(string name);
 
-        bool UpdateCategory(Category category);
+        bool UpdateCategory(int id, string name);
 
         bool DeleteCategory(int id);
     }

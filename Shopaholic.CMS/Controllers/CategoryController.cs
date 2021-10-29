@@ -3,7 +3,6 @@ using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.Response;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shopaholic.CMS.Controllers
 {
@@ -28,18 +27,14 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Category> Add([FromBody] CategoryAddRequest req)
-        {
-            Category category = new Category
-            {
-                Name = req.Name,
-            };
-            bool res = categoryService.AddCategory(category);
-            return new MessageModel<Category>
+        public MessageModel<CategoryAddRequest> Add([FromBody] CategoryAddRequest req)
+        {           
+            bool res = categoryService.AddCategory(req.Name);
+            return new MessageModel<CategoryAddRequest>
             {
                 Success = res,
                 Msg = res ? "" : "Fail",
-                Data = category
+                Data = req
             };
         }
 
@@ -96,20 +91,14 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Category> Update([FromBody] CategoryUpdateRequest req)
+        public MessageModel<CategoryUpdateRequest> Update([FromBody] CategoryUpdateRequest req)
         {
-            Category category = new Category
-            {
-                Id = req.Id,
-                Name = req.Name,
-            };
-
-            bool res = categoryService.UpdateCategory(category);
-            return new MessageModel<Category>
+            bool res = categoryService.UpdateCategory(req.Id, req.Name);
+            return new MessageModel<CategoryUpdateRequest>
             {
                 Success = res,
                 Msg = res ? "" : "Fail",
-                Data = category
+                Data = req
             };
         }
     }

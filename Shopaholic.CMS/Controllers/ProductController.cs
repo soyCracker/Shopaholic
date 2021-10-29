@@ -28,24 +28,15 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Product> Add([FromBody]ProductAddRequest req)
+        public MessageModel<ProductAddRequest> Add([FromBody]ProductAddRequest req)
         {
-            Product product = new Product
-            {
-                Name = req.Name,
-                Description = req.Description,
-                CategoryId = req.CategoryId,
-                Content = req.Content,
-                Image = req.Image,
-                Price = req.Price,
-                Stock = req.Stock
-            };
-            bool res = productService.AddProduct(product);
-            return new MessageModel<Product>
+            bool res = productService.AddProduct(req.Name, req.Description, req.CategoryId, req.Content, req.Image, req.Price,
+                req.Stock );
+            return new MessageModel<ProductAddRequest>
             {
                 Success = res,
                 Msg = res ? "" : "Fail",
-                Data = product
+                Data = req
             };
         }
 
@@ -54,7 +45,7 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<ProductDeleteRequest> Delete([FromBody] ProductDeleteRequest req)
+        public MessageModel<ProductDeleteRequest> Delete([FromBody]ProductDeleteRequest req)
         {          
             bool res = productService.DeleteProduct(req.Id);
             return new MessageModel<ProductDeleteRequest>
@@ -70,7 +61,7 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Product> Get([FromBody] ProductGetRequest req)
+        public MessageModel<Product> Get([FromBody]ProductGetRequest req)
         {
             Product product = productService.GetProduct(req.Id);
             return new MessageModel<Product>
@@ -102,26 +93,31 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Product> Update([FromBody] ProductUpdateRequest req)
+        public MessageModel<ProductUpdateRequest> Update([FromBody]ProductUpdateRequest req)
         {
-            Product product = new Product
-            {
-                Id = req.Id,
-                Description = req.Description,
-                Name = req.Name,
-                CategoryId = req.CategoryId,
-                Content = req.Content,
-                Image = req.Image,
-                Price = req.Price,
-                Stock = req.Stock
-            };
-
-            bool res = productService.UpdateProduct(product);
-            return new MessageModel<Product>
+            bool res = productService.UpdateProduct(req.Id, req.Name, req.Description, req.CategoryId, req.Content, req.Image, 
+                req.Price, req.Stock);
+            return new MessageModel<ProductUpdateRequest>
             {
                 Success = res,
                 Msg = res ? "" : "Fail",
-                Data = product
+                Data = req
+            };
+        }
+
+        /// <summary>
+        /// 搜索商品
+        /// </summary>
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public MessageModel<List<Product>> Search([FromBody] ProductSearchRequest req)
+        {
+            List<Product> res = productService.SearchProduct(req.Name, req.Description, req.Content);
+            return new MessageModel<List<Product>>
+            {
+                Success = res != null ? true : false,
+                Msg = res != null ? "" : "Fail",
+                Data = res
             };
         }
     }

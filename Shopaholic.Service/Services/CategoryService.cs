@@ -1,10 +1,5 @@
 ﻿using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shopaholic.Service.Services
 {
@@ -17,13 +12,17 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
-        public bool AddCategory(Category category)
+        public bool AddCategory(string name)
         {
             using (dbContext)
             {
-                Category exist = dbContext.Categories.SingleOrDefault(x => x.Name == category.Name);
+                Category exist = dbContext.Categories.SingleOrDefault(x => x.Name == name);
                 if (exist == null)
                 {
+                    Category category = new Category
+                    {
+                        Name = name,
+                    };
                     dbContext.Categories.Add(category);
                     dbContext.SaveChanges();
                     return true;
@@ -63,14 +62,14 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public bool UpdateCategory(Category category)
+        public bool UpdateCategory(int id, string name)
         {
             using (dbContext)
             {
-                Category origin = dbContext.Categories.SingleOrDefault(x => x.Id == category.Id);
+                Category origin = dbContext.Categories.SingleOrDefault(x => x.Id == id);
                 if (origin != null)
                 {
-                    origin.Name = category.Name;
+                    origin.Name = name;
                     dbContext.SaveChanges();
                     return true;
                 }

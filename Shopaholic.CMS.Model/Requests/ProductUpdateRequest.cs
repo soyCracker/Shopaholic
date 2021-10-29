@@ -24,6 +24,6 @@ namespace Shopaholic.CMS.Model.Requests
         [SwaggerSchema("商品圖片路徑")]
         public string Image { get; set; }
         [SwaggerSchema("商品類別ID")]
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
     }
 }

@@ -8,10 +8,13 @@ namespace Shopaholic.Service.Interfaces
 
         Product GetProduct(int id);
 
-        bool AddProduct(Product product);  
+        bool AddProduct(string name, string description, int categoryId, string content, string image, int price, int stock);  
 
-        bool UpdateProduct(Product product);
+        bool UpdateProduct(int id, string name, string description, int categoryId, string content, string image, int price, 
+            int stock);
 
         bool DeleteProduct(int id);
+
+        List<Product> SearchProduct(string name, string description, string content);
     }
 }

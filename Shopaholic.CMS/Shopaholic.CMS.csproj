@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Shopaholic.Service\Shopaholic.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Product\" />
+  </ItemGroup>
+
 </Project>
