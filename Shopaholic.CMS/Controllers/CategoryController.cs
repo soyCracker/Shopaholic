@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.Response;
+using Shopaholic.CMS.Model.ViewModels;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 
@@ -19,6 +20,22 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult Index()
         {
+            List<Category> resList = categoryService.GetCategoryList();
+            List<CategoryVM> categoryVMList = new List<CategoryVM>();
+            foreach(var item in resList)
+            {
+                CategoryVM categoryVM = new CategoryVM
+                {
+                    Id = item.Id,
+                    Name = item.Name
+                };
+                categoryVMList.Add(categoryVM);
+            }
+            return View(categoryVMList);
+        }
+
+        public IActionResult CreatePage()
+        {           
             return View();
         }
 

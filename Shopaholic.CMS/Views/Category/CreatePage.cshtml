@@ -1,0 +1,155 @@
+﻿@{
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">新增類別</h1>
+            </div><!-- /.col -->           
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<section class="content">
+    <div id="FormTool" class="container-fluid">
+        <div class="row">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                <h3 class="card-title">新增類別</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">類別名稱</label>
+                            <input class="form-control" v-on:change="CategoryNameChange" ref="categoryNameInput" placeholder="輸入類別">
+                        </div>               
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card -->
+        </div>
+    <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<div class="modal fade" id="MsgModal">
+    <div class="modal-dialog"  v-on:click.self="isShow = false">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Default Modal</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+@section Scripts{
+
+    <script>
+      
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                isShow: false,
+                categoryName: '',
+                createApi: baseurl + "/Category/api/Add"
+            },
+            methods:
+            {
+                CategoryNameChange: function () {
+                    var self = this;
+                    console.log('CategoryNameChange');
+                    self.categoryName = this.$refs.categoryNameInput.value;
+                },
+                
+                SubmitBtn: function () {
+                    var self = this;
+                    console.log('submitBtn click');
+
+                    if (self.ChkPostDataOk()) {
+                        self.PostContent(self.getPostObj());
+                    }
+                },
+
+                isEmpty: function (str) {
+                    if (!str) {
+                        return true;
+                    }
+                    else if (str.length === 0) {
+                        return true;
+                    }
+                    return false;
+                },
+
+                ChkPostDataOk: function () {
+                    var self = this;
+                    if (self.isEmpty(self.categoryName)) {
+                        console.log('ChkPostDataOk isEmpty');
+                    }
+                    else {
+                        console.log('ChkPostDataOk success');
+                        return true;
+                    }
+                    console.log('ChkPostDataOk error');
+                    return false;
+                },  
+
+                getPostObj: function () {
+                    var self = this;
+
+                    var obj = {
+                        ['Name']: self.categoryName
+                    };
+
+                    return obj;
+                },
+
+                PostContent: function (obj) {
+                    var self = this;
+                    var url = self.createApi;
+                    console.log(url + ' post')
+                    axios.post(url, obj)
+                        .then(function (result) {
+                            console.log(result);
+                            console.log('Success:' + result.data.success);
+                            console.log('Msg:' + result.data.msg);
+                            console.log('Data:');
+                            console.log(result.data.data);
+                            if(result.data.success)
+                            {
+                                location.href = '@Url.Action("Index")';
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log('post error:');
+                            console.log(error);
+                        })
+                },
+            }
+        });
+    </script>
+
+}
