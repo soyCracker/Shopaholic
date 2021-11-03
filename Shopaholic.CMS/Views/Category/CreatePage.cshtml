@@ -23,11 +23,11 @@
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form>
+                
                     <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">類別名稱</label>
-                            <input class="form-control" v-on:change="CategoryNameChange" ref="categoryNameInput" placeholder="輸入類別">
+                            <input class="form-control" v-on:change="CategoryNameChange" ref="categoryNameInput" placeholder="輸入類別" v-on:keydown.enter="SubmitBtn">
                         </div>               
                     </div>
                     <!-- /.card-body -->
@@ -35,35 +35,13 @@
                     <div class="card-footer">
                         <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
                     </div>
-                </form>
+                
             </div>
             <!-- /.card -->
         </div>
     <!-- /.row -->
     </div><!-- /.container-fluid -->
 </section>
-
-<div class="modal fade" id="MsgModal">
-    <div class="modal-dialog"  v-on:click.self="isShow = false">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Default Modal</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>One fine body&hellip;</p>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
 
 @section Scripts{
 
@@ -73,20 +51,16 @@
             el: '#FormTool',
             data:
             {
-                isShow: false,
                 categoryName: '',
                 createApi: baseurl + "/Category/api/Add"
             },
             methods:
             {
-                CategoryNameChange: function () {
-                    var self = this;
-                    console.log('CategoryNameChange');
-                    self.categoryName = this.$refs.categoryNameInput.value;
-                },
+                
                 
                 SubmitBtn: function () {
                     var self = this;
+                    self.categoryName = this.$refs.categoryNameInput.value;
                     console.log('submitBtn click');
 
                     if (self.ChkPostDataOk()) {
@@ -130,7 +104,7 @@
                 PostContent: function (obj) {
                     var self = this;
                     var url = self.createApi;
-                    console.log(url + ' post')
+                    console.log(url + ' post');
                     axios.post(url, obj)
                         .then(function (result) {
                             console.log(result);
@@ -142,11 +116,17 @@
                             {
                                 location.href = '@Url.Action("Index")';
                             }
+                            else
+                            {
+                                alert('Success:' + result.data.success + '\n' +
+                                        'Msg:' + result.data.msg);
+                            }                           
                         })
                         .catch(function (error) {
+                            alert('post error');
                             console.log('post error:');
                             console.log(error);
-                        })
+                        });
                 },
             }
         });

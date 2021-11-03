@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.Response;
 using Shopaholic.CMS.Model.ViewModels;
@@ -62,11 +63,20 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<CategoryDeleteRequest> Delete([FromBody] CategoryDeleteRequest req)
         {
-            bool res = categoryService.DeleteCategory(req.Id);
+            bool res = false;
+            string msg = "";
+            try
+            {
+                res = categoryService.DeleteCategory(req.Id);
+            }
+            catch (DbUpdateException ex)
+            {
+                msg = "已有商品屬於該類別:";
+            }
             return new MessageModel<CategoryDeleteRequest>
             {
                 Success = res,
-                Msg = res ? "" : "Fail",
+                Msg = msg,
                 Data = req
             };
         }
