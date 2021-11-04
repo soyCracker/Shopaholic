@@ -63,22 +63,13 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<CategoryDeleteRequest> Delete([FromBody] CategoryDeleteRequest req)
         {
-            bool res = false;
-            string msg = "";
-            try
-            {
-                res = categoryService.DeleteCategory(req.Id);
-            }
-            catch (DbUpdateException ex)
-            {
-                msg = "已有商品屬於該類別:";
-            }
+            bool res = categoryService.DeleteCategory(req.Id);
             return new MessageModel<CategoryDeleteRequest>
             {
                 Success = res,
-                Msg = msg,
+                Msg = res ? "" : "Fail",
                 Data = req
-            };
+            };        
         }
 
         /// <summary>

@@ -118,14 +118,19 @@
                             }
                             else
                             {
-                                alert('Success:' + result.data.success + '\n' +
-                                        'Msg:' + result.data.msg);
+                                alert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg);
                             }                           
                         })
                         .catch(function (error) {
-                            alert('post error');
-                            console.log('post error:');
-                            console.log(error);
+                            if( error.response ){
+                                console.log(error.response.data); // => the response payload 
+                                alert('Success:' + error.response.data.Success + '\n' +
+                                        'Msg:' + error.response.data.Msg);
+                            }
+                            else{
+                                alert('post error'); 
+                            }
                         });
                 },
             }

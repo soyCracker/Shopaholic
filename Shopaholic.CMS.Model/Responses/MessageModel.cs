@@ -3,7 +3,7 @@
     public class MessageModel<T>
     {
 
-        public int Status { get; set; } = 200;
+        public int StatusCode { get; set; } = 200;
 
         public bool Success { get; set; } = true;
 

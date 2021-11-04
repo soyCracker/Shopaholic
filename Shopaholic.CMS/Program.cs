@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
+using Shopaholic.CMS.Common.Middlewares;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
@@ -10,7 +11,9 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddMvc();
+builder.Services.AddMvc()
+    //取消json小駝峰式命名法
+    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null); ;
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -43,6 +46,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

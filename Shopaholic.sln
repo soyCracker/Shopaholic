@@ -27,7 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entity", "Entity", "{E89EE0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{314DC361-E664-4018-8D42-D64640DC7FE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS.Model", "Shopaholic.CMS.Model\Shopaholic.CMS.Model.csproj", "{A8F02A84-640C-4377-A7F9-44F07FF8F052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.CMS.Model", "Shopaholic.CMS.Model\Shopaholic.CMS.Model.csproj", "{A8F02A84-640C-4377-A7F9-44F07FF8F052}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS.Common", "Shopaholic.CMS.Common\Shopaholic.CMS.Common.csproj", "{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8F02A84-640C-4377-A7F9-44F07FF8F052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{80A9AB5D-9BAF-4269-85AE-E2F9FD10087E} = {314DC361-E664-4018-8D42-D64640DC7FE3}
 		{E2803A0C-C773-422E-98E1-A6573887D38E} = {E89EE003-5411-4B99-A0CF-44A665F0325E}
 		{A8F02A84-640C-4377-A7F9-44F07FF8F052} = {E3B9BB0F-B01C-4020-8722-1E57614418EC}
+		{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469} = {E3B9BB0F-B01C-4020-8722-1E57614418EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3458A3A2-8936-4DF4-9B15-CFAC6EF5C53A}
