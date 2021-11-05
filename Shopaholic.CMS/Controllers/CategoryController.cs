@@ -40,6 +40,11 @@ namespace Shopaholic.CMS.Controllers
             return View();
         }
 
+        public IActionResult EditPage(CategoryVM vm)
+        {
+            return View(vm);
+        }
+
         /// <summary>
         /// 新增商品類別
         /// </summary>

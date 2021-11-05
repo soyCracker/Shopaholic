@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Shopaholic.CMS.Model.ViewModels
+
+@model CategoryVM
+
+@{
 }
 
 <!-- Content Header (Page header) -->
@@ -6,7 +10,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">新增類別</h1>
+                <h1 class="m-0">編輯類別</h1>
             </div><!-- /.col -->           
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -19,7 +23,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                <h3 class="card-title">新增類別</h3>
+                <h3 class="card-title">編輯類別</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
@@ -27,7 +31,7 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">類別名稱</label>
-                            <input class="form-control" ref="categoryNameInput" placeholder="輸入類別" v-on:keydown.enter="SubmitBtn">
+                            <input class="form-control" ref="categoryNameInput" placeholder="輸入類別" v-on:keydown.enter="SubmitBtn" value="@Model.Name">
                         </div>               
                     </div>
                     <!-- /.card-body -->
@@ -51,13 +55,12 @@
             el: '#FormTool',
             data:
             {
+                id: @Model.Id,
                 categoryName: '',
-                createApi: baseurl + "/Category/api/Add"
+                updateApi: baseurl + "/Category/api/Update"
             },
             methods:
-            {
-                
-                
+            {                               
                 SubmitBtn: function () {
                     var self = this;
                     self.categoryName = this.$refs.categoryNameInput.value;
@@ -95,6 +98,7 @@
                     var self = this;
 
                     var obj = {
+                        ['Id']: self.id,
                         ['Name']: self.categoryName
                     };
 
@@ -103,7 +107,7 @@
 
                 PostContent: function (obj) {
                     var self = this;
-                    var url = self.createApi;
+                    var url = self.updateApi;
                     console.log(url + ' post');
                     axios.post(url, obj)
                         .then(function (result) {
