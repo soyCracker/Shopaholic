@@ -15,10 +15,11 @@ namespace Shopaholic.CMS.Common.Middlewares
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly ILogger logger;
 
-        public ExceptionMiddleware(RequestDelegate next)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<LoggerFactory> logger)
         {
-
+            this.logger = logger;
             this.next = next;
         }
 
@@ -43,6 +44,7 @@ namespace Shopaholic.CMS.Common.Middlewares
             if (exception is DbUpdateException)
             {
                 message = ((DbUpdateException)exception).Message;
+                logger.LogError("HandleExceptionAsync() " + message);
             }
             
 

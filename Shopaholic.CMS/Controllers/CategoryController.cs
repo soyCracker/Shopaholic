@@ -51,7 +51,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<CategoryAddRequest>
             {
                 Success = res,
-                Msg = res ? "" : "Fail",
+                Msg = res ? "Success" : "Fail",
                 Data = req
             };
         }
@@ -67,7 +67,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<CategoryDeleteRequest>
             {
                 Success = res,
-                Msg = res ? "" : "Fail",
+                Msg = res ? "Success" : "Fail",
                 Data = req
             };        
         }
@@ -83,7 +83,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<Category>
             {
                 Success = category != null ? true : false,
-                Msg = category != null ? "" : "Fail",
+                Msg = category != null ? "Success" : "Fail",
                 Data = category
             };
         }
@@ -99,7 +99,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<List<Category>>
             {
                 Success = resList != null ? true : false,
-                Msg = resList != null ? "" : "Fail",
+                Msg = resList != null ? "Success" : "Fail",
                 Data = resList
             };
         }
@@ -115,7 +115,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<CategoryUpdateRequest>
             {
                 Success = res,
-                Msg = res ? "" : "Fail",
+                Msg = res ? "Success" : "Fail",
                 Data = req
             };
         }
