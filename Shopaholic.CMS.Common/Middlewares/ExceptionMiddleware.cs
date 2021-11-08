@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Shopaholic.CMS.Common.Middlewares
@@ -37,6 +38,21 @@ namespace Shopaholic.CMS.Common.Middlewares
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            bool isApi = Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase);
+
+            if(isApi)
+            {
+                await ReturnApiException(context, exception);
+            }
+            else
+            {
+                context.Response.Redirect("/Home/Error");
+            }
+            
+        }
+
+        private async Task ReturnApiException(HttpContext context, Exception exception)
+        {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             string message = "Internal Server Error from the custom middleware.";
@@ -46,7 +62,7 @@ namespace Shopaholic.CMS.Common.Middlewares
                 message = ((DbUpdateException)exception).Message;
                 logger.LogError("HandleExceptionAsync() " + message);
             }
-            
+
 
             await context.Response.WriteAsync(
                 JsonSerializer.Serialize(new MessageModel<string>()

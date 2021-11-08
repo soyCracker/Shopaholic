@@ -31,7 +31,7 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">類別名稱</label>
-                            <input class="form-control" ref="categoryNameInput" placeholder="輸入類別" v-on:keydown.enter="SubmitBtn" value="@Model.Name">
+                            <input class="form-control" ref="categoryNameInput" placeholder="輸入類別" v-model="categoryName" v-on:keydown.enter="SubmitBtn">
                         </div>               
                     </div>
                     <!-- /.card-body -->
@@ -56,14 +56,13 @@
             data:
             {
                 id: @Model.Id,
-                categoryName: '',
+                categoryName: @Model.Name,
                 updateApi: baseurl + "/Category/api/Update"
             },
             methods:
             {                               
                 SubmitBtn: function () {
                     var self = this;
-                    self.categoryName = this.$refs.categoryNameInput.value;
                     console.log('submitBtn click');
 
                     if (self.ChkPostDataOk()) {
