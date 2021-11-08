@@ -46,10 +46,11 @@
                         <input class="form-control" ref="stockInput" placeholder="輸入庫存" value=0>
                     </div> 
                     
-                    <textarea id="summernote" value="123456789">
-                        
-                    </textarea>
-                    
+                    <div class="form-group">
+                        <label>內容</label>
+                        <textarea id="summernote"></textarea>
+                    </div> 
+
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
@@ -61,34 +62,31 @@
     </div><!-- /.container-fluid -->
 </section>
 
-@section Scripts{
-    <script>            
-        $(function () {
-            // Summernote
-            $('#summernote').summernote()
 
-            // CodeMirror
-            CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
-              mode: "htmlmixed",
-              theme: "monokai"
-            });
-          })
+@section Scripts{
+    <script>  
+        
+
 
 
         var FormTool = new Vue({
             el: '#FormTool',
             data:
             {
-                categoryName: '',
                 createApi: baseurl + "/Product/api/Add"
             },
-            mounted:{
+            mounted: function(){
                 console.log('== mounted ==');
+                $('#summernote').summernote();
             },
             methods:
             {                              
                 SubmitBtn: function () {
                     var self = this;
+
+                    console.log($('#summernote').summernote('code'));
+
+                    
                     self.categoryName = this.$refs.categoryNameInput.value;
                     console.log('submitBtn click');
 
