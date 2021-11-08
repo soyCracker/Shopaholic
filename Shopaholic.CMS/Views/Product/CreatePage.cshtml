@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
 }
 
 <!-- Content Header (Page header) -->
@@ -6,7 +7,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">新增類別</h1>
+                <h1 class="m-0">新增商品</h1>
             </div><!-- /.col -->           
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -14,61 +15,89 @@
 <!-- /.content-header -->
 
 <section class="content">
-    <div id="FormTool" class="container-fluid">
-        <div class="row">
+    <div id="FormTool" class="row">
+        <div class="col-md-12">
             <!-- general form elements -->
-            <div class="card card-primary">
+            <div class="card card-outline card-info">
                 <div class="card-header">
-                <h3 class="card-title">新增類別</h3>
+                    <h3 class="card-title">新增類別</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
                 
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">類別名稱</label>
-                            <input class="form-control" ref="categoryNameInput" placeholder="輸入類別" v-on:keydown.enter="SubmitBtn">
-                        </div>               
-                    </div>
-                    <!-- /.card-body -->
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>名稱</label>
+                        <input class="form-control" ref="nameInput" placeholder="輸入名稱">
+                    </div>  
+                        
+                    <div class="form-group">
+                        <label>描述</label>
+                        <input class="form-control" ref="descInput" placeholder="輸入描述">
+                    </div> 
 
-                    <div class="card-footer">
-                        <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
-                    </div>
-                
+                    <div class="form-group">
+                        <label>價格</label>
+                        <input class="form-control" ref="priceInput" placeholder="輸入價格" value=0>
+                    </div> 
+
+                    <div class="form-group">
+                        <label>庫存</label>
+                        <input class="form-control" ref="stockInput" placeholder="輸入庫存" value=0>
+                    </div> 
+                    
+                    <textarea id="summernote" value="123456789">
+                        
+                    </textarea>
+                    
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-primary">Submit</a>
+                </div>                
             </div>
             <!-- /.card -->
-        </div>
-    <!-- /.row -->
+        </div>       
     </div><!-- /.container-fluid -->
 </section>
 
 @section Scripts{
+    <script>            
+        $(function () {
+            // Summernote
+            $('#summernote').summernote()
 
-    <script>
-      
+            // CodeMirror
+            CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+              mode: "htmlmixed",
+              theme: "monokai"
+            });
+          })
+
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
             {
                 categoryName: '',
-                createApi: baseurl + "/Category/api/Add"
+                createApi: baseurl + "/Product/api/Add"
+            },
+            mounted:{
+                console.log('== mounted ==');
             },
             methods:
-            {
-                
-                
+            {                              
                 SubmitBtn: function () {
                     var self = this;
                     self.categoryName = this.$refs.categoryNameInput.value;
                     console.log('submitBtn click');
 
                     if (self.ChkPostDataOk()) {
-                        self.PostContent(self.GetPostObj());
+                        self.PostContent(self.getPostObj());
                     }
                 },
 
-                IsEmpty: function (str) {
+                isEmpty: function (str) {
                     if (!str) {
                         return true;
                     }
@@ -91,7 +120,7 @@
                     return false;
                 },  
 
-                GetPostObj: function () {
+                getPostObj: function () {
                     var self = this;
 
                     var obj = {
@@ -134,6 +163,6 @@
                 },
             }
         });
-    </script>
 
+    </script>
 }

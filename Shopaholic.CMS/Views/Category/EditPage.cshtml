@@ -50,7 +50,7 @@
 @section Scripts{
 
     <script>
-      
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -67,11 +67,11 @@
                     console.log('submitBtn click');
 
                     if (self.ChkPostDataOk()) {
-                        self.PostContent(self.getPostObj());
+                        self.PostContent(self.GetPostObj());
                     }
                 },
 
-                isEmpty: function (str) {
+                IsEmpty: function (str) {
                     if (!str) {
                         return true;
                     }
@@ -83,8 +83,8 @@
 
                 ChkPostDataOk: function () {
                     var self = this;
-                    if (self.isEmpty(self.categoryName)) {
-                        console.log('ChkPostDataOk isEmpty');
+                    if (self.IsEmpty(self.categoryName)) {
+                        console.log('ChkPostDataOk IsEmpty');
                     }
                     else {
                         console.log('ChkPostDataOk success');
@@ -94,7 +94,7 @@
                     return false;
                 },  
 
-                getPostObj: function () {
+                GetPostObj: function () {
                     var self = this;
 
                     var obj = {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.Response;
+using Shopaholic.CMS.Model.ViewModels;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using System.Text.Json;
@@ -20,7 +21,34 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult Index()
         {
+            List<Product> resList = productService.GetProductList();
+            List<ProductVM> productVMList = new List<ProductVM>();
+            foreach (var item in resList)
+            {
+                ProductVM productVM = new ProductVM
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Description = item.Description,
+                    Content = item.Content,
+                    Price = item.Price,
+                    Stock = item.Stock,
+                    Image = item.Image,
+                    CategoryId = item.CategoryId,
+                };
+                productVMList.Add(productVM);
+            }
+            return View(productVMList);
+        }
+
+        public IActionResult CreatePage()
+        {
             return View();
+        }
+
+        public IActionResult EditPage(ProductVM vm)
+        {
+            return View(vm);
         }
 
         /// <summary>
