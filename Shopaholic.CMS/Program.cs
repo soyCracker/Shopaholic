@@ -36,6 +36,8 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder.Configuration.GetValue<string>("Imgur:ClientID"), 
+    builder.Configuration.GetValue<string>("Imgur:ClientSecret")));
 
 var app = builder.Build();
 

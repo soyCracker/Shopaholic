@@ -12,11 +12,13 @@ namespace Shopaholic.CMS.Controllers
     {
         private readonly ILogger Logger;
         private readonly IProductService productService;
+        private readonly IStorageService storageService;
 
-        public ProductController(ILogger<ProductController> logger, IProductService productService)
+        public ProductController(ILogger<ProductController> logger, IProductService productService, IStorageService storageService)
         {
             this.Logger = logger;
             this.productService = productService;
+            this.storageService = storageService;
         }
 
         public IActionResult Index()
@@ -146,6 +148,22 @@ namespace Shopaholic.CMS.Controllers
                 Success = res != null ? true : false,
                 Msg = res != null ? "" : "Fail",
                 Data = res
+            };
+        }
+
+        /// <summary>
+        /// 上傳商品內容編輯區內圖片
+        /// </summary>
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public async Task<MessageModel<string>> UploadEditorImage(IFormFile file)
+        {
+            string url = await storageService.UploadFile(ControllerContext.ActionDescriptor.ControllerName, file);
+            return new MessageModel<string>
+            {
+                Success = true,
+                Msg = url != null ? "" : "Fail",
+                Data = url
             };
         }
     }

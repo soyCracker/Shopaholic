@@ -1,4 +1,5 @@
-﻿using Shopaholic.Entity.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Shopaholic.Entity.Models;
 
 namespace Shopaholic.Service.Interfaces
 {

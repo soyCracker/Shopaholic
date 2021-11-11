@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Imgur.API" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Shopaholic.Entity\Shopaholic.Entity.csproj" />
   </ItemGroup>
 

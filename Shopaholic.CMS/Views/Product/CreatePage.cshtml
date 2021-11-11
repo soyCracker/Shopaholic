@@ -73,11 +73,25 @@
                 createApi: baseurl + "/Product/api/Add"
             },
             mounted: function(){
+                var self = this;
                 console.log('== mounted ==');
-                $('#summernote').summernote();
+                $('#summernote').summernote({
+                    height:300,
+                    callbacks:{
+                        onImageUpload: function(image) {
+                            self.UploadEditorImage(image[0]).then(url => {
+                                $('#summernote').summernote('insertNode', url);
+                            });
+                        }
+                    }
+                });
             },
             methods:
-            {                              
+            {        
+                UploadEditorImage: function(){
+
+                },
+
                 SubmitBtn: function () {
                     var self = this;
 
