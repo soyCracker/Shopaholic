@@ -35,7 +35,7 @@ namespace Shopaholic.Service.Services
             ApiClient apiClient = new ApiClient(clientKey, clientSecret);
             HttpClient httpClient = new HttpClient();
             ImageEndpoint imageEndpoint = new ImageEndpoint(apiClient, httpClient);
-            var imageUpload = await imageEndpoint.UploadImageAsync(file.OpenReadStream(), folder);
+            var imageUpload = await imageEndpoint.UploadImageAsync(file.OpenReadStream());
             return imageUpload.Link;
         }
     }

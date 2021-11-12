@@ -70,7 +70,8 @@
             el: '#FormTool',
             data:
             {
-                createApi: baseurl + "/Product/api/Add"
+                createApi: baseurl + "/Product/api/Add",
+                uploadEditorImageApi: baseurl + "/Product/api/UploadEditorImage"
             },
             mounted: function(){
                 var self = this;
@@ -79,17 +80,41 @@
                     height:300,
                     callbacks:{
                         onImageUpload: function(image) {
-                            self.UploadEditorImage(image[0]).then(url => {
-                                $('#summernote').summernote('insertNode', url);
-                            });
+                            console.log('summernote onImageUpload');
+                            self.UploadEditorImage(self.uploadEditorImageApi, image[0]);
                         }
                     }
                 });
             },
             methods:
             {        
-                UploadEditorImage: function(){
-
+                UploadEditorImage: function(api, obj){
+                    var self = this;
+                    var url = api;
+                    let formData = new FormData();
+                    formData.append('file', obj); //file為api之參數名稱
+                    axios.post(url, formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            })
+                        .then(function (result) {
+                            console.log('Success:' + result.data.Success);
+                            console.log('Msg:' + result.data.Msg);
+                            console.log('Data:');
+                            console.log(result.data.Data);  
+                            $('#summernote').summernote('insertImage', result.data.Data);
+                        })
+                        .catch(function (error) {
+                            if( error.response ){
+                                console.log(error.response.Data); // => the response payload                                
+                                alert('Success:' + error.response.data.Success + '\n' +
+                                        'Msg:' + error.response.data.Msg);
+                            }
+                            else{
+                                alert('post error'); 
+                            }
+                        });
                 },
 
                 SubmitBtn: function () {
@@ -169,7 +194,7 @@
                                 alert('post error'); 
                             }
                         });
-                },
+                }
             }
         });
 
