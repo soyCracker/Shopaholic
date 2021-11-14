@@ -27,6 +27,19 @@
                 
                 <div class="card-body">
                     <div class="form-group">
+                        <div>
+                            <label>商品封面</label>
+                            <div v-on:click="ShowCoverImg">
+                                <img v-bind:src="coverSrc"  height="200">
+                            </div>
+                            <vue-easy-lightbox v-bind:visible="coverVisible" v-bind:imgs="coverSrc" v-on:hide="CoverHandleHide"></vue-easy-lightbox>
+                        </div>
+                        <div>
+                            <a v-on:click="SetCoverSrc" class="btn btn-primary">上傳圖片</a>
+                        </div>
+                    </div>  
+
+                    <div class="form-group">
                         <label>名稱</label>
                         <input class="form-control" ref="nameInput" placeholder="輸入名稱">
                     </div>  
@@ -66,12 +79,15 @@
 @section Scripts{
     <script>  
         
+        
         var FormTool = new Vue({
             el: '#FormTool',
             data:
             {
                 createApi: baseurl + "/Product/api/Add",
-                uploadEditorImageApi: baseurl + "/Product/api/UploadEditorImage"
+                uploadEditorImageApi: baseurl + "/Product/api/UploadEditorImage",
+                coverVisible: false,
+                coverSrc: 'https://via.placeholder.com/1200/FFFFFF.png?text=1'
             },
             mounted: function(){
                 var self = this;
@@ -85,9 +101,25 @@
                         }
                     }
                 });
+
+
             },
             methods:
             {        
+                ShowCoverImg: function() {
+                    var self = this;
+                    self.coverVisible = true;
+                },
+
+                CoverHandleHide: function() {
+                    var self = this;
+                    self.coverVisible = false;
+                },
+
+                SetCoverSrc: function() {
+
+                },
+
                 UploadEditorImage: function(api, obj){
                     var self = this;
                     var url = api;
@@ -115,7 +147,7 @@
                                 alert('post error'); 
                             }
                         });
-                },
+                },               
 
                 SubmitBtn: function () {
                     var self = this;
