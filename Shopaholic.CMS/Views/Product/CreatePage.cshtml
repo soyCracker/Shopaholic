@@ -19,44 +19,53 @@
         <div class="col-md-12">
             <!-- general form elements -->
             <div class="card card-outline card-info">
-                <div class="card-header">
-                    <h3 class="card-title">新增類別</h3>
-                </div>
+                
                 <!-- /.card-header -->
                 <!-- form start -->
                 
                 <div class="card-body">
                     <div class="form-group">
-                        <div>
-                            <label>商品封面</label>
-                            <div v-on:click="ShowCoverImg">
-                                <img v-bind:src="coverSrc"  height="200">
-                            </div>
-                            <vue-easy-lightbox v-bind:visible="coverVisible" v-bind:imgs="coverSrc" v-on:hide="CoverHandleHide"></vue-easy-lightbox>
+                        <label>商品封面</label>
+                        <div v-on:click="ShowCoverImg">
+                            <img v-bind:src="coverUrl"  height="200">
                         </div>
-                        <div>
-                            <a v-on:click="SetCoverSrc" class="btn btn-primary">上傳圖片</a>
-                        </div>
+                        <vue-easy-lightbox v-bind:visible="coverVisible" v-bind:imgs="coverUrl" v-on:hide="CoverHandleHide"></vue-easy-lightbox>
                     </div>  
 
                     <div class="form-group">
+                        <div  class="custom-file">
+                            @{
+                                //自訂按鈕觸發input file的click
+                            }
+                            <input ref="coverInput" v-on:change="SetCoverUrl" type="file" accept=".jpg, .png" v-show="false" />
+                            <button type="button" class="btn btn-success" v-on:click="UploadCoverBtn">上傳商品封面</button>
+                        </div>
+                        
+                    </div>
+
+                    <div class="form-group">
                         <label>名稱</label>
-                        <input class="form-control" ref="nameInput" placeholder="輸入名稱">
+                        <input class="form-control" v-model="nameInput" placeholder="輸入名稱">
                     </div>  
                         
                     <div class="form-group">
                         <label>描述</label>
-                        <input class="form-control" ref="descInput" placeholder="輸入描述">
+                        <input class="form-control" v-model="descInput" placeholder="輸入描述">
                     </div> 
 
                     <div class="form-group">
                         <label>價格</label>
-                        <input class="form-control" ref="priceInput" placeholder="輸入價格" value=0>
+                        <input class="form-control" v-model="priceInput" placeholder="輸入價格">
                     </div> 
 
                     <div class="form-group">
                         <label>庫存</label>
-                        <input class="form-control" ref="stockInput" placeholder="輸入庫存" value=0>
+                        <input class="form-control" v-model="stockInput" placeholder="輸入庫存">
+                    </div> 
+
+                    <div class="form-group">
+                        <label>類別</label>
+                        <input class="form-control" v-model="categoryInput" placeholder="選擇類別">
                     </div> 
                     
                     <div class="form-group">
@@ -78,8 +87,7 @@
 
 @section Scripts{
     <script>  
-        
-        
+                
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -87,7 +95,14 @@
                 createApi: baseurl + "/Product/api/Add",
                 uploadEditorImageApi: baseurl + "/Product/api/UploadEditorImage",
                 coverVisible: false,
-                coverSrc: 'https://via.placeholder.com/1200/FFFFFF.png?text=1'
+                coverUrl: 'https://via.placeholder.com/1200/FFFFFF.png?text=1',
+                coverFile: '',
+                nameInput: '',
+                descInput: '',
+                priceInput: 0,
+                stockInput: 0,
+                categoryInput: null,
+                content: ''
             },
             mounted: function(){
                 var self = this;
@@ -105,7 +120,11 @@
 
             },
             methods:
-            {        
+            {       
+                ReadonlyImgPlaceholder: function(){
+                    return 'https://via.placeholder.com/1200/FFFFFF.png?text=1'
+                },
+
                 ShowCoverImg: function() {
                     var self = this;
                     self.coverVisible = true;
@@ -115,9 +134,26 @@
                     var self = this;
                     self.coverVisible = false;
                 },
+                
+                //自訂按鈕觸發input file的click
+                UploadCoverBtn: function(){
+                    var self = this;
+                    self.$refs.coverInput.click();
+                },
 
-                SetCoverSrc: function() {
+                SetCoverUrl: function() {
+                    var self = this;
+                    //get input file
+                    self.coverFile = self.$refs.coverInput.files[0];
 
+                    //get input file url
+                    //假上傳，還未上傳到server
+                    var reader = new FileReader();
+                    reader.onload = (e) => {                        
+                        self.coverUrl = e.target.result;
+                        //console.log(self.coverUrl);
+                    }
+                    reader.readAsDataURL(self.coverFile);
                 },
 
                 UploadEditorImage: function(api, obj){
