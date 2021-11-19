@@ -1,6 +1,5 @@
-﻿
-@{
-}
+﻿@using Shopaholic.CMS.Model.ViewModels;
+@model List<CategoryVM>;
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -65,7 +64,14 @@
 
                     <div class="form-group">
                         <label>類別</label>
-                        <input class="form-control" v-model="categoryInput" placeholder="選擇類別">
+                        <select class="form-control" v-model="categorySelected">
+                            @{
+                                foreach(var vm in @Model)
+                                {
+                                    <option v-bind:value="@vm.Id">@vm.Name</option>
+                                }
+                            }
+                        </select>
                     </div> 
                     
                     <div class="form-group">
@@ -101,7 +107,7 @@
                 descInput: '',
                 priceInput: 0,
                 stockInput: 0,
-                categoryInput: null,
+                categorySelected: null,
                 content: ''
             },
             mounted: function(){
@@ -116,8 +122,6 @@
                         }
                     }
                 });
-
-
             },
             methods:
             {       
@@ -188,15 +192,15 @@
                 SubmitBtn: function () {
                     var self = this;
 
+                    console.log(self.categorySelected)                   
                     console.log($('#summernote').summernote('code'));
-
                     
                     self.categoryName = this.$refs.categoryNameInput.value;
                     console.log('submitBtn click');
 
                     if (self.ChkPostDataOk()) {
                         self.PostContent(self.getPostObj());
-                    }
+                    
                 },
 
                 isEmpty: function (str) {

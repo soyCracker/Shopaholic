@@ -13,12 +13,15 @@ namespace Shopaholic.CMS.Controllers
         private readonly ILogger Logger;
         private readonly IProductService productService;
         private readonly IStorageService storageService;
+        private readonly ICategoryService categoryService;
 
-        public ProductController(ILogger<ProductController> logger, IProductService productService, IStorageService storageService)
+        public ProductController(ILogger<ProductController> logger, IProductService productService, 
+            IStorageService storageService, ICategoryService categoryService)
         {
             this.Logger = logger;
             this.productService = productService;
             this.storageService = storageService;
+            this.categoryService = categoryService;
         }
 
         public IActionResult Index()
@@ -45,7 +48,18 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult CreatePage()
         {
-            return View();
+            List<Category> categoryList = categoryService.GetCategoryList();
+            List<CategoryVM> categoryVMList = new List<CategoryVM>();
+            foreach(var item in categoryList)
+            {
+                CategoryVM categoryVM = new CategoryVM
+                {
+                    Id = item.Id,
+                    Name = item.Name
+                };
+                categoryVMList.Add(categoryVM);
+            }
+            return View(categoryVMList);
         }
 
         public IActionResult EditPage(ProductVM vm)
