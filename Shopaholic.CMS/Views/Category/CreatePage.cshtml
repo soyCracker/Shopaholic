@@ -25,20 +25,20 @@
                 <!-- form start -->
                 
                     <div class="card-body">
-                        <validation-provider rules="required" v-slot="{ errors }">
-                            <div class="form-group">
-                                <label >類別名稱</label>
-                                <input class="form-control" placeholder="輸入類別" v-model="categoryName">
-                                <span>{{ errors[0] }}</span>
-                            </div>   
-                        </validation-provider>
-                                    
+                        <validation-observer ref="validObserver" v-slot="{ valid }" >
+                            <validation-provider rules="required" v-slot="{ errors }">
+                                <div class="form-group">
+                                    <label >類別名稱</label>
+                                    <input class="form-control" placeholder="輸入類別" v-model="categoryName">
+                                    <span>{{ errors[0] }}</span>
+                                </div>   
+                                <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-primary">Submit</a>
+                            </validation-provider>
+                        </validation-observer>                                   
                     </div>
                     <!-- /.card-body -->
 
-                    <div class="card-footer">
-                        <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-primary">Submit</a>
-                    </div>
+                    
                 
             </div>
             <!-- /.card -->
@@ -52,8 +52,7 @@
     <script>
         
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
-        
-
+        Vue.component('validation-observer', VeeValidate.ValidationObserver);
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -61,20 +60,23 @@
                 categoryName: '',
                 createApi: baseurl + "/Category/api/Add"
             },
-            mounted: function(){
-                VeeValidate.extend('required', {
-                    validate: value => value.length>0 && value!=null,
-                    message: 'This is not the magic word'
-                });
-            },
             methods:
             {                             
                 SubmitBtn: function () {
                     var self = this;
                     console.log('submitBtn click');
-
+                    /*
                     if (self.ChkPostDataOk()) {
                         self.PostContent(self.GetPostObj());
+                    }
+                    */
+                    if(self.$refs.validObserver.valid)
+                    {
+                        console.log('submitBtn validate');
+                        self.PostContent(self.GetPostObj());
+                    }
+                    else{
+                        console.log('submitBtn error');
                     }
                 },
 
@@ -91,7 +93,7 @@
                 ChkPostDataOk: function () {
                     var self = this;
                     if (self.IsEmpty(self.categoryName)) {
-                        console.log('ChkPostDataOk isEmpty');
+                        console.log('ChkPostDataOk IsEmpty');
                     }
                     else {
                         console.log('ChkPostDataOk success');
