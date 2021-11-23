@@ -51,12 +51,21 @@ namespace Shopaholic.CMS.Controllers
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<CategoryAddRequest> Add([FromBody] CategoryAddRequest req)
-        {           
-            bool res = categoryService.AddCategory(req.Name);
+        {
+            if (ModelState.IsValid)
+            {
+                bool res = categoryService.AddCategory(req.Name);
+                return new MessageModel<CategoryAddRequest>
+                {
+                    Success = res,
+                    Msg = res ? "Success" : "Fail",
+                    Data = req
+                };
+            }
             return new MessageModel<CategoryAddRequest>
             {
-                Success = res,
-                Msg = res ? "Success" : "Fail",
+                Success = false,
+                Msg = "格式錯誤",
                 Data = req
             };
         }
