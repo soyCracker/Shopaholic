@@ -1,6 +1,4 @@
-﻿@{
-}
-
+﻿
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -22,8 +20,7 @@
                 <h3 class="card-title">新增類別</h3>
                 </div>
                 <!-- /.card-header -->
-                <!-- form start -->
-                
+                <!-- form start -->                
                     <div class="card-body">
                         <validation-observer ref="validObserver" v-slot="{ valid }" >
                             <validation-provider rules="required" v-slot="{ errors }">
@@ -36,10 +33,7 @@
                             </validation-provider>
                         </validation-observer>                                   
                     </div>
-                    <!-- /.card-body -->
-
-                    
-                
+                    <!-- /.card-body -->                                  
             </div>
             <!-- /.card -->
         </div>
@@ -53,6 +47,7 @@
         
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
         Vue.component('validation-observer', VeeValidate.ValidationObserver);
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -62,46 +57,19 @@
             },
             methods:
             {                             
-                SubmitBtn: function () {
+                SubmitBtn: async function () {
                     var self = this;
                     console.log('submitBtn click');
-                    /*
-                    if (self.ChkPostDataOk()) {
-                        self.PostContent(self.GetPostObj());
-                    }
-                    */
-                    if(self.$refs.validObserver.valid)
+                    //click觸發驗證
+                    var isValid = await self.$refs.validObserver.validate();
+                    if(isValid)
                     {
-                        console.log('submitBtn validate');
                         self.PostContent(self.GetPostObj());
                     }
                     else{
-                        console.log('submitBtn error');
+                        console.log('validate error');
                     }
                 },
-
-                IsEmpty: function (str) {
-                    if (!str) {
-                        return true;
-                    }
-                    else if (str.length === 0) {
-                        return true;
-                    }
-                    return false;
-                },
-
-                ChkPostDataOk: function () {
-                    var self = this;
-                    if (self.IsEmpty(self.categoryName)) {
-                        console.log('ChkPostDataOk IsEmpty');
-                    }
-                    else {
-                        console.log('ChkPostDataOk success');
-                        return true;
-                    }
-                    console.log('ChkPostDataOk error');
-                    return false;
-                },  
 
                 GetPostObj: function () {
                     var self = this;
