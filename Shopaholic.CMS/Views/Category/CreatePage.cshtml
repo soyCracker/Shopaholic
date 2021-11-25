@@ -48,12 +48,23 @@
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
         Vue.component('validation-observer', VeeValidate.ValidationObserver);
 
+        //SweetAlert2
+        var Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
             {
                 categoryName: '',
-                createApi: baseurl + "/Category/api/Add"
+                createApi: baseurl + "/Category/api/Add",
+            },
+            mounted: function(){
+             
             },
             methods:
             {                             
@@ -64,9 +75,11 @@
                     var isValid = await self.$refs.validObserver.validate();
                     if(isValid)
                     {
+                        self.ToastFire('處理中')
                         self.PostContent(self.GetPostObj());
                     }
                     else{
+                        self.ToastFire('validate error')
                         console.log('validate error');
                     }
                 },
@@ -112,6 +125,14 @@
                             }
                         });
                 },
+
+                ToastFire: function (info) {
+                    Toast.fire({
+                        icon: 'info',
+                        title: '&nbsp;' + info
+                    });
+                }
+                
             }
         });
     </script>
