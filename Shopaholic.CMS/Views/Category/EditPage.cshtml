@@ -23,23 +23,23 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                <h3 class="card-title">編輯類別</h3>
+                    <h3 class="card-title">編輯類別</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">類別名稱</label>
-                            <input class="form-control" ref="categoryNameInput" placeholder="輸入類別" v-model="categoryName" v-on:keydown.enter="SubmitBtn">
-                        </div>               
-                    </div>
-                    <!-- /.card-body -->
-
-                    <div class="card-footer">
-                        <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
-                    </div>
-                
+                <div class="card-body">
+                    <validation-observer ref="validObserver" v-slot="{ valid }" >
+                        <validation-provider rules="required" v-slot="{ errors }">
+                            <div class="form-group">
+                                <label >類別名稱</label>
+                                <input class="form-control" placeholder="輸入類別" v-model="categoryName" v-on:keydown.enter="SubmitBtn">
+                                <span>{{ errors[0] }}</span>
+                            </div>   
+                            <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
+                        </validation-provider>
+                    </validation-observer>                                   
+                </div>
+                <!-- /.card-body --> 
             </div>
             <!-- /.card -->
         </div>
@@ -50,6 +50,9 @@
 @section Scripts{
 
     <script>
+
+        Vue.component('validation-provider', VeeValidate.ValidationProvider);
+        Vue.component('validation-observer', VeeValidate.ValidationObserver);
 
         var FormTool = new Vue({
             el: '#FormTool',
@@ -65,33 +68,17 @@
                     var self = this;
                     console.log('submitBtn click');
 
-                    if (self.ChkPostDataOk()) {
-                        self.PostContent(self.GetPostObj());
+                    //click觸發驗證
+                    var isValid = await self.$refs.validObserver.validate();
+                    if(isValid){
+                        ToastUtil.InfoFire('處理中')
+                        self.PostContent(self.GetPostObj(), self.updateApi);
+                    }
+                    else{
+                        ToastUtil.ErrorAlert('validate error')
+                        console.log('validate error');
                     }
                 },
-
-                IsEmpty: function (str) {
-                    if (!str) {
-                        return true;
-                    }
-                    else if (str.length === 0) {
-                        return true;
-                    }
-                    return false;
-                },
-
-                ChkPostDataOk: function () {
-                    var self = this;
-                    if (self.IsEmpty(self.categoryName)) {
-                        console.log('ChkPostDataOk IsEmpty');
-                    }
-                    else {
-                        console.log('ChkPostDataOk success');
-                        return true;
-                    }
-                    console.log('ChkPostDataOk error');
-                    return false;
-                },  
 
                 GetPostObj: function () {
                     var self = this;
@@ -104,9 +91,8 @@
                     return obj;
                 },
 
-                PostContent: function (obj) {
+                PostContent: function (obj, url) {
                     var self = this;
-                    var url = self.updateApi;
                     console.log(url + ' post');
                     axios.post(url, obj)
                         .then(function (result) {
@@ -120,18 +106,18 @@
                             }
                             else
                             {
-                                alert('Success:' + result.data.Success + '\n' +
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
                                         'Msg:' + result.data.Msg);
                             }                           
                         })
                         .catch(function (error) {
                             if( error.response ){
                                 console.log(error.response.data); // => the response payload 
-                                alert('Success:' + error.response.data.Success + '\n' +
+                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
                                         'Msg:' + error.response.data.Msg);
                             }
                             else{
-                                alert('post error'); 
+                                ToastUtil.ErrorAlert('post error'); 
                             }
                         });
                 },

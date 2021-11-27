@@ -17,23 +17,23 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                <h3 class="card-title">新增類別</h3>
+                    <h3 class="card-title">新增類別</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->                
-                    <div class="card-body">
-                        <validation-observer ref="validObserver" v-slot="{ valid }" >
-                            <validation-provider rules="required" v-slot="{ errors }">
-                                <div class="form-group">
-                                    <label >類別名稱</label>
-                                    <input class="form-control" placeholder="輸入類別" v-model="categoryName">
-                                    <span>{{ errors[0] }}</span>
-                                </div>   
-                                <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-primary">Submit</a>
-                            </validation-provider>
-                        </validation-observer>                                   
-                    </div>
-                    <!-- /.card-body -->                                  
+                <div class="card-body">
+                    <validation-observer ref="validObserver" v-slot="{ valid }" >
+                        <validation-provider rules="required" v-slot="{ errors }">
+                            <div class="form-group">
+                                <label >類別名稱</label>
+                                <input class="form-control" placeholder="輸入類別" v-model="categoryName" v-on:keydown.enter="SubmitBtn">
+                                <span>{{ errors[0] }}</span>
+                            </div>   
+                            <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
+                        </validation-provider>
+                    </validation-observer>                                   
+                </div>
+                <!-- /.card-body -->                                  
             </div>
             <!-- /.card -->
         </div>
@@ -48,24 +48,13 @@
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
         Vue.component('validation-observer', VeeValidate.ValidationObserver);
 
-        //SweetAlert2
-        var Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000
-        });
-
         var FormTool = new Vue({
             el: '#FormTool',
             data:
             {
                 categoryName: '',
                 createApi: baseurl + "/Category/api/Add",
-            },
-            mounted: function(){
-             
-            },
+            },            
             methods:
             {                             
                 SubmitBtn: async function () {
@@ -73,13 +62,12 @@
                     console.log('submitBtn click');
                     //click觸發驗證
                     var isValid = await self.$refs.validObserver.validate();
-                    if(isValid)
-                    {
-                        self.ToastFire('處理中')
-                        self.PostContent(self.GetPostObj());
+                    if(isValid){
+                        ToastUtil.InfoFire('處理中')
+                        self.PostContent(self.GetPostObj(), self.createApi);
                     }
                     else{
-                        self.ToastFire('validate error')
+                        ToastUtil.ErrorAlert('validate error')
                         console.log('validate error');
                     }
                 },
@@ -94,9 +82,8 @@
                     return obj;
                 },
 
-                PostContent: function (obj) {
+                PostContent: function (obj, url) {
                     var self = this;
-                    var url = self.createApi;
                     console.log(url + ' post');
                     axios.post(url, obj)
                         .then(function (result) {
@@ -104,33 +91,24 @@
                             console.log('Msg:' + result.data.msg);
                             console.log('Data:');
                             console.log(result.data.data);
-                            if(result.data.Success)
-                            {
+                            if(result.data.Success){
                                 location.href = '@Url.Action("Index")';
                             }
-                            else
-                            {
-                                alert('Success:' + result.data.Success + '\n' +
+                            else{
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
                                         'Msg:' + result.data.Msg);
                             }                           
                         })
                         .catch(function (error) {
                             if( error.response ){
                                 console.log(error.response.data); // => the response payload 
-                                alert('Success:' + error.response.data.Success + '\n' +
+                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
                                         'Msg:' + error.response.data.Msg);
                             }
                             else{
-                                alert('post error'); 
+                                ToastUtil.ErrorAlert('post error');
                             }
                         });
-                },
-
-                ToastFire: function (info) {
-                    Toast.fire({
-                        icon: 'info',
-                        title: '&nbsp;' + info
-                    });
                 }
                 
             }

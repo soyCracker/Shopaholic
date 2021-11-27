@@ -64,6 +64,17 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult EditPage(ProductVM vm)
         {
+            List<Category> categoryList = categoryService.GetCategoryList();
+            List<CategoryVM> categoryVMList = new List<CategoryVM>();
+            foreach (var item in categoryList)
+            {
+                CategoryVM categoryVM = new CategoryVM
+                {
+                    Id = item.Id,
+                    Name = item.Name
+                };
+                categoryVMList.Add(categoryVM);
+            }
             return View(vm);
         }
 
@@ -74,12 +85,21 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<ProductAddRequest> Add([FromBody]ProductAddRequest req)
         {
-            bool res = productService.AddProduct(req.Name, req.Description, req.CategoryId, req.Content, req.Image, req.Price,
-                req.Stock );
+            if (ModelState.IsValid)
+            {
+                bool res = productService.AddProduct(req.Name, req.Description, req.CategoryId, req.Content, req.Image, req.Price,
+                req.Stock);
+                return new MessageModel<ProductAddRequest>
+                {
+                    Success = res,
+                    Msg = res ? "" : "Fail",
+                    Data = req
+                };
+            }
             return new MessageModel<ProductAddRequest>
             {
-                Success = res,
-                Msg = res ? "" : "Fail",
+                Success = false,
+                Msg = "格式錯誤",
                 Data = req
             };
         }
@@ -171,6 +191,22 @@ namespace Shopaholic.CMS.Controllers
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public async Task<MessageModel<string>> UploadEditorImage(IFormFile file)
+        {
+            string url = await storageService.UploadFile(ControllerContext.ActionDescriptor.ControllerName, file);
+            return new MessageModel<string>
+            {
+                Success = true,
+                Msg = url != null ? "" : "Fail",
+                Data = url
+            };
+        }
+
+        /// <summary>
+        /// 上傳商品內容編輯區內圖片
+        /// </summary>
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public async Task<MessageModel<string>> UploadCoverImage(IFormFile file)
         {
             string url = await storageService.UploadFile(ControllerContext.ActionDescriptor.ControllerName, file);
             return new MessageModel<string>

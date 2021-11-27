@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{314DC361-E664-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.CMS.Model", "Shopaholic.CMS.Model\Shopaholic.CMS.Model.csproj", "{A8F02A84-640C-4377-A7F9-44F07FF8F052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS.Common", "Shopaholic.CMS.Common\Shopaholic.CMS.Common.csproj", "{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.CMS.Common", "Shopaholic.CMS.Common\Shopaholic.CMS.Common.csproj", "{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
