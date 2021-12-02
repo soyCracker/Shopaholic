@@ -58,7 +58,7 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                return dbContext.Products.SingleOrDefault(x=>x.Id==id);
+                return dbContext.Products.SingleOrDefault(x=>x.Id == id);
             }
         }
 

@@ -62,8 +62,20 @@ namespace Shopaholic.CMS.Controllers
             return View(categoryVMList);
         }
 
-        public IActionResult EditPage(ProductVM vm)
+        public IActionResult EditPage(int Id)
         {
+            Product product = productService.GetProduct(Id);
+            ProductVM productVM = new ProductVM
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Stock = product.Stock,
+                Price = product.Price,
+                Content = product.Content,
+                Description = product.Description,
+                CategoryId = product.CategoryId,
+                Image = product.Image,
+            };
             List<Category> categoryList = categoryService.GetCategoryList();
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
             foreach (var item in categoryList)
@@ -75,7 +87,52 @@ namespace Shopaholic.CMS.Controllers
                 };
                 categoryVMList.Add(categoryVM);
             }
-            return View(vm);
+            ProductEditVM productEditVM = new ProductEditVM
+            {
+                ProductVM = productVM,
+                CategoryListVM = categoryVMList
+            };
+            return View(productEditVM);
+        }
+
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public MessageModel<ProductEditVM> Test()
+        {
+            Product product = productService.GetProduct(1);
+            ProductVM productVM = new ProductVM
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Stock = product.Stock,
+                Price = product.Price,
+                Content = product.Content,
+                Description = product.Description,
+                CategoryId = product.CategoryId,
+                Image = product.Image,
+            };
+            List<Category> categoryList = categoryService.GetCategoryList();
+            List<CategoryVM> categoryVMList = new List<CategoryVM>();
+            foreach (var item in categoryList)
+            {
+                CategoryVM categoryVM = new CategoryVM
+                {
+                    Id = item.Id,
+                    Name = item.Name
+                };
+                categoryVMList.Add(categoryVM);
+            }
+            ProductEditVM productEditVM = new ProductEditVM
+            {
+                ProductVM = productVM,
+                CategoryListVM = categoryVMList
+            };
+            return new MessageModel<ProductEditVM>
+            {
+                Success = false,
+                Msg = "格式錯誤",
+                Data = productEditVM
+            };
         }
 
         /// <summary>
@@ -159,12 +216,21 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<ProductUpdateRequest> Update([FromBody]ProductUpdateRequest req)
         {
-            bool res = productService.UpdateProduct(req.Id, req.Name, req.Description, req.CategoryId, req.Content, req.Image, 
+            if (ModelState.IsValid)
+            {
+                bool res = productService.UpdateProduct(req.Id, req.Name, req.Description, req.CategoryId, req.Content, req.Image,
                 req.Price, req.Stock);
+                return new MessageModel<ProductUpdateRequest>
+                {
+                    Success = res,
+                    Msg = res ? "" : "Fail",
+                    Data = req
+                };
+            }
             return new MessageModel<ProductUpdateRequest>
             {
-                Success = res,
-                Msg = res ? "" : "Fail",
+                Success = false,
+                Msg = "格式錯誤",
                 Data = req
             };
         }

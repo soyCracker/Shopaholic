@@ -1,5 +1,5 @@
 ﻿@using Shopaholic.CMS.Model.ViewModels;
-@model List<CategoryVM>;
+@model ProductEditVM;
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -77,18 +77,15 @@
                     <div class="form-group">
                         <label>類別</label>
                         <select class="form-control" v-model="categorySelected">
-                            @{
-                                foreach(var vm in @Model)
-                                {
-                                    <option v-bind:value="@vm.Id">@vm.Name</option>
-                                }
-                            }
+                            <option v-for="option in categoryList" v-bind:value="option.Id">
+                                {{ option.Name }}
+                            </option>
                         </select>
                     </div> 
                     
                     <div class="form-group">
                         <label>內容</label>
-                        <textarea id="summernote"></textarea>
+                        <textarea id="summernote">@Model.ProductVM.Content</textarea>
                     </div> 
 
                 </div>
@@ -113,23 +110,27 @@
             el: '#FormTool',
             data:
             {
-                createApi: baseurl + "/Product/api/Add",
+                upadteApi: baseurl + "/Product/api/Update",
                 uploadEditorImageApi: baseurl + "/Product/api/UploadEditorImage",
                 uploadCoverImageApi: baseurl + "/Product/api/UploadCoverImage",
+                getCategoryListApi: baseurl + "/Category/api/GetList",
                 coverVisible: false,
                 //預設圖片路徑
-                coverUrl: 'https://via.placeholder.com/1200/FFFFFF.png?text=1',
+                coverUrl: '@Model.ProductVM.Image',
                 coverFile: null,
-                nameInput: '',
-                descInput: '',
-                priceInput: 0,
-                stockInput: 0,
-                categorySelected: null,
-                content: ''
+                nameInput: '@Html.Raw(@Model.ProductVM.Name)',
+                descInput: '@Html.Raw(@Model.ProductVM.Description)',
+                priceInput: @Model.ProductVM.Price,
+                stockInput: @Model.ProductVM.Stock,
+                categorySelected: @Model.ProductVM.CategoryId,
+                categoryList: null,
+                content: null,
+                id: @Model.ProductVM.Id
             },
             mounted: function(){
                 var self = this;
                 console.log('== mounted ==');
+                //self.GetCategoryList(self.getCategoryListApi);                
                 $('#summernote').summernote({
                     height:300,
                     callbacks:{
@@ -222,7 +223,7 @@
                             self.UploadCoverImage(self.uploadCoverImageApi, self.coverFile);
                         }
                         else{
-                            self.PostContent(self.GetPostObj(), self.createApi);
+                            self.PostContent(self.GetPostObj(), self.upadteApi);
                         }                                              
                     }
                     else{
@@ -243,7 +244,8 @@
                         .then(function (result) {  
                             if(result.data.Success)
                             {
-                                self.PostContent(self.GetPostObj(), self.createApi);
+                                self.coverUrl = result.data.Data;
+                                self.PostContent(self.GetPostObj(), self.upadteApi);
                             } 
                             else
                             {
@@ -266,6 +268,7 @@
                     var self = this;
 
                     var obj = {
+                        ['Id']: self.id,
                         ['Name']: self.nameInput,
                         ['Description']: self.descInput,
                         ['Content']: self.content,
@@ -283,13 +286,36 @@
                     console.log(url + ' post');
                     axios.post(url, obj)
                         .then(function (result) {
-                            console.log('Success:' + result.data.success);
-                            console.log('Msg:' + result.data.msg);
-                            console.log('Data:');
-                            console.log(result.data.data);
                             if(result.data.Success)
                             {
                                 location.href = '@Url.Action("Index")';
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            if( error.response ){
+                                console.log(error.response.data); // => the response payload 
+                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
+                                        'Msg:' + error.response.data.Msg)
+                            }
+                            else{
+                                ToastUtil.ErrorAlert('post error')
+                            }
+                        });
+                },
+
+                GetCategoryList: function (url) {
+                    var self = this;
+                    console.log(url + ' post');
+                    axios.post(url)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.categoryList = result.data.Data;
                             }
                             else
                             {

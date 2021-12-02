@@ -1,6 +1,7 @@
 ﻿using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,10 @@ namespace Shopaholic.CMS.Model.Requests
     public class ProductUpdateRequest
     {
         [SwaggerSchema("商品ID")]
+        [Required]
         public int Id { get; set; }
         [SwaggerSchema("商品名稱")]
+        [Required]
         public string Name { get; set; }
         [SwaggerSchema("商品描述")]
         public string Description { get; set; }

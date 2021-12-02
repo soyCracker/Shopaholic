@@ -200,9 +200,11 @@
 
 
     <script>
-        var baseurl = '';
+        var baseurl = window.location.origin;
+
         @{
-            @:baseurl='@Url.Content("~")';
+            
+            //@:baseurl='@Url.Content("~")';
         }
     </script>
 
