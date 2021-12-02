@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Model.Moels;
 
 namespace Shopaholic.Service.Services
 {
@@ -54,28 +55,74 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public Product GetProduct(int id)
+        public ProductDTO GetProduct(int id)
         {
             using(dbContext)
             {
-                return dbContext.Products.SingleOrDefault(x=>x.Id == id);
+                Product product = dbContext.Products.SingleOrDefault(x => x.Id == id);
+                ProductDTO productDTO = new ProductDTO
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    CategoryId = product.CategoryId,
+                    Content = product.Content,
+                    Image = product.Image,
+                    Price = product.Price,
+                    Stock = product.Stock
+                };
+                return productDTO;
             }
         }
 
-        public List<Product> GetProductList()
+        public List<ProductDTO> GetProductList()
         {
             using (dbContext)
             {
-                return dbContext.Products.ToList();
+                List<Product> productList = dbContext.Products.ToList();
+                List<ProductDTO> productDTOList = new List<ProductDTO>();
+                foreach (Product product in productList)
+                {
+                    ProductDTO productDTO = new ProductDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Description = product.Description,
+                        CategoryId = product.CategoryId,
+                        Content = product.Content,
+                        Image = product.Image,
+                        Price = product.Price,
+                        Stock = product.Stock
+                    };
+                    productDTOList.Add(productDTO);
+                }
+                return productDTOList;
             }
         }
 
-        public List<Product> SearchProduct(string name, string description, string content)
+        public List<ProductDTO> SearchProduct(string name, string description, string content)
         {
             using(dbContext)
             {
-                return dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) || 
-                    x.Content.Contains(content) ).ToList();
+                List<Product> productList = dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) ||
+                    x.Content.Contains(content)).ToList();
+                List<ProductDTO> productDTOList = new List<ProductDTO>();
+                foreach (Product product in productList)
+                {
+                    ProductDTO productDTO = new ProductDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Description = product.Description,
+                        CategoryId = product.CategoryId,
+                        Content = product.Content,
+                        Image = product.Image,
+                        Price = product.Price,
+                        Stock = product.Stock
+                    };
+                    productDTOList.Add(productDTO);
+                }
+                return productDTOList;
             }
         }
 
@@ -98,6 +145,42 @@ namespace Shopaholic.Service.Services
                     return true;
                 }
                 return false;
+            }
+        }
+
+        public ProductWithAllCategoryDTO GetProductWithAllCategory(int id)
+        {
+            using (dbContext)
+            {
+                Product product = dbContext.Products.SingleOrDefault(x => x.Id == id);
+                ProductDTO productDTO = new ProductDTO
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    CategoryId = product.CategoryId,
+                    Content = product.Content,
+                    Image = product.Image,
+                    Price = product.Price,
+                    Stock = product.Stock
+                };
+                List<Category> categoryList = dbContext.Categories.ToList();
+                List<CategoryDTO> categoryDTOList = new List<CategoryDTO>();
+                foreach (Category category in categoryList)
+                {
+                    CategoryDTO categoryDTO = new CategoryDTO
+                    {
+                        Name = category.Name,
+                        Id = category.Id
+                    };
+                    categoryDTOList.Add(categoryDTO);
+                }
+                ProductWithAllCategoryDTO productWithAllCategoryDTO = new ProductWithAllCategoryDTO
+                {
+                    ProductDTOItem = productDTO,
+                    CategoryDTOList = categoryDTOList
+                };
+                return productWithAllCategoryDTO;
             }
         }
     }

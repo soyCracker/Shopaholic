@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Shopaholic.Entity.Models;
+using Shopaholic.Service.Model.Moels;
 
 namespace Shopaholic.Service.Interfaces
 {
     public interface IProductService
     {
-        List<Product> GetProductList();
+        List<ProductDTO> GetProductList();
 
-        Product GetProduct(int id);
+        ProductDTO GetProduct(int id);
 
         bool AddProduct(string name, string description, int categoryId, string content, string image, int price, int stock);  
 
@@ -16,6 +17,8 @@ namespace Shopaholic.Service.Interfaces
 
         bool DeleteProduct(int id);
 
-        List<Product> SearchProduct(string name, string description, string content);
+        List<ProductDTO> SearchProduct(string name, string description, string content);
+
+        ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
     }
 }

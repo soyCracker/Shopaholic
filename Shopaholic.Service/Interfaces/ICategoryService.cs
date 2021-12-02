@@ -1,12 +1,12 @@
-﻿using Shopaholic.Entity.Models;
+﻿using Shopaholic.Service.Model.Moels;
 
 namespace Shopaholic.Service.Interfaces
 {
     public interface ICategoryService
     {
-        List<Category> GetCategoryList();
+        List<CategoryDTO> GetCategoryList();
 
-        Category GetCategory(int id);
+        CategoryDTO GetCategory(int id);
 
         bool AddCategory(string name);
 

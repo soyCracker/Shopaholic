@@ -1,5 +1,6 @@
 ﻿using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Model.Moels;
 
 namespace Shopaholic.Service.Services
 {
@@ -46,19 +47,36 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public List<Category> GetCategoryList()
+        public List<CategoryDTO> GetCategoryList()
         {
             using (dbContext)
             {
-                return dbContext.Categories.ToList();
+                List<Category> categoryList = dbContext.Categories.ToList();
+                List<CategoryDTO> categoryDTOList = new List<CategoryDTO>();
+                foreach(Category category in categoryList)
+                {
+                    CategoryDTO categoryDTO = new CategoryDTO
+                    {
+                        Name = category.Name,
+                        Id = category.Id
+                    };
+                    categoryDTOList.Add(categoryDTO);
+                }
+                return categoryDTOList;
             }
         }
 
-        public Category GetCategory(int id)
+        public CategoryDTO GetCategory(int id)
         {
             using (dbContext)
             {
-                return dbContext.Categories.SingleOrDefault(x => x.Id == id);
+                Category category = dbContext.Categories.SingleOrDefault(x => x.Id == id);
+                CategoryDTO categoryDTO = new CategoryDTO
+                {
+                    Name = category.Name,
+                    Id = category.Id
+                };
+                return categoryDTO;
             }
         }
 

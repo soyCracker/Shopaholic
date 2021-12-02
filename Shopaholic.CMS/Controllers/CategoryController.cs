@@ -5,6 +5,7 @@ using Shopaholic.CMS.Model.Response;
 using Shopaholic.CMS.Model.ViewModels;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Model.Moels;
 
 namespace Shopaholic.CMS.Controllers
 {
@@ -21,7 +22,7 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult Index()
         {
-            List<Category> resList = categoryService.GetCategoryList();
+            List<CategoryDTO> resList = categoryService.GetCategoryList();
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
             foreach(var item in resList)
             {
@@ -91,14 +92,14 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Category> Get([FromBody] CategoryGetRequest req)
+        public MessageModel<CategoryDTO> Get([FromBody] CategoryGetRequest req)
         {
-            Category category = categoryService.GetCategory(req.Id);
-            return new MessageModel<Category>
+            CategoryDTO categoryDTO = categoryService.GetCategory(req.Id);
+            return new MessageModel<CategoryDTO>
             {
-                Success = category != null ? true : false,
-                Msg = category != null ? "Success" : "Fail",
-                Data = category
+                Success = categoryDTO != null ? true : false,
+                Msg = categoryDTO != null ? "Success" : "Fail",
+                Data = categoryDTO
             };
         }
 
@@ -107,10 +108,10 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<List<Category>> GetList()
+        public MessageModel<List<CategoryDTO>> GetList()
         {
-            List<Category> resList = categoryService.GetCategoryList();
-            return new MessageModel<List<Category>>
+            List<CategoryDTO> resList = categoryService.GetCategoryList();
+            return new MessageModel<List<CategoryDTO>>
             {
                 Success = resList != null ? true : false,
                 Msg = resList != null ? "Success" : "Fail",

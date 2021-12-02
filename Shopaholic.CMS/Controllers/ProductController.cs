@@ -4,6 +4,7 @@ using Shopaholic.CMS.Model.Response;
 using Shopaholic.CMS.Model.ViewModels;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Model.Moels;
 using System.Text.Json;
 
 namespace Shopaholic.CMS.Controllers
@@ -26,7 +27,7 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult Index()
         {
-            List<Product> resList = productService.GetProductList();
+            List<ProductDTO> resList = productService.GetProductList();
             List<ProductVM> productVMList = new List<ProductVM>();
             foreach (var item in resList)
             {
@@ -48,7 +49,7 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult CreatePage()
         {
-            List<Category> categoryList = categoryService.GetCategoryList();
+            List<CategoryDTO> categoryList = categoryService.GetCategoryList();
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
             foreach(var item in categoryList)
             {
@@ -62,31 +63,30 @@ namespace Shopaholic.CMS.Controllers
             return View(categoryVMList);
         }
 
-        public IActionResult EditPage(int Id)
+        public IActionResult EditPage(int id)
         {
-            Product product = productService.GetProduct(Id);
+            ProductWithAllCategoryDTO dataDTO = productService.GetProductWithAllCategory(id);
             ProductVM productVM = new ProductVM
             {
-                Id = product.Id,
-                Name = product.Name,
-                Stock = product.Stock,
-                Price = product.Price,
-                Content = product.Content,
-                Description = product.Description,
-                CategoryId = product.CategoryId,
-                Image = product.Image,
+                Id = dataDTO.ProductDTOItem.Id,
+                Name = dataDTO.ProductDTOItem.Name,
+                Description = dataDTO.ProductDTOItem.Description,
+                Content = dataDTO.ProductDTOItem.Content,
+                Image = dataDTO.ProductDTOItem.Image,
+                Stock = dataDTO.ProductDTOItem.Stock,
+                Price = dataDTO.ProductDTOItem.Price,
+                CategoryId = dataDTO.ProductDTOItem.CategoryId
             };
-            List<Category> categoryList = categoryService.GetCategoryList();
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
-            foreach (var item in categoryList)
+            foreach(var categoryDTO in dataDTO.CategoryDTOList)
             {
                 CategoryVM categoryVM = new CategoryVM
                 {
-                    Id = item.Id,
-                    Name = item.Name
+                    Id = categoryDTO.Id,
+                    Name = categoryDTO.Name
                 };
                 categoryVMList.Add(categoryVM);
-            }
+            };
             ProductEditVM productEditVM = new ProductEditVM
             {
                 ProductVM = productVM,
@@ -97,41 +97,14 @@ namespace Shopaholic.CMS.Controllers
 
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<ProductEditVM> Test()
+        public MessageModel<ProductWithAllCategoryDTO> Test()
         {
-            Product product = productService.GetProduct(1);
-            ProductVM productVM = new ProductVM
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Stock = product.Stock,
-                Price = product.Price,
-                Content = product.Content,
-                Description = product.Description,
-                CategoryId = product.CategoryId,
-                Image = product.Image,
-            };
-            List<Category> categoryList = categoryService.GetCategoryList();
-            List<CategoryVM> categoryVMList = new List<CategoryVM>();
-            foreach (var item in categoryList)
-            {
-                CategoryVM categoryVM = new CategoryVM
-                {
-                    Id = item.Id,
-                    Name = item.Name
-                };
-                categoryVMList.Add(categoryVM);
-            }
-            ProductEditVM productEditVM = new ProductEditVM
-            {
-                ProductVM = productVM,
-                CategoryListVM = categoryVMList
-            };
-            return new MessageModel<ProductEditVM>
+            ProductWithAllCategoryDTO dataDTO = productService.GetProductWithAllCategory(1);
+            return new MessageModel<ProductWithAllCategoryDTO>
             {
                 Success = false,
-                Msg = "格式錯誤",
-                Data = productEditVM
+                Msg = "測試啦",
+                Data = dataDTO
             };
         }
 
@@ -182,14 +155,14 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<Product> Get([FromBody]ProductGetRequest req)
+        public MessageModel<ProductDTO> Get([FromBody]ProductGetRequest req)
         {
-            Product product = productService.GetProduct(req.Id);
-            return new MessageModel<Product>
+            ProductDTO productDTO = productService.GetProduct(req.Id);
+            return new MessageModel<ProductDTO>
             {
-                Success = product != null ? true : false,
-                Msg = product != null ? "" : "Fail",
-                Data = product
+                Success = productDTO != null ? true : false,
+                Msg = productDTO != null ? "" : "Fail",
+                Data = productDTO
             };
         }
 
@@ -198,10 +171,10 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<List<Product>> GetList()
+        public MessageModel<List<ProductDTO>> GetList()
         {
-            List<Product> productList = productService.GetProductList();
-            return new MessageModel<List<Product>>
+            List<ProductDTO> productList = productService.GetProductList();
+            return new MessageModel<List<ProductDTO>>
             {
                 Success = productList != null ? true : false,
                 Msg = productList != null ? "" : "Fail",
@@ -240,10 +213,10 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<List<Product>> Search([FromBody] ProductSearchRequest req)
+        public MessageModel<List<ProductDTO>> Search([FromBody] ProductSearchRequest req)
         {
-            List<Product> res = productService.SearchProduct(req.Name, req.Description, req.Content);
-            return new MessageModel<List<Product>>
+            List<ProductDTO> res = productService.SearchProduct(req.Name, req.Description, req.Content);
+            return new MessageModel<List<ProductDTO>>
             {
                 Success = res != null ? true : false,
                 Msg = res != null ? "" : "Fail",
