@@ -83,11 +83,6 @@
                                     <option v-bind:value="@CategoryVM.Id">@CategoryVM.Name</option>
                                 }
                             }
-                            <!--
-                            <option v-for="option in categoryList" v-bind:value="option.Id">
-                                {{ option.Name }}
-                            </option>
-                            -->
                         </select>
                     </div> 
                     
@@ -131,14 +126,12 @@
                 priceInput: @Model.ProductVM.Price,
                 stockInput: @Model.ProductVM.Stock,
                 categorySelected: @Model.ProductVM.CategoryId,
-                //categoryList: null,
                 content: null,
                 id: @Model.ProductVM.Id
             },
             mounted: function(){
                 var self = this;
-                console.log('== mounted ==');
-                //self.GetCategoryList(self.getCategoryListApi);                
+                console.log('== mounted ==');              
                 $('#summernote').summernote({
                     height:300,
                     callbacks:{
@@ -151,10 +144,6 @@
             },
             methods:
             {       
-                /*ReadonlyImgPlaceholder: function(){
-                    return 'https://via.placeholder.com/1200/FFFFFF.png?text=1'
-                },*/
-
                 ShowCoverImg: function() {
                     var self = this;
                     self.coverVisible = true;
@@ -314,35 +303,7 @@
                                 ToastUtil.ErrorAlert('post error')
                             }
                         });
-                },
-
-                /*
-                GetCategoryList: function (url) {
-                    var self = this;
-                    console.log(url + ' post');
-                    axios.post(url)
-                        .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.categoryList = result.data.Data;
-                            }
-                            else
-                            {
-                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
-                        })
-                        .catch(function (error) {
-                            if( error.response ){
-                                console.log(error.response.data); // => the response payload 
-                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg)
-                            }
-                            else{
-                                ToastUtil.ErrorAlert('post error')
-                            }
-                        });
-                }*/
+                }
             }
         });
 
