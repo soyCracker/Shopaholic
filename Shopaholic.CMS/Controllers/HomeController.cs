@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Models;
+using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Model.Moels;
 using System.Diagnostics;
 
 namespace Shopaholic.CMS.Controllers
@@ -7,15 +9,18 @@ namespace Shopaholic.CMS.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IWebFlowService webFlowService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IWebFlowService webFlowService)
         {
             _logger = logger;
+            this.webFlowService = webFlowService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            List<FlowDTO> flows = webFlowService.GetMonthFlow();
+            return View(flows);
         }
 
         public IActionResult Privacy()

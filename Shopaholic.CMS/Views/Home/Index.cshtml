@@ -1,15 +1,66 @@
-﻿@{
+﻿@using Shopaholic.Service.Model.Moels;
+@model List<FlowDTO>;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 <!-- Content Header (Page header) -->
 <div class="content-header">
-    <div class="container-fluid">
-    <div class="row mb-2">
-        <div class="col-sm-6">
-        <h1 class="m-0">主控台</h1>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
+    <div id="ChartApp" class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">主控台</h1>
+            </div><!-- /.col -->           
+        </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
-    
+  
+<div id="TableTool" class="card-body p-0">
+    <canvas id="myChart" width="100%" height="50px"></canvas>
+</div>
+
+
+<!-- chartjs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
+
+<script>
+    var dateArray = [];
+    var flowCount = [];
+
+    @{
+        foreach (var m in @Model)
+        {
+            @:dateArray.push('@m.FlowDate');
+            @:flowCount.push(@m.Count);
+        }
+    }
+
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dateArray,
+            datasets: [{
+                label: 'Flow',
+                data: flowCount,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>

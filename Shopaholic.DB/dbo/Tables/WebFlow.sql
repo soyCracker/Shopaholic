@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[WebFlow]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+    [IP] VARCHAR(50) NULL, 
+    [Enter] VARCHAR(50) NOT NULL, 
+    [CreateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+
+)

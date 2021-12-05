@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[OrderHeader]
+(
+	[Id] NVARCHAR(8) NOT NULL PRIMARY KEY, 
+    [UserId] NVARCHAR(MAX) NOT NULL, 
+    [Status] INT NOT NULL DEFAULT 0, 
+    [Remark] NVARCHAR(MAX) NULL, 
+    [UpdateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
+    [CreateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
+    [Shipnumber] NVARCHAR(MAX) NULL, 
+    [FailCode] INT NULL DEFAULT 0
+)
