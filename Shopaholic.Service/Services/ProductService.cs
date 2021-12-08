@@ -89,6 +89,7 @@ namespace Shopaholic.Service.Services
                         Name = product.Name,
                         Description = product.Description,
                         CategoryId = product.CategoryId,
+                        CategoryName = dbContext.Categories.SingleOrDefault(x => x.Id== product.CategoryId).Name,
                         Content = product.Content,
                         Image = product.Image,
                         Price = product.Price,

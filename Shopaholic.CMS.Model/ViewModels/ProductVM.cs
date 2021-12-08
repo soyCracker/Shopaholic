@@ -25,5 +25,7 @@ namespace Shopaholic.CMS.Model.ViewModels
         public string Image { get; set; }
         [SwaggerSchema("商品類別ID")]
         public int? CategoryId { get; set; }
+        [SwaggerSchema("商品類別名稱")]
+        public string CategoryName { get; set; }
     }
 }

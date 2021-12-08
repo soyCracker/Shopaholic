@@ -41,6 +41,7 @@ namespace Shopaholic.CMS.Controllers
                     Stock = item.Stock,
                     Image = item.Image,
                     CategoryId = item.CategoryId,
+                    CategoryName = item.CategoryName
                 };
                 productVMList.Add(productVM);
             }
