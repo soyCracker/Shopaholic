@@ -10,5 +10,9 @@ namespace Shopaholic.CMS.Model.Requests
         public string Description { get; set; }
         [SwaggerSchema("商品內容")]
         public string Content { get; set; }
+        [SwaggerSchema("頁數")]
+        public string Page { get; set; }
+        [SwaggerSchema("每頁數量")]
+        public string PageSize { get; set; }
     }
 }

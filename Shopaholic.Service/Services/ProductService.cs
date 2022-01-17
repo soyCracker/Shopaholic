@@ -105,6 +105,10 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
+                name = name == null ? "" : name;
+                description = description == null ? "" : description;
+                content = content == null ? "" : content;
+
                 List<Product> productList = dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) ||
                     x.Content.Contains(content)).ToList();
                 List<ProductDTO> productDTOList = new List<ProductDTO>();
@@ -182,6 +186,45 @@ namespace Shopaholic.Service.Services
                     CategoryDTOList = categoryDTOList
                 };
                 return productWithAllCategoryDTO;
+            }
+        }
+
+        public int GetProductPages(int pageSize)
+        {
+            using(dbContext)
+            {
+                int count = dbContext.Products.Count();
+                return count%pageSize==0 ? count/pageSize : count/pageSize+1;
+            }       
+        }
+
+        public List<ProductDTO> SearchProduct(string name, string description, string content, int page, int pageSize)
+        {
+            using (dbContext)
+            {
+                name = name == null ? "" : name;
+                description = description == null ? "" : description;
+                content = content == null ? "" : content;
+
+                List<Product> productList = dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) ||
+                    x.Content.Contains(content)).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).ToList();
+                List<ProductDTO> productDTOList = new List<ProductDTO>();
+                foreach (Product product in productList)
+                {
+                    ProductDTO productDTO = new ProductDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Description = product.Description,
+                        CategoryId = product.CategoryId,
+                        Content = product.Content,
+                        Image = product.Image,
+                        Price = product.Price,
+                        Stock = product.Stock
+                    };
+                    productDTOList.Add(productDTO);
+                }
+                return productDTOList;
             }
         }
     }
