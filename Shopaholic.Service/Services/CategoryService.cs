@@ -39,7 +39,8 @@ namespace Shopaholic.Service.Services
                 Category category = dbContext.Categories.SingleOrDefault(x => x.Id == id);
                 if (category != null)
                 {
-                    dbContext.Categories.Remove(category);
+                    category.IsDelete = true;
+                    //dbContext.Categories.Remove(category);
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -51,7 +52,7 @@ namespace Shopaholic.Service.Services
         {
             using (dbContext)
             {
-                List<Category> categoryList = dbContext.Categories.ToList();
+                List<Category> categoryList = dbContext.Categories.Where(x => x.IsDelete == false).ToList();
                 List<CategoryDTO> categoryDTOList = new List<CategoryDTO>();
                 foreach(Category category in categoryList)
                 {
@@ -70,7 +71,7 @@ namespace Shopaholic.Service.Services
         {
             using (dbContext)
             {
-                Category category = dbContext.Categories.SingleOrDefault(x => x.Id == id);
+                Category category = dbContext.Categories.SingleOrDefault(x => x.Id == id && x.IsDelete == false);
                 CategoryDTO categoryDTO = new CategoryDTO
                 {
                     Name = category.Name,

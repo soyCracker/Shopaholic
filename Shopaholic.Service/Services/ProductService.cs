@@ -47,7 +47,8 @@ namespace Shopaholic.Service.Services
                 Product product = dbContext.Products.SingleOrDefault(x=>x.Id == id);
                 if(product!=null)
                 {
-                    dbContext.Products.Remove(product);
+                    product.IsDelete = true;
+                    //dbContext.Products.Remove(product);
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -59,7 +60,7 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                Product product = dbContext.Products.SingleOrDefault(x => x.Id == id);
+                Product product = dbContext.Products.SingleOrDefault(x => x.Id == id && x.IsDelete == false);
                 ProductDTO productDTO = new ProductDTO
                 {
                     Id = product.Id,
@@ -79,7 +80,7 @@ namespace Shopaholic.Service.Services
         {
             using (dbContext)
             {
-                List<Product> productList = dbContext.Products.ToList();
+                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false).ToList();
                 List<ProductDTO> productDTOList = new List<ProductDTO>();
                 foreach (Product product in productList)
                 {
@@ -105,8 +106,8 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                List<Product> productList = dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) ||
-                    x.Content.Contains(content)).ToList();
+                List<Product> productList = dbContext.Products.Where(x => x.IsDelete==false && (x.Name.Contains(name) || x.Description.Contains(description) ||
+                    x.Content.Contains(content))).ToList();
                 List<ProductDTO> productDTOList = new List<ProductDTO>();
                 foreach (Product product in productList)
                 {

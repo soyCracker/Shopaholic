@@ -8,6 +8,6 @@
     [Stock] INT NOT NULL, 
     [Image] NVARCHAR(MAX) NULL, 
     [CategoryId] INT NULL, 
-    [IsDelete] BIT NULL DEFAULT 0, 
+    [IsDelete] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [FK_Product_Category] FOREIGN KEY ([CategoryId]) REFERENCES [Category]([Id])
 )
