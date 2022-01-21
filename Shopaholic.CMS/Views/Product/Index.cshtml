@@ -83,7 +83,7 @@
                                 </i>
                                 修改
                             </a>
-                            <a class="btn btn-danger btn-sm" v-on:click="DeleteCategory(@productVM.Id)">
+                            <a class="btn btn-danger btn-sm" v-on:click="DeleteProduct(@productVM.Id)">
                                 <i class="fas fa-trash">
                                 </i>
                                 刪除
@@ -156,9 +156,11 @@
             data:
             {
                 getPagesApi: baseurl + "/Product/api/GetProductPages",
+                deleteApi: baseurl + "/Product/api/Delete",
                 productSearchApi: baseurl + "/Product/api/Search",
                 pages: 1,
                 productList: {},
+                categoryName: '',               
             },
             mounted: function()
             {
@@ -221,7 +223,44 @@
                                 ToastUtil.ErrorAlert('post error')
                             }
                         });
-                }
+                },
+
+                DeleteProduct: function (id) {
+                    var self = this;
+                    if(confirm("確定刪除?")) {
+                        var obj = {
+                            ['Id']: id
+                        };
+                        self.PostContent(obj, deleteApi);
+                    }
+                },
+
+                PostContent: function (obj, url) {
+                    var self = this;
+                    console.log(url + ' post');
+                    axios.post(url, obj)
+                        .then(function (result) {
+                            console.log(result);
+                            console.log('Success:' + result.data.Success);
+                            console.log('Msg:' + result.data.Msg);
+                            console.log('Data:');
+                            console.log(result.data.data);
+                            if(result.data.Success)
+                            {
+                                location.href = '@Url.Action("Index")';
+                            }                         
+                        })
+                        .catch(function (error) {                                    
+                            if( error.response ){
+                                console.log(error.response.data); // => the response payload 
+                                alert('Success:' + error.response.data.Success + '\n' +
+                                        'Msg:' + error.response.data.Msg);
+                            }
+                            else{
+                                alert('post error'); 
+                            }
+                        });
+                },
             }
         });
     </script>
