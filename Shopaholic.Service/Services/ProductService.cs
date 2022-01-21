@@ -207,8 +207,8 @@ namespace Shopaholic.Service.Services
                 description = description == null ? "" : description;
                 content = content == null ? "" : content;
 
-                List<Product> productList = dbContext.Products.Where(x => x.Name.Contains(name) || x.Description.Contains(description) ||
-                    x.Content.Contains(content)).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).ToList();
+                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false && ( x.Name.Contains(name) || x.Description.Contains(description) ||
+                    x.Content.Contains(content))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).ToList();
                 List<ProductDTO> productDTOList = new List<ProductDTO>();
                 foreach (Product product in productList)
                 {

@@ -61,29 +61,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for=item in productList">
+                    <tr v-for="(item) in productList" v-bind:key="item.id">
                         <td>
                             {{ item.Id }}
                         </td>
                         <td>
-                            {{ item.Name }}                         
+                            {{ item.Name }}                        
                         </td>  
                         <td>
-                            {{ item.CategoryName }}                         
+                            {{ item.CategoryName }}                        
                         </td>
                         <td>
                             {{ item.Price }}                         
                         </td>  
                         <td>
-                            {{ item.Stock }}                        
-                        </td>  
-                        <td class="project-actions text-right">                            
-                            <a class="btn btn-info btn-sm" href="@Url.Action("EditPage", new { Id = @productVM.Id})">
+                            {{ item.Stock }}                       
+                        </td>
+                        <td class="project-actions text-right">        
+                            <a class="btn btn-info btn-sm" v-bind:href="'/Product/EditPage/'+item.Id">
                                 <i class="fas fa-pencil-alt">
                                 </i>
                                 修改
                             </a>
-                            <a class="btn btn-danger btn-sm" v-on:click="DeleteProduct(@productVM.Id)">
+                            <a class="btn btn-danger btn-sm" v-on:click="DeleteProduct(item.Id)">
                                 <i class="fas fa-trash">
                                 </i>
                                 刪除
@@ -160,10 +160,18 @@
                 productSearchApi: baseurl + "/Product/api/Search",
                 pages: 1,
                 productList: {},
-                categoryName: '',               
+                categoryName: '',       
+                list: [
+                  { Id: '123456789', Name: '選項 1' },
+                  { Id: '234567890', Name: '選項 2' },
+                  { Id: '345678901', Name: '選項 3' },
+                ],
             },
             mounted: function()
             {
+                var self = this;
+                self.GetPages();
+                self.SelectPage(1);
             },
             methods:
             {
@@ -175,11 +183,13 @@
                         ['Page']: page
                     };
 
-                    axios.post(productSearchApi, obj)
+                    axios.post(self.productSearchApi, obj)
                         .then(function (result) {
                             if(result.data.Success)
                             {
                                 self.productList = result.data.Data;
+                                console.log(result.data.Data);
+                                console.log(self.productList);
                             }
                             else
                             {
@@ -201,10 +211,12 @@
 
                 GetPages: function () {
                     var self = this;
-                    axios.post(getPagesApi, obj)
+                    console.log("12346")
+                    axios.post(self.getPagesApi)
                         .then(function (result) {
                             if(result.data.Success)
                             {
+                                console.log("Success")
                                 self.pages = result.data.Data;
                             }
                             else

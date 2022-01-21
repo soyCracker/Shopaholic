@@ -216,7 +216,7 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<List<ProductDTO>> Search([FromBody] ProductSearchRequest req)
         {
-            List<ProductDTO> res = productService.SearchProduct(req.Name, req.Description, req.Content);
+            List<ProductDTO> res = productService.SearchProduct(req.Name, req.Description, req.Content, req.Page, req.PageSize);
             return new MessageModel<List<ProductDTO>>
             {
                 Success = res != null ? true : false,
