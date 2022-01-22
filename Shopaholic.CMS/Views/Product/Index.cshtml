@@ -159,13 +159,9 @@
                 deleteApi: baseurl + "/Product/api/Delete",
                 productSearchApi: baseurl + "/Product/api/Search",
                 pages: 1,
+                currentPage: 1,
                 productList: {},
-                categoryName: '',       
-                list: [
-                  { Id: '123456789', Name: '選項 1' },
-                  { Id: '234567890', Name: '選項 2' },
-                  { Id: '345678901', Name: '選項 3' },
-                ],
+                categoryName: '',
             },
             mounted: function()
             {
@@ -178,7 +174,9 @@
 
                 SelectPage: function (page) {
                     var self = this;
+                    ToastUtil.InfoFire('處理中')
 
+                    self.currentPage = page;
                     var obj = {
                         ['Page']: page
                     };
@@ -188,8 +186,6 @@
                             if(result.data.Success)
                             {
                                 self.productList = result.data.Data;
-                                console.log(result.data.Data);
-                                console.log(self.productList);
                             }
                             else
                             {
@@ -198,20 +194,13 @@
                             }                           
                         })
                         .catch(function (error) {
-                            if( error.response ){
-                                console.log(error.response.data); // => the response payload 
-                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg)
-                            }
-                            else{
-                                ToastUtil.ErrorAlert('post error')
-                            }
+                            self.PostExceptionFuc(error);
                         });
                 },
 
                 GetPages: function () {
                     var self = this;
-                    console.log("12346")
+                    
                     axios.post(self.getPagesApi)
                         .then(function (result) {
                             if(result.data.Success)
@@ -226,53 +215,44 @@
                             }                           
                         })
                         .catch(function (error) {
-                            if( error.response ){
-                                console.log(error.response.data); // => the response payload 
-                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg)
-                            }
-                            else{
-                                ToastUtil.ErrorAlert('post error')
-                            }
+                            self.PostExceptionFuc(error);
                         });
                 },
 
                 DeleteProduct: function (id) {
                     var self = this;
                     if(confirm("確定刪除?")) {
+
+                        ToastUtil.InfoFire('處理中')
+
                         var obj = {
                             ['Id']: id
                         };
-                        self.PostContent(obj, deleteApi);
-                    }
-                },
 
-                PostContent: function (obj, url) {
-                    var self = this;
-                    console.log(url + ' post');
-                    axios.post(url, obj)
+                        axios.post(self.deleteApi, obj)
                         .then(function (result) {
-                            console.log(result);
-                            console.log('Success:' + result.data.Success);
-                            console.log('Msg:' + result.data.Msg);
-                            console.log('Data:');
-                            console.log(result.data.data);
                             if(result.data.Success)
                             {
-                                location.href = '@Url.Action("Index")';
+                                self.SelectPage(self.currentPage);
+                                //location.href = '@Url.Action("Index")';
                             }                         
                         })
                         .catch(function (error) {                                    
-                            if( error.response ){
-                                console.log(error.response.data); // => the response payload 
-                                alert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg);
-                            }
-                            else{
-                                alert('post error'); 
-                            }
+                            self.PostExceptionFuc(error);
                         });
+                    }
                 },
+
+                PostExceptionFuc: function (error) {
+                    if( error.response ){
+                        console.log(error.response.data); // => the response payload 
+                        ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
+                                'Msg:' + error.response.data.Msg)
+                    }
+                    else{
+                        ToastUtil.ErrorAlert('post error')
+                    }
+                }
             }
         });
     </script>

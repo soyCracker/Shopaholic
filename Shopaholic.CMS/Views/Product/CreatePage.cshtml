@@ -195,14 +195,7 @@
                             }                            
                         })
                         .catch(function (error) {
-                            if( error.response ){
-                                console.log(error.response.Data); // => the response payload                                
-                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg)
-                            }
-                            else{
-                                ToastUtil.ErrorAlert('post error')
-                            }
+                            self.PostExceptionFuc(error);
                         });
                 },               
 
@@ -252,14 +245,7 @@
                             }                            
                         })
                         .catch(function (error) {
-                            if( error.response ){
-                                console.log(error.response.Data); // => the response payload                                
-                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg);
-                            }
-                            else{
-                                ToastUtil.ErrorAlert('post error');
-                            }
+                            self.PostExceptionFuc(error);
                         });
                 },   
 
@@ -299,15 +285,19 @@
                             }                           
                         })
                         .catch(function (error) {
-                            if( error.response ){
-                                console.log(error.response.data); // => the response payload 
-                                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                        'Msg:' + error.response.data.Msg)
-                            }
-                            else{
-                                ToastUtil.ErrorAlert('post error')
-                            }
+                            self.PostExceptionFuc(error);
                         });
+                },
+
+                PostExceptionFuc: function (error) {
+                    if( error.response ){
+                        console.log(error.response.data); // => the response payload 
+                        ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
+                                'Msg:' + error.response.data.Msg)
+                    }
+                    else{
+                        ToastUtil.ErrorAlert('post error')
+                    }
                 }
             }
         });
