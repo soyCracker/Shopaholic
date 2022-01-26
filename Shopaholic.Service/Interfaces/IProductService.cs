@@ -6,8 +6,6 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface IProductService
     {
-        List<ProductDTO> GetProductList();
-
         ProductDTO GetProduct(int id);
 
         bool AddProduct(string name, string description, int categoryId, string content, string image, int price, int stock);  
@@ -17,9 +15,7 @@ namespace Shopaholic.Service.Interfaces
 
         bool DeleteProduct(int id);
 
-        List<ProductDTO> SearchProduct(string name, string description, string content);
-
-        List<ProductDTO> SearchProduct(string name, string description, string content, int page, int pageSize);
+        List<ProductDTO> SearchProductWithCategory(string name, string description, string content, int page, int pageSize);
 
         ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
 

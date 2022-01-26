@@ -1,7 +1,6 @@
-﻿@using Shopaholic.CMS.Model.ViewModels
-@using System.Collections.Generic
+﻿@using System.Collections.Generic
 
-@model List<ProductVM>
+
 
 @{
 }
@@ -96,13 +95,13 @@
 
         <div class="card-tools">
             <ul class="pagination pagination-sm float-right">
-                <li class="page-item"><a class="page-link" v-on:click="">&laquo;</a></li>
+                <li class="page-item"><a class="page-link" v-on:click="SelectPage(currentPage-1)">&laquo;</a></li>
                 <li v-for="n in pages">
                     <a class="page-link" v-on:click="SelectPage(n)">
                         {{ n }}
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" v-on:click="">&raquo;</a></li>
+                <li class="page-item"><a class="page-link" v-on:click="SelectPage(currentPage+1)">&raquo;</a></li>
             </ul>
         </div>
 
@@ -123,6 +122,7 @@
                 deleteApi: baseurl + "/Product/api/Delete",
                 productSearchApi: baseurl + "/Product/api/Search",
                 pages: 1,
+                pageSize: 5,
                 currentPage: 1,
                 productList: {},
                 categoryName: '',
@@ -138,34 +138,42 @@
 
                 SelectPage: function (page) {
                     var self = this;
-                    ToastUtil.InfoFire('處理中')
+                    if(page>=1&&page<=self.pages)
+                    {
+                        ToastUtil.InfoFire('處理中')
 
-                    self.currentPage = page;
-                    var obj = {
-                        ['Page']: page
-                    };
+                        self.currentPage = page;
+                        var obj = {
+                            ['Page']: page,
+                            ['PageSize']: self.pageSize
+                        };
 
-                    axios.post(self.productSearchApi, obj)
-                        .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.productList = result.data.Data;
-                            }
-                            else
-                            {
-                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
-                        })
-                        .catch(function (error) {
-                            self.PostExceptionFuc(error);
-                        });
+                        axios.post(self.productSearchApi, obj)
+                            .then(function (result) {
+                                if(result.data.Success)
+                                {
+                                    self.productList = result.data.Data;
+                                }
+                                else
+                                {
+                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg)
+                                }                           
+                            })
+                            .catch(function (error) {
+                                self.PostExceptionFuc(error);
+                            });
+                    }                    
                 },
 
                 GetPages: function () {
                     var self = this;
                     
-                    axios.post(self.getPagesApi)
+                    var obj = {
+                        ['PageSize']: self.pageSize
+                    };
+
+                    axios.post(self.getPagesApi, obj)
                         .then(function (result) {
                             if(result.data.Success)
                             {

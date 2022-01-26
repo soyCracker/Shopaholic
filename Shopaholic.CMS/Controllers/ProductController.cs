@@ -27,25 +27,7 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult Index()
         {
-            List<ProductDTO> resList = productService.GetProductList();
-            List<ProductVM> productVMList = new List<ProductVM>();
-            foreach (var item in resList)
-            {
-                ProductVM productVM = new ProductVM
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                    Content = item.Content,
-                    Price = item.Price,
-                    Stock = item.Stock,
-                    Image = item.Image,
-                    CategoryId = item.CategoryId,
-                    CategoryName = item.CategoryName
-                };
-                productVMList.Add(productVM);
-            }
-            return View(productVMList);
+            return View();
         }
 
         public IActionResult CreatePage()
@@ -168,22 +150,6 @@ namespace Shopaholic.CMS.Controllers
         }
 
         /// <summary>
-        /// 取得全部商品清單
-        /// </summary>
-        [Route("[controller]/api/[action]")]
-        [HttpPost]
-        public MessageModel<List<ProductDTO>> GetList()
-        {
-            List<ProductDTO> productList = productService.GetProductList();
-            return new MessageModel<List<ProductDTO>>
-            {
-                Success = productList != null ? true : false,
-                Msg = productList != null ? "" : "Fail",
-                Data = productList
-            };
-        }
-
-        /// <summary>
         /// 修改商品
         /// </summary>
         [Route("[controller]/api/[action]")]
@@ -216,7 +182,7 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<List<ProductDTO>> Search([FromBody] ProductSearchRequest req)
         {
-            List<ProductDTO> res = productService.SearchProduct(req.Name, req.Description, req.Content, req.Page, req.PageSize);
+            List<ProductDTO> res = productService.SearchProductWithCategory(req.Name, req.Description, req.Content, req.Page, req.PageSize);
             return new MessageModel<List<ProductDTO>>
             {
                 Success = res != null ? true : false,
@@ -262,9 +228,9 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public async Task<MessageModel<int>> GetProductPages()
+        public async Task<MessageModel<int>> GetProductPages([FromBody] ProductGetPageCountRequest req)
         {
-            int pages = productService.GetProductPages(10);
+            int pages = productService.GetProductPages(req.PageSize);
             return new MessageModel<int>
             {
                 Success = true,

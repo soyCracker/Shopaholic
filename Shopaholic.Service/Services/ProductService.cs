@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
@@ -76,62 +77,6 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public List<ProductDTO> GetProductList()
-        {
-            using (dbContext)
-            {
-                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false).ToList();
-                List<ProductDTO> productDTOList = new List<ProductDTO>();
-                foreach (Product product in productList)
-                {
-                    ProductDTO productDTO = new ProductDTO
-                    {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Description = product.Description,
-                        CategoryId = product.CategoryId,
-                        CategoryName = dbContext.Categories.SingleOrDefault(x => x.Id== product.CategoryId).Name,
-                        Content = product.Content,
-                        Image = product.Image,
-                        Price = product.Price,
-                        Stock = product.Stock
-                    };
-                    productDTOList.Add(productDTO);
-                }
-                return productDTOList;
-            }
-        }
-
-        public List<ProductDTO> SearchProduct(string name, string description, string content)
-        {
-            using(dbContext)
-            {
-                name = name == null ? "" : name;
-                description = description == null ? "" : description;
-                content = content == null ? "" : content;
-
-                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false && (x.Name.Contains(name) || x.Description.Contains(description) ||
-                    x.Content.Contains(content))).ToList();
-                List<ProductDTO> productDTOList = new List<ProductDTO>();
-                foreach (Product product in productList)
-                {
-                    ProductDTO productDTO = new ProductDTO
-                    {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Description = product.Description,
-                        CategoryId = product.CategoryId,
-                        Content = product.Content,
-                        Image = product.Image,
-                        Price = product.Price,
-                        Stock = product.Stock
-                    };
-                    productDTOList.Add(productDTO);
-                }
-                return productDTOList;
-            }
-        }
-
         public bool UpdateProduct(int id, string name, string description, int categoryId, string content, string image, 
             int price, int stock)
         {
@@ -199,16 +144,16 @@ namespace Shopaholic.Service.Services
             }       
         }
 
-        public List<ProductDTO> SearchProduct(string name, string description, string content, int page, int pageSize)
+        public List<ProductDTO> SearchProductWithCategory(string name, string description, string content, int page, int pageSize)
         {
             using (dbContext)
             {
-                name = name == null ? "" : name;
-                description = description == null ? "" : description;
-                content = content == null ? "" : content;
+                name = string.IsNullOrEmpty(name) ? "" : name;
+                description = string.IsNullOrEmpty(description) ? "" : description;
+                content = string.IsNullOrEmpty(content) ? "" : content;
 
                 List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false && ( x.Name.Contains(name) || x.Description.Contains(description) ||
-                    x.Content.Contains(content))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).ToList();
+                    x.Content.Contains(content))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.Category).ToList();
                 List<ProductDTO> productDTOList = new List<ProductDTO>();
                 foreach (Product product in productList)
                 {
@@ -218,6 +163,7 @@ namespace Shopaholic.Service.Services
                         Name = product.Name,
                         Description = product.Description,
                         CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name,
                         Content = product.Content,
                         Image = product.Image,
                         Price = product.Price,
