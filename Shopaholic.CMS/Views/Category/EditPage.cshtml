@@ -1,6 +1,5 @@
-﻿@using Shopaholic.CMS.Model.ViewModels
-
-@model CategoryVM
+﻿@using Shopaholic.CMS.Model.ViewModels;
+@model CategoryVM;
 
 @{
 }
@@ -47,8 +46,8 @@
     </div><!-- /.container-fluid -->
 </section>
 
-@section Scripts{
 
+@section Scripts{
     <script>
 
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
@@ -58,13 +57,19 @@
             el: '#FormTool',
             data:
             {
-                id: @Model.Id,
-                categoryName: @Model.Name,
+                id: '@Model.Id',
+                categoryName: '@Html.Raw(@Model.Name)',
                 updateApi: baseurl + "/Category/api/Update"
+            },
+            mounted: function()
+            {
+                var self = this;
+                console.log("01");
+                console.log(self.categoryName);
             },
             methods:
             {                               
-                SubmitBtn: function () {
+                SubmitBtn: async function () {
                     var self = this;
                     console.log('submitBtn click');
 
