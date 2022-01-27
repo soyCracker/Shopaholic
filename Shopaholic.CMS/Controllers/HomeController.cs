@@ -19,7 +19,7 @@ namespace Shopaholic.CMS.Controllers
 
         public IActionResult Index()
         {
-            List<FlowDTO> flows = webFlowService.GetMonthFlow();
+            List<FlowCountDTO> flows = webFlowService.GetMonthFlow();
             return View(flows);
         }
 

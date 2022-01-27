@@ -95,13 +95,13 @@
 
         <div class="card-tools">
             <ul class="pagination pagination-sm float-right">
-                <li class="page-item"><a class="page-link" v-on:click="SelectPage(currentPage-1)">&laquo;</a></li>
-                <li v-for="n in pages">
-                    <a class="page-link" v-on:click="SelectPage(n)">
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(currentPage-1)">&laquo;</a></li>
+                <li v-for="n in maxPage">
+                    <a class="page-link" v-on:click="RefreshUI(n)">
                         {{ n }}
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" v-on:click="SelectPage(currentPage+1)">&raquo;</a></li>
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(currentPage+1)">&raquo;</a></li>
             </ul>
         </div>
 
@@ -121,31 +121,43 @@
                 getPagesApi: baseurl + "/Product/api/GetProductPages",
                 deleteApi: baseurl + "/Product/api/Delete",
                 productSearchApi: baseurl + "/Product/api/Search",
-                pages: 1,
+                maxPage: 1,
                 pageSize: 5,
                 currentPage: 1,
                 productList: {},
                 categoryName: '',
+                pageMaxDisplay: 5,
+                pageDisplayArray:new Array(pageMaxDisplay),
             },
             mounted: function()
             {
-                var self = this;
-                self.GetPages();
-                self.SelectPage(1);
+                var self = this;               
+                self.RefreshUI(1);
             },
             methods:
             {
-
-                SelectPage: function (page) {
+                RefreshUI: function(page){
                     var self = this;
-                    if(page>=1&&page<=self.pages)
+                    self.GetPages(self.pageSize);
+                    self.SetCurrentPage(page);
+                    self.SetDisplayPageArray(page, self.pageMaxDisplay, self.pageDisplayArray, self.maxPage)                   
+                    self.SelectPage(page, self.pageSize, self.maxPage);
+                },
+
+                SetCurrentPage: function(page){
+                    var self = this;
+                    self.currentPage = page;
+                },
+
+                SelectPage: function (page, pageSize, maxPage) {
+                    var self = this;
+
+                    if(page>=1&&page<=maxPage)
                     {
                         ToastUtil.InfoFire('處理中')
-
-                        self.currentPage = page;
                         var obj = {
                             ['Page']: page,
-                            ['PageSize']: self.pageSize
+                            ['PageSize']: pageSize
                         };
 
                         axios.post(self.productSearchApi, obj)
@@ -166,11 +178,11 @@
                     }                    
                 },
 
-                GetPages: function () {
+                GetPages: function (pageSize) {
                     var self = this;
                     
                     var obj = {
-                        ['PageSize']: self.pageSize
+                        ['PageSize']: pageSize
                     };
 
                     axios.post(self.getPagesApi, obj)
@@ -178,7 +190,7 @@
                             if(result.data.Success)
                             {
                                 console.log("Success")
-                                self.pages = result.data.Data;
+                                self.maxPages = result.data.Data;
                             }
                             else
                             {
@@ -189,6 +201,28 @@
                         .catch(function (error) {
                             self.PostExceptionFuc(error);
                         });
+                },
+
+                SetDisplayPageArray: function(page, pageMaxDisplay, pageDisplayArray, maxPage) {
+                    let count = 1;
+                    // array[2] 0-4 中間是2
+                    let flagPage = Math.floor(pageMaxDisplay/2)                  
+                    pageDisplayArray[flagPage] = page;
+                    while(count<pageMaxDisplay)
+                    {
+                        let i = 1;
+                        if(page-i>0)
+                        {
+                            pageDisplayArray[flagPage-i] = page-i;
+                            count++;
+                        }
+                        if(page+i<=maxPage)
+                        {
+                            pageDisplayArray[flagPage+i] = page+i;
+                            count++;
+                        }
+                        i++;
+                    }
                 },
 
                 DeleteProduct: function (id) {
@@ -205,7 +239,7 @@
                         .then(function (result) {
                             if(result.data.Success)
                             {
-                                self.SelectPage(self.currentPage);
+                                self.RefreshUI(self.currentPage);
                                 //location.href = '@Url.Action("Index")';
                             }                         
                         })

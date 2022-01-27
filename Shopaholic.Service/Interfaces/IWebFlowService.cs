@@ -9,6 +9,11 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface IWebFlowService
     {
-        List<FlowDTO> GetMonthFlow();
+        List<FlowCountDTO> GetMonthFlow();
+
+        void AddFlow(string ip, string enter);
+
+        void AddFlowRange(List<FlowDTO> flowDtoList);
+        
     }
 }
