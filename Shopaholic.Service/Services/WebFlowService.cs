@@ -1,4 +1,5 @@
-﻿using Shopaholic.Entity.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using System;
@@ -33,8 +34,7 @@ namespace Shopaholic.Service.Services
         }
 
         public void AddFlowRange(List<FlowDTO> flowDtoList)
-        {
-            
+        {            
             using (dbContext)
             {
                 List<WebFlow> webFlowList = new List<WebFlow>();
@@ -58,8 +58,9 @@ namespace Shopaholic.Service.Services
             using (dbContext)
             {
                 List<FlowCountDTO> flowList = new List<FlowCountDTO>();
-                List<WebFlow> flowSource = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(-6) && x.CreateTime < DateTime.Now.Date.AddDays(1) ).ToList();
-                for (DateTime date = DateTime.Now.Date.AddDays(-29); date <= DateTime.Now.Date; date = date.AddDays(1))
+                int flowRange = -29;
+                List<WebFlow> flowSource = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) && x.CreateTime < DateTime.Now.Date.AddDays(1) ).AsNoTracking().ToList();
+                for (DateTime date = DateTime.Now.Date.AddDays(flowRange); date <= DateTime.Now.Date; date = date.AddDays(1))
                 {
                     var temp = date.AddDays(1).Date;
                     int flowCount = flowSource.Where(x => x.CreateTime >= date && x.CreateTime < temp).Count();

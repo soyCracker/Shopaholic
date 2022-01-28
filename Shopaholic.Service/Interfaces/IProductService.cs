@@ -8,7 +8,9 @@ namespace Shopaholic.Service.Interfaces
     {
         ProductDTO GetProduct(int id);
 
-        bool AddProduct(string name, string description, int categoryId, string content, string image, int price, int stock);  
+        bool AddProduct(string name, string description, int categoryId, string content, string image, int price, int stock);
+
+        void AddProductRange(List<ProductDTO> productDTOs);
 
         bool UpdateProduct(int id, string name, string description, int categoryId, string content, string image, int price, 
             int stock);
