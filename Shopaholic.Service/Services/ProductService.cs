@@ -174,5 +174,29 @@ namespace Shopaholic.Service.Services
                 return productDTOList;
             }
         }
+
+        public void AddProductRange(List<ProductDTO> productDTOs)
+        {
+            using (dbContext)
+            {
+                List<Product> productList = new List<Product>();
+                foreach (ProductDTO productDto in productDTOs)
+                {
+                    productList.Add(new Product
+                    {
+                        Name = productDto.Name,
+                        Description = productDto.Description,
+                        Content = productDto.Content,
+                        Price = productDto.Price,
+                        Stock = productDto.Stock,
+                        Image = productDto.Image,
+                        CategoryId = productDto.CategoryId,
+                        IsDelete = productDto.IsDelete
+                    });
+                }
+                dbContext.Products.AddRange(productList);
+                dbContext.SaveChanges();
+            }
+        }
     }
 }
