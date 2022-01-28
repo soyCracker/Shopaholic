@@ -58,18 +58,20 @@ namespace Shopaholic.Service.Services
             using (dbContext)
             {
                 List<FlowCountDTO> flowList = new List<FlowCountDTO>();
-                List<WebFlow> flowSource = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(-6) && x.CreateTime < DateTime.Now.Date.AddDays(1) ).ToList();
-                for (DateTime date = DateTime.Now.Date.AddDays(-29); date <= DateTime.Now.Date; date = date.AddDays(1))
-                {
-                    var temp = date.AddDays(1).Date;
-                    int flowCount = flowSource.Where(x => x.CreateTime >= date && x.CreateTime < temp).Count();
-                    //int noRepeat = dbContext.WebFlows.Where(x => x.CreateTime >= date && x.CreateTime < temp).Select(y => y.Ip).Distinct().Count();
-                    FlowCountDTO model = new FlowCountDTO()
+                var webFlowCountByDate = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(-6) && x.CreateTime < DateTime.Now.Date.AddDays(1))
+                    .GroupBy(g => g.CreateTime.Date)
+                    .Select(s=>new
                     {
-                        FlowDate = date.ToString("MM/dd"),
-                        Count = flowCount
-                    };
-                    flowList.Add(model);
+                        Count = s.Count(),
+                        CreateTime = s.Key
+                    }).OrderBy(o=>o.CreateTime.Date);
+                foreach (var flowDateObj in webFlowCountByDate)
+                {
+                    flowList.Add(new FlowCountDTO
+                    {
+                        FlowDate = flowDateObj.CreateTime.ToString("MM/dd"),
+                        Count = flowDateObj.Count
+                    });
                 }
                 return flowList;
             }
