@@ -15,28 +15,65 @@
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
-  
-<div id="TableTool" class="card-body p-0">
-    <canvas id="myChart" width="100%" height="30px"></canvas>
+ 
+
+<div id="FlowChartApp" class="card-body p-0">
+    <!--<canvas id="myChart" width="100%" height="30px"></canvas>-->
+    <line-chart />
 </div>
 
 
-<!-- chartjs -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
 
+<!-- chartjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
+
+@section Scripts{
 <script>
+    /*
     var dateArray = [];
-    var flowCount = [];
+    var flowCount = [];*/
 
     @{
+        /*
         foreach (var m in @Model)
         {
             @:dateArray.push('@m.FlowDate');
             @:flowCount.push(@m.Count);
-        }
+        }*/
     }
 
+    var FlowChartApp = new Vue({
+        el: '#FlowChartApp',
+        data:
+        {
+            dateArray: null,
+            flowCount: null
+        },
+        components:{
+            'line-chart' :{
+                extends: VueChartJs.Line,
+                mounted () {
+                    this.renderChart({
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                        datasets: [
+                        {
+                            label: 'Flow',
+                            backgroundColor: '#f87979',
+                            data: [40, 39, 10, 40, 39, 80, 40]
+                        }]
+                    }, {responsive: true, maintainAspectRatio: false})
+                }
+            }
+        },
+        methods:{
+            InitFlowData: function(){
 
+            }
+        }
+    });
+
+    /*
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -61,6 +98,8 @@
                 }
             }
         }
-    });
+    });*/
 
 </script>
+
+}
