@@ -127,11 +127,12 @@
                 productList: {},
                 categoryName: '',
                 pageMaxDisplay: 5,
-                pageDisplayArray:new Array(pageMaxDisplay),
+                pageDisplayArray:null,
             },
             mounted: function()
             {
-                var self = this;               
+                var self = this;  
+                self.pageDisplayArray = new Array(self.pageMaxDisplay);
                 self.RefreshUI(1);
             },
             methods:

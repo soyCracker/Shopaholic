@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Shopaholic.Service.Services
 {
@@ -58,13 +59,13 @@ namespace Shopaholic.Service.Services
             using (dbContext)
             {
                 List<FlowCountDTO> flowList = new List<FlowCountDTO>();
-                var webFlowCountByDate = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(-6) && x.CreateTime < DateTime.Now.Date.AddDays(1))
+                var webFlowCountByDate = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(-29) && x.CreateTime < DateTime.Now.Date.AddDays(1))
                     .GroupBy(g => g.CreateTime.Date)
                     .Select(s=>new
                     {
                         Count = s.Count(),
                         CreateTime = s.Key
-                    }).OrderBy(o=>o.CreateTime.Date);
+                    }).OrderBy(o=>o.CreateTime.Date).AsNoTracking().ToList();
                 foreach (var flowDateObj in webFlowCountByDate)
                 {
                     flowList.Add(new FlowCountDTO
