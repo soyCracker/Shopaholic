@@ -18,87 +18,45 @@
  
 
 <div id="FlowChartApp" class="card-body p-0">
-    <!--<canvas id="myChart" width="100%" height="30px"></canvas>-->
-    <line-chart />
+    <bar-chart />
 </div>
-
-
-
-<!-- chartjs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 
 @section Scripts{
 <script>
-    /*
-    var dateArray = [];
-    var flowCount = [];*/
-
-    @{
-        /*
-        foreach (var m in @Model)
-        {
-            @:dateArray.push('@m.FlowDate');
-            @:flowCount.push(@m.Count);
-        }*/
-    }
 
     var FlowChartApp = new Vue({
-        el: '#FlowChartApp',
-        data:
-        {
-            dateArray: null,
-            flowCount: null
-        },
+        el: '#FlowChartApp',        
         components:{
-            'line-chart' :{
-                extends: VueChartJs.Line,
+            'bar-chart' :{
+                extends: VueChartJs.Bar,
+                data: () => ({    
+                    // Net Core list to Javascript array
+                    flowOriginList: JSON.parse('@Html.Raw(Json.Serialize(@Model))'),
+                    dateArray: new Array(),
+                    flowCountArray: new Array()
+                }),
                 mounted () {
-                    this.renderChart({
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    let self = this;
+
+                    for(let i=0;i<self.flowOriginList.length;i++)
+                    {
+                        self.dateArray.push(self.flowOriginList[i].FlowDate);
+                        self.flowCountArray.push(self.flowOriginList[i].Count);
+                    }
+
+                    self.renderChart({
+                        labels: self.dateArray,
                         datasets: [
                         {
-                            label: 'Flow',
-                            backgroundColor: '#f87979',
-                            data: [40, 39, 10, 40, 39, 80, 40]
+                            label: '瀏覽量',
+                            backgroundColor: '#81DAF5',
+                            data: self.flowCountArray
                         }]
                     }, {responsive: true, maintainAspectRatio: false})
                 }
             }
-        },
-        methods:{
-            InitFlowData: function(){
-
-            }
         }
     });
-
-    /*
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dateArray,
-            datasets: [{
-                label: 'Flow',
-                data: flowCount,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });*/
 
 </script>
 
