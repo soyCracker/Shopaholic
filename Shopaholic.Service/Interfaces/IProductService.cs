@@ -17,7 +17,7 @@ namespace Shopaholic.Service.Interfaces
 
         bool DeleteProduct(int id);
 
-        List<ProductDTO> SearchProductWithCategory(string name, string description, string content, int page, int pageSize);
+        ProductSearchResultDTO SearchProductWithCategory(string searchStr, int page, int pageSize);
 
         ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
 

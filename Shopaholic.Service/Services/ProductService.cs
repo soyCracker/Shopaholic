@@ -144,16 +144,13 @@ namespace Shopaholic.Service.Services
             }       
         }
 
-        public List<ProductDTO> SearchProductWithCategory(string name, string description, string content, int page, int pageSize)
+        public ProductSearchResultDTO SearchProductWithCategory(string searchStr, int page, int pageSize)
         {
             using (dbContext)
             {
-                name = string.IsNullOrEmpty(name) ? "" : name;
-                description = string.IsNullOrEmpty(description) ? "" : description;
-                content = string.IsNullOrEmpty(content) ? "" : content;
-
-                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false && ( x.Name.Contains(name) || x.Description.Contains(description) ||
-                    x.Content.Contains(content))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.Category).ToList();
+                searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;                
+                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false && ( x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
+                    x.Content.Contains(searchStr))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.Category).ToList();
                 List<ProductDTO> productDTOList = new List<ProductDTO>();
                 foreach (Product product in productList)
                 {
@@ -171,7 +168,15 @@ namespace Shopaholic.Service.Services
                     };
                     productDTOList.Add(productDTO);
                 }
-                return productDTOList;
+                int count = dbContext.Products.Where(x => x.IsDelete == false && (x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
+                    x.Content.Contains(searchStr))).Count();
+
+                ProductSearchResultDTO productSearchResultDTO = new ProductSearchResultDTO
+                {
+                    ProductDTOs = productDTOList,
+                    TotalPages = count % pageSize == 0 ? count / pageSize : count / pageSize + 1
+                };
+                return productSearchResultDTO;
             }
         }
 

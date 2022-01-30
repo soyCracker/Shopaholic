@@ -180,10 +180,10 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<List<ProductDTO>> Search([FromBody] ProductSearchRequest req)
+        public MessageModel<ProductSearchResultDTO> Search([FromBody] ProductSearchRequest req)
         {
-            List<ProductDTO> res = productService.SearchProductWithCategory(req.Name, req.Description, req.Content, req.Page, req.PageSize);
-            return new MessageModel<List<ProductDTO>>
+            ProductSearchResultDTO res = productService.SearchProductWithCategory(req.SearchStr, req.Page, req.PageSize);
+            return new MessageModel<ProductSearchResultDTO>
             {
                 Success = res != null ? true : false,
                 Msg = res != null ? "" : "Fail",
