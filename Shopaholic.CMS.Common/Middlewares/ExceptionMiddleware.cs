@@ -24,31 +24,38 @@ namespace Shopaholic.CMS.Common.Middlewares
             this.next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext)
         {
             try
             {
                 await next(httpContext);
+
+                // 404 NotFound
+                if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    httpContext.Response.Redirect("/Error/Error404");
+                }
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(httpContext, ex);
+                await HandleException(httpContext, ex);
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleException(HttpContext context, Exception exception)
         {
             bool isApi = Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase);
 
+            // API Exception
             if(isApi)
             {
                 await ReturnApiException(context, exception);
             }
+            // Any other Exception
             else
             {
-                context.Response.Redirect("/Home/Error");
-            }
-            
+                context.Response.Redirect("/Error/Error500");
+            }            
         }
 
         private async Task ReturnApiException(HttpContext context, Exception exception)
