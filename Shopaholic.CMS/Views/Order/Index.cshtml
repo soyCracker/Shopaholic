@@ -1,0 +1,233 @@
+﻿@using System.Collections.Generic
+
+<div id="FormTool">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">訂單列表</h1>
+                </div><!-- /.col -->                
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <div class="row mb-2">                                           
+                        <div class="form-group col-sm-8">
+                            <input class="form-control" placeholder="搜索" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
+                              <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-navbar"  data-widget="navbar-search" v-on:click="ClearFilter()">
+                              <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>                    
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="float-sm-right">
+                        <a asp-controller="Product" asp-action="CreatePage" class="btn btn-primary btn-sm">
+                            <i class="fas fa-folder">
+                            </i>
+                            新增           
+                        </a>
+                    </ol>
+                </div>
+            </div>                       
+        </div>
+        
+        <div id="TableTool" class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">
+                            訂單編號
+                        </th>
+                        <th style="width: 20%">
+                            狀態
+                        </th>
+                        <th style="width: 10%">
+                            商品總數
+                        </th>
+                        <th style="width: 10%">
+                            總金額
+                        </th>
+                        <th style="width: 10%">
+                            建立日期
+                        </th> 
+                        <th style="width: 40%">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item) in productList" v-bind:key="item.id">
+                        <td>
+                            {{ item.Id }}
+                        </td>
+                        <td>
+                            {{ item.Name }}                        
+                        </td>  
+                        <td>
+                            {{ item.CategoryName }}                        
+                        </td>
+                        <td>
+                            {{ item.Price }}                         
+                        </td>  
+                        <td>
+                            {{ item.Stock }}                       
+                        </td>
+                        <td class="project-actions text-right">        
+                            <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.Id">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                修改
+                            </a>                            
+                        </td>
+                    </tr>                        
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-tools">
+            <ul class="pagination pagination-sm float-right">
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(1)">&laquo;</a></li>
+                <li v-for="(n, index) in pageDisplayArray" v-bind:key=n>
+                    <a class="page-link" v-on:click="RefreshUI(n)" v-bind:class="n==currentPage?'page-num-clicked':''">
+                        {{ n }}
+                    </a>
+                </li>
+                <li><a class="page-link" v-if="pageDisplayArray[4]<totalPages">...</a></li>
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(totalPages)">&raquo;</a></li>
+            </ul>
+        </div>
+
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>
+
+@section Scripts{
+    <script>
+
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                orderSearchApi: baseurl + "/Order/api/Search",
+                totalPages: 1,
+                pageSize: 5,
+                currentPage: 1,
+                productList: {},
+                categoryName: '',
+                pageMaxDisplay: 5,
+                pageDisplayArray:null,
+                searchStr: ''
+            },
+            mounted: function()
+            {
+                var self = this;  
+                self.RefreshUI(1);
+            },
+            methods:
+            {
+                RefreshUI: function (page) {
+                    var self = this;
+                    self.currentPage = page;               
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['Page']: page,
+                        ['PageSize']: self.pageSize,
+                        ['SearchStr']: self.searchStr
+                    };
+
+                    axios.post(self.productSearchApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.productList = result.data.Data.ProductDTOs;
+                                self.totalPages = result.data.Data.TotalPages;
+                                self.pageDisplayArray = self.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            self.PostExceptionFuc(error);
+                        });
+                },
+
+                ClearFilter: function(){
+                    var self = this;
+                    self.searchStr = '';
+                    self.RefreshUI(1);
+                },                      
+
+                GetDisplayPageArray: function(page, pageMaxDisplay, totalPages) {                    
+                    self.pageDisplayArray=[];
+                    let pageCount = pageMaxDisplay;
+                    if(totalPages<pageMaxDisplay)
+                    {
+                        pageCount = totalPages;
+                    }
+                    let pageDisplayArray = new Array()
+                    pageDisplayArray.push(page);
+                    let count = 1;      
+                    for(let i=1;i<pageCount;i++)
+                    {                                 
+                        if(page-i>0)
+                        {
+                            pageDisplayArray.push(page-i);
+                            count++;
+                        }
+                        if(page+i<=totalPages)
+                        {
+                            pageDisplayArray.push(page+i);
+                            count++;
+                        }
+                        if(count==pageCount)
+                        {
+                            break;
+                        }
+                    }
+                    return pageDisplayArray.sort(function(a, b) {
+                      if (a > b) return 1;
+                      if (a < b) return -1;
+                      return 0;
+                    });// array sort small to big
+                },                
+
+                PostExceptionFuc: function (error) {
+                    if( error.response ){
+                        console.log(error.response.data); // => the response payload 
+                        ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
+                                'Msg:' + error.response.data.Msg)
+                    }
+                    else{
+                        ToastUtil.ErrorAlert('post error')
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+<style>
+    .page-num-clicked{
+        background-color: #dee2e6;
+    }
+</style>
