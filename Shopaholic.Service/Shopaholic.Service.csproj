@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary\Shopaholic.Util.csproj" />
     <ProjectReference Include="..\Shopaholic.Entity\Shopaholic.Entity.csproj" />
     <ProjectReference Include="..\Shopaholic.Service.Model\Shopaholic.Service.Model.csproj" />
   </ItemGroup>

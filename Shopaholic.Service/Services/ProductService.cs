@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ClassLibrary.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
@@ -49,7 +50,7 @@ namespace Shopaholic.Service.Services
                 if(product!=null)
                 {
                     product.IsDelete = true;
-                    //dbContext.Products.Remove(product);
+                    product.UpdateTime = TimeUtil.GetLocalDateTime();
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -92,6 +93,7 @@ namespace Shopaholic.Service.Services
                     origin.Content = content;
                     origin.Stock = stock;
                     origin.Image = image;
+                    origin.UpdateTime = TimeUtil.GetLocalDateTime();
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -139,7 +141,7 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                int count = dbContext.Products.Count();
+                int count = dbContext.Products.Count(x=>!x.IsDelete);
                 return count%pageSize==0 ? count/pageSize : count/pageSize+1;
             }       
         }
@@ -168,7 +170,7 @@ namespace Shopaholic.Service.Services
                     };
                     productDTOList.Add(productDTO);
                 }
-                int count = dbContext.Products.Where(x => x.IsDelete == false && (x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
+                int count = dbContext.Products.Where(x => !x.IsDelete && (x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
                     x.Content.Contains(searchStr))).Count();
 
                 ProductSearchResultDTO productSearchResultDTO = new ProductSearchResultDTO

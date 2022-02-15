@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Service.Model", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{F6101B27-5E35-41D2-BB3E-155860CF3E37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.CMS.Console", "Shopaholic.CMS.Console\Shopaholic.CMS.Console.csproj", "{635E8351-9BD2-40FE-AA07-55F2FDFA6833}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.CMS.Console", "Shopaholic.CMS.Console\Shopaholic.CMS.Console.csproj", "{635E8351-9BD2-40FE-AA07-55F2FDFA6833}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Util", "ClassLibrary\Shopaholic.Util.csproj", "{F4115852-3D15-4743-9BAD-740C8A16B76E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{635E8351-9BD2-40FE-AA07-55F2FDFA6833}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{635E8351-9BD2-40FE-AA07-55F2FDFA6833}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{635E8351-9BD2-40FE-AA07-55F2FDFA6833}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4115852-3D15-4743-9BAD-740C8A16B76E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4115852-3D15-4743-9BAD-740C8A16B76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4115852-3D15-4743-9BAD-740C8A16B76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4115852-3D15-4743-9BAD-740C8A16B76E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{665B2DF6-14B3-4CDA-AC99-FDE55DC9E469} = {E3B9BB0F-B01C-4020-8722-1E57614418EC}
 		{A06E563D-2555-4BB7-9554-E934680551BF} = {D438FC32-A094-48C5-9C10-AB138960B6A3}
 		{635E8351-9BD2-40FE-AA07-55F2FDFA6833} = {F6101B27-5E35-41D2-BB3E-155860CF3E37}
+		{F4115852-3D15-4743-9BAD-740C8A16B76E} = {F6101B27-5E35-41D2-BB3E-155860CF3E37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3458A3A2-8936-4DF4-9B15-CFAC6EF5C53A}

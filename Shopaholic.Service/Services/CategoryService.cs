@@ -1,4 +1,5 @@
-﻿using Shopaholic.Entity.Models;
+﻿using ClassLibrary.Utilities;
+using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 
@@ -40,7 +41,7 @@ namespace Shopaholic.Service.Services
                 if (category != null)
                 {
                     category.IsDelete = true;
-                    //dbContext.Categories.Remove(category);
+                    category.UpdateTime = TimeUtil.GetLocalDateTime();
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -89,6 +90,7 @@ namespace Shopaholic.Service.Services
                 if (origin != null)
                 {
                     origin.Name = name;
+                    origin.UpdateTime = TimeUtil.GetLocalDateTime();
                     dbContext.SaveChanges();
                     return true;
                 }
