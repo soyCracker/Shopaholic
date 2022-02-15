@@ -9,5 +9,7 @@
     [Image] NVARCHAR(MAX) NULL, 
     [CategoryId] INT NULL, 
     [IsDelete] BIT NOT NULL DEFAULT 0, 
+    [CreateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
+    [UpdateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
     CONSTRAINT [FK_Product_Category] FOREIGN KEY ([CategoryId]) REFERENCES [Category]([Id])
 )

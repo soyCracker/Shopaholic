@@ -11,5 +11,6 @@ namespace Shopaholic.Entity.Models
         public string Ip { get; set; }
         public string Enter { get; set; }
         public DateTime CreateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
     }
 }

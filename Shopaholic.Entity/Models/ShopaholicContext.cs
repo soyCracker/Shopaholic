@@ -28,7 +28,7 @@ namespace Shopaholic.Entity.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=database-1.cjlz3wjjlt1i.ap-northeast-1.rds.amazonaws.com;Database=Shopaholic;Persist Security Info=True;User ID=admin;Password=741852963;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;");
+                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=Shopaholic;Trusted_Connection=True;");
             }
         }
 
@@ -40,20 +40,37 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("Category");
 
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.Name).IsRequired();
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
+                entity.HasKey(e => e.OrderId)
+                    .HasName("PK__OrderDet__C3905BCFC1A8A81C");
+
                 entity.ToTable("OrderDetail");
 
-                entity.Property(e => e.OrderId)
-                    .IsRequired()
-                    .HasMaxLength(8);
+                entity.Property(e => e.OrderId).HasMaxLength(50);
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.OrderId)
+                    .WithOne(p => p.OrderDetail)
+                    .HasForeignKey<OrderDetail>(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_OrderHeader");
 
@@ -68,7 +85,7 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("OrderHeader");
 
-                entity.Property(e => e.Id).HasMaxLength(8);
+                entity.Property(e => e.Id).HasMaxLength(50);
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnType("datetime")
@@ -87,11 +104,17 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("Product");
 
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.Description).HasColumnName("Description ");
 
-                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.Name).IsRequired();
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
@@ -116,6 +139,10 @@ namespace Shopaholic.Entity.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("IP");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             OnModelCreatingPartial(modelBuilder);
