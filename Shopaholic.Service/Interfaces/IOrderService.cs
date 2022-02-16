@@ -9,6 +9,6 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface IOrderService
     {
-        List<OrderDTO> SearchOrder(string searchStr, int page, int pageSize);
+        OrderSearchResDTO SearchOrder(string searchStr, int page, int pageSize);
     }
 }

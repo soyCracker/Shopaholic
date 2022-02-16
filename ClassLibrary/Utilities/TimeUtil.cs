@@ -8,9 +8,16 @@ namespace ClassLibrary.Utilities
 {
     public class TimeUtil
     {
+        public static readonly string yyyyMMddddFormat = "yyyy/MM/dd";
+
         public static DateTime GetLocalDateTime()
         {
             return DateTime.Now;
+        }
+
+        public static string DateTimeToYYYYMMdd(DateTime targetTime, string timeFormat)
+        {
+            return targetTime.ToString(timeFormat);
         }
     }
 }

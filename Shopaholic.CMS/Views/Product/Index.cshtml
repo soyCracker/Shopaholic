@@ -173,7 +173,7 @@
                             }                           
                         })
                         .catch(function (error) {
-                            self.PostExceptionFuc(error);
+                            ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
@@ -235,11 +235,12 @@
                             }                         
                         })
                         .catch(function (error) {                                    
-                            self.PostExceptionFuc(error);
+                            ExceptUtil.PostExceptionFuc(error);
                         });
                     }
                 },
 
+                /*
                 PostExceptionFuc: function (error) {
                     if( error.response ){
                         console.log(error.response.data); // => the response payload 
@@ -249,7 +250,7 @@
                     else{
                         ToastUtil.ErrorAlert('post error')
                     }
-                }
+                }*/
             }
         });
     </script>

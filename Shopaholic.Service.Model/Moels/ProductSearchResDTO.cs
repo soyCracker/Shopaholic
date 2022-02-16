@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Service.Model.Moels
 {
-    public class OrderDTO
+    public class ProductSearchResDTO
     {
+        public List<ProductDTO> ProductDTOs { get; set; }
+
+        public int TotalPages { get; set; }
     }
 }

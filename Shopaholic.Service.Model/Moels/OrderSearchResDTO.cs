@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Service.Model.Moels
 {
-    public class ProductSearchResultDTO
+    public class OrderSearchResDTO
     {
-        public List<ProductDTO> ProductDTOs { get; set; }
+        public List<OrderHeaderDTO> OrderHeaderDTOs { get; set; }
 
         public int TotalPages { get; set; }
     }

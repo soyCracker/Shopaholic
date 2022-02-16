@@ -146,15 +146,16 @@ namespace Shopaholic.Service.Services
             }       
         }
 
-        public ProductSearchResultDTO SearchProductWithCategory(string searchStr, int page, int pageSize)
+        public ProductSearchResDTO SearchProductWithCategory(string searchStr, int page, int pageSize)
         {
             using (dbContext)
             {
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;                
-                List<Product> productList = dbContext.Products.Where(x => x.IsDelete == false && ( x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
+                List<Product> products = dbContext.Products.Where(x => x.IsDelete == false && ( x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
                     x.Content.Contains(searchStr))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.Category).ToList();
-                List<ProductDTO> productDTOList = new List<ProductDTO>();
-                foreach (Product product in productList)
+                
+                List<ProductDTO> productDTOs = new List<ProductDTO>();
+                foreach (Product product in products)
                 {
                     ProductDTO productDTO = new ProductDTO
                     {
@@ -168,17 +169,16 @@ namespace Shopaholic.Service.Services
                         Price = product.Price,
                         Stock = product.Stock
                     };
-                    productDTOList.Add(productDTO);
+                    productDTOs.Add(productDTO);
                 }
-                int count = dbContext.Products.Where(x => !x.IsDelete && (x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
-                    x.Content.Contains(searchStr))).Count();
 
-                ProductSearchResultDTO productSearchResultDTO = new ProductSearchResultDTO
+                int count = productDTOs.Count();
+                ProductSearchResDTO productSearchResDTO = new ProductSearchResDTO
                 {
-                    ProductDTOs = productDTOList,
+                    ProductDTOs = productDTOs,
                     TotalPages = count % pageSize == 0 ? count / pageSize : count / pageSize + 1
                 };
-                return productSearchResultDTO;
+                return productSearchResDTO;
             }
         }
 

@@ -33,15 +33,15 @@
                         </div>
                     </div>                    
                 </div><!-- /.col -->
-                <div class="col-sm-6">
+                <!--<div class="col-sm-6">
                     <ol class="float-sm-right">
-                        <a asp-controller="Product" asp-action="CreatePage" class="btn btn-primary btn-sm">
+                        <a asp-controller="Order" asp-action="CreatePage" class="btn btn-primary btn-sm">
                             <i class="fas fa-folder">
                             </i>
                             新增           
                         </a>
                     </ol>
-                </div>
+                </div>-->
             </div>                       
         </div>
         
@@ -49,41 +49,41 @@
             <table class="table table-striped projects">
                 <thead>
                     <tr>
-                        <th style="width: 10%">
+                        <th style="width: 20%">
                             訂單編號
+                        </th>
+                        <th style="width: 20%">
+                            貨運編號
                         </th>
                         <th style="width: 20%">
                             狀態
                         </th>
                         <th style="width: 10%">
-                            商品總數
+                            錯誤
                         </th>
-                        <th style="width: 10%">
-                            總金額
-                        </th>
-                        <th style="width: 10%">
+                        <th style="width: 20%">
                             建立日期
                         </th> 
-                        <th style="width: 40%">
+                        <th style="width: 10%">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item) in productList" v-bind:key="item.id">
+                    <tr v-for="(item) in orderList" v-bind:key="item.id">
                         <td>
                             {{ item.Id }}
                         </td>
                         <td>
-                            {{ item.Name }}                        
+                            {{ item.ShipNumber }}                        
                         </td>  
                         <td>
-                            {{ item.CategoryName }}                        
+                            {{ item.Status }}                        
                         </td>
                         <td>
-                            {{ item.Price }}                         
+                            {{ item.FailCode }}                         
                         </td>  
                         <td>
-                            {{ item.Stock }}                       
+                            {{ item.CreateTime }}                       
                         </td>
                         <td class="project-actions text-right">        
                             <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.Id">
@@ -127,8 +127,7 @@
                 totalPages: 1,
                 pageSize: 5,
                 currentPage: 1,
-                productList: {},
-                categoryName: '',
+                orderList: {},
                 pageMaxDisplay: 5,
                 pageDisplayArray:null,
                 searchStr: ''
@@ -156,9 +155,9 @@
                         .then(function (result) {
                             if(result.data.Success)
                             {
-                                self.productList = result.data.Data.ProductDTOs;
+                                self.orderList = result.data.Data.OrderHeaderDTOs;
                                 self.totalPages = result.data.Data.TotalPages;
-                                self.pageDisplayArray = self.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
                             }
                             else
                             {
@@ -167,7 +166,7 @@
                             }                           
                         })
                         .catch(function (error) {
-                            self.PostExceptionFuc(error);
+                            ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
@@ -177,6 +176,7 @@
                     self.RefreshUI(1);
                 },                      
 
+                /*
                 GetDisplayPageArray: function(page, pageMaxDisplay, totalPages) {                    
                     self.pageDisplayArray=[];
                     let pageCount = pageMaxDisplay;
@@ -204,23 +204,13 @@
                             break;
                         }
                     }
+                    // array sort small to big
                     return pageDisplayArray.sort(function(a, b) {
                       if (a > b) return 1;
                       if (a < b) return -1;
                       return 0;
-                    });// array sort small to big
-                },                
-
-                PostExceptionFuc: function (error) {
-                    if( error.response ){
-                        console.log(error.response.data); // => the response payload 
-                        ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                'Msg:' + error.response.data.Msg)
-                    }
-                    else{
-                        ToastUtil.ErrorAlert('post error')
-                    }
-                }
+                    });
+                }   */           
             }
         });
     </script>
