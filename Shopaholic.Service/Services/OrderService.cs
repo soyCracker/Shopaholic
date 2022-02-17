@@ -25,13 +25,14 @@ namespace Shopaholic.Service.Services
             using(dbContext)
             {
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
-                List<OrderHeader> orderHeaders = dbContext.OrderHeaders.Where(x => (x.Id.Contains(searchStr) 
+                var filterData = dbContext.OrderHeaders.Where(x => (x.Id.Contains(searchStr)
                     || x.ShipNumber.Contains(searchStr)
-                    || x.Status.ToString().Contains(searchStr) 
-                    || TimeUtil.DateTimeToYYYYMMdd(x.CreateTime, TimeUtil.yyyyMMddddFormat).Contains(searchStr)))
-                    .OrderByDescending(y => y.CreateTime).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.OrderDetail)
-                    .ToList();
+                    || x.Status.ToString().Contains(searchStr)
+                    || TimeUtil.DateTimeToYYYYMMdd(x.CreateTime, TimeUtil.yyyyMMddddFormat).Contains(searchStr)));
 
+                List<OrderHeader> orderHeaders = filterData.OrderByDescending(y => y.CreateTime)
+                    .Skip((page-1) * pageSize).Take(pageSize).Include(c => c.OrderDetail)
+                    .ToList();
                 List<OrderHeaderDTO> orderHeaderDTOs = new List<OrderHeaderDTO>();
                 foreach (var order in orderHeaders)
                 {
@@ -48,7 +49,7 @@ namespace Shopaholic.Service.Services
                     orderHeaderDTOs.Add(orderHeaderDTO);
                 }
 
-                int count = orderHeaderDTOs.Count();
+                int count = filterData.Count();
                 OrderSearchResDTO orderSearchResDTO = new OrderSearchResDTO
                 {
                     OrderHeaderDTOs = orderHeaderDTOs,

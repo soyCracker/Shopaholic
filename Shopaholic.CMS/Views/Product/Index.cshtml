@@ -110,7 +110,7 @@
                         {{ n }}
                     </a>
                 </li>
-                <li><a class="page-link" v-if="pageDisplayArray[4]<totalPages">...</a></li>
+                <li><a class="page-link" v-if="pageDisplayArray.length==5 && pageDisplayArray[4]<totalPages">...</a></li>
                 <li class="page-item"><a class="page-link" v-on:click="RefreshUI(totalPages)">&raquo;</a></li>
             </ul>
         </div>
@@ -136,7 +136,7 @@
                 productList: {},
                 categoryName: '',
                 pageMaxDisplay: 5,
-                pageDisplayArray:null,
+                pageDisplayArray:[],
                 searchStr: ''
             },
             mounted: function()
@@ -164,7 +164,7 @@
                             {
                                 self.productList = result.data.Data.ProductDTOs;
                                 self.totalPages = result.data.Data.TotalPages;
-                                self.pageDisplayArray = self.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
                             }
                             else
                             {
@@ -182,40 +182,6 @@
                     self.searchStr = '';
                     self.RefreshUI(1);
                 },                      
-
-                GetDisplayPageArray: function(page, pageMaxDisplay, totalPages) {                    
-                    self.pageDisplayArray=[];
-                    let pageCount = pageMaxDisplay;
-                    if(totalPages<pageMaxDisplay)
-                    {
-                        pageCount = totalPages;
-                    }
-                    let pageDisplayArray = new Array()
-                    pageDisplayArray.push(page);
-                    let count = 1;      
-                    for(let i=1;i<pageCount;i++)
-                    {                                 
-                        if(page-i>0)
-                        {
-                            pageDisplayArray.push(page-i);
-                            count++;
-                        }
-                        if(page+i<=totalPages)
-                        {
-                            pageDisplayArray.push(page+i);
-                            count++;
-                        }
-                        if(count==pageCount)
-                        {
-                            break;
-                        }
-                    }
-                    return pageDisplayArray.sort(function(a, b) {
-                      if (a > b) return 1;
-                      if (a < b) return -1;
-                      return 0;
-                    });// array sort small to big
-                },
 
                 DeleteProduct: function (id) {
                     var self = this;
@@ -238,19 +204,7 @@
                             ExceptUtil.PostExceptionFuc(error);
                         });
                     }
-                },
-
-                /*
-                PostExceptionFuc: function (error) {
-                    if( error.response ){
-                        console.log(error.response.data); // => the response payload 
-                        ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                                'Msg:' + error.response.data.Msg)
-                    }
-                    else{
-                        ToastUtil.ErrorAlert('post error')
-                    }
-                }*/
+                }
             }
         });
     </script>

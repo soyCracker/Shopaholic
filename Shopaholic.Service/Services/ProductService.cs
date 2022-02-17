@@ -150,10 +150,11 @@ namespace Shopaholic.Service.Services
         {
             using (dbContext)
             {
-                searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;                
-                List<Product> products = dbContext.Products.Where(x => x.IsDelete == false && ( x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
-                    x.Content.Contains(searchStr))).OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.Category).ToList();
-                
+                searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
+                var filterData = dbContext.Products.Where(x => !x.IsDelete && (x.Id.ToString().Contains(searchStr) || x.Name.Contains(searchStr) || x.Description.Contains(searchStr) ||
+                    x.Content.Contains(searchStr)));
+
+                List<Product> products = filterData.OrderBy(y => y.Id).Skip((page-1) * pageSize).Take(pageSize).Include(c => c.Category).ToList();                
                 List<ProductDTO> productDTOs = new List<ProductDTO>();
                 foreach (Product product in products)
                 {
@@ -172,7 +173,7 @@ namespace Shopaholic.Service.Services
                     productDTOs.Add(productDTO);
                 }
 
-                int count = productDTOs.Count();
+                int count = filterData.Count();
                 ProductSearchResDTO productSearchResDTO = new ProductSearchResDTO
                 {
                     ProductDTOs = productDTOs,
