@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[OrderType]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [Type] NVARCHAR(50) NOT NULL, 
+    [UpdateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
+    [CreateTime] DATETIME NOT NULL DEFAULT GETDATE()
+)
