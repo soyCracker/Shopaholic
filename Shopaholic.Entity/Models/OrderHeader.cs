@@ -7,6 +7,11 @@ namespace Shopaholic.Entity.Models
 {
     public partial class OrderHeader
     {
+        public OrderHeader()
+        {
+            OrderLogs = new HashSet<OrderLog>();
+        }
+
         public string Id { get; set; }
         public string UserId { get; set; }
         public int StateCode { get; set; }
@@ -25,5 +30,6 @@ namespace Shopaholic.Entity.Models
         public bool? IsDelete { get; set; }
 
         public virtual OrderDetail OrderDetail { get; set; }
+        public virtual ICollection<OrderLog> OrderLogs { get; set; }
     }
 }

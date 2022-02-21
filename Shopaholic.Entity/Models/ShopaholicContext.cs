@@ -20,6 +20,7 @@ namespace Shopaholic.Entity.Models
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderHeader> OrderHeaders { get; set; }
+        public virtual DbSet<OrderLog> OrderLogs { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<WebFlow> WebFlows { get; set; }
 
@@ -112,6 +113,31 @@ namespace Shopaholic.Entity.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UserId).IsRequired();
+            });
+
+            modelBuilder.Entity<OrderLog>(entity =>
+            {
+                entity.ToTable("OrderLog");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.FailCode).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.OrderId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderLogs)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderLog_OrderHeader");
             });
 
             modelBuilder.Entity<Product>(entity =>
