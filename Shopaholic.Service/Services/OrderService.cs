@@ -27,7 +27,7 @@ namespace Shopaholic.Service.Services
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
                 var filterData = dbContext.OrderHeaders.Where(x => (x.Id.Contains(searchStr)
                     || x.ShipNumber.Contains(searchStr)
-                    || x.Status.ToString().Contains(searchStr)
+                    || x.StateCode.ToString().Contains(searchStr)
                     || TimeUtil.DateTimeToYYYYMMdd(x.CreateTime, TimeUtil.yyyyMMddddFormat).Contains(searchStr)));
 
                 List<OrderHeader> orderHeaders = filterData.OrderByDescending(y => y.CreateTime)
@@ -41,7 +41,7 @@ namespace Shopaholic.Service.Services
                         Id = order.Id,
                         UserId = order.UserId,
                         ShipNumber = order.ShipNumber,
-                        Status = order.Status,
+                        Status = order.StateCode,
                         FailCode = order.FailCode,
                         CreateTime = order.CreateTime,
                         UpdateTime = order.UpdateTime

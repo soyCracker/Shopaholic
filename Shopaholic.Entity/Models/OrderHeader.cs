@@ -15,7 +15,7 @@ namespace Shopaholic.Entity.Models
         public DateTime CreateTime { get; set; }
         public string ShipNumber { get; set; }
         public int? FailCode { get; set; }
-        public int OrderTypeId { get; set; }
+        public int OrderTypeCode { get; set; }
         public bool? IsPaid { get; set; }
         public bool? IsSent { get; set; }
         public bool? IsArrived { get; set; }
@@ -24,7 +24,6 @@ namespace Shopaholic.Entity.Models
         public bool? IsFinish { get; set; }
         public bool? IsDelete { get; set; }
 
-        public virtual OrderType OrderType { get; set; }
         public virtual OrderDetail OrderDetail { get; set; }
     }
 }

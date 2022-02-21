@@ -20,7 +20,6 @@ namespace Shopaholic.Entity.Models
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderHeader> OrderHeaders { get; set; }
-        public virtual DbSet<OrderType> OrderTypes { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<WebFlow> WebFlows { get; set; }
 
@@ -55,7 +54,7 @@ namespace Shopaholic.Entity.Models
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK__OrderDet__C3905BCF5F3685BA");
+                    .HasName("PK__OrderDet__C3905BCF84B3E1DB");
 
                 entity.ToTable("OrderDetail");
 
@@ -113,31 +112,6 @@ namespace Shopaholic.Entity.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.OrderType)
-                    .WithMany(p => p.OrderHeaders)
-                    .HasForeignKey(d => d.OrderTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderHead_OrderType");
-            });
-
-            modelBuilder.Entity<OrderType>(entity =>
-            {
-                entity.ToTable("OrderType");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CreateTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.UpdateTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<Product>(entity =>
