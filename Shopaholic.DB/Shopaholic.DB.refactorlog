@@ -84,4 +84,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="OrderTypeCode" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="52249200-0b64-4312-a9d1-6efbc2906490" ChangeDateTime="02/21/2022 09:35:49">
+    <Property Name="ElementName" Value="[dbo].[Shipment].[UserId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Shipment]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ReceiveMan" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d2b3bbfd-00f4-42dd-a4e9-28125661d4c4" ChangeDateTime="02/21/2022 09:39:09">
+    <Property Name="ElementName" Value="[dbo].[OrderHeader].[ShipNumber]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrderHeader]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ShipmentId" />
+  </Operation>
 </Operations>

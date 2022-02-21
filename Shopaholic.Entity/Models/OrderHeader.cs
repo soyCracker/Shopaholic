@@ -18,7 +18,7 @@ namespace Shopaholic.Entity.Models
         public string Remark { get; set; }
         public DateTime UpdateTime { get; set; }
         public DateTime CreateTime { get; set; }
-        public string ShipNumber { get; set; }
+        public int ShipmentId { get; set; }
         public int? FailCode { get; set; }
         public int OrderTypeCode { get; set; }
         public bool? IsPaid { get; set; }
@@ -29,6 +29,7 @@ namespace Shopaholic.Entity.Models
         public bool? IsFinish { get; set; }
         public bool? IsDelete { get; set; }
 
+        public virtual Shipment Shipment { get; set; }
         public virtual OrderDetail OrderDetail { get; set; }
         public virtual ICollection<OrderLog> OrderLogs { get; set; }
     }

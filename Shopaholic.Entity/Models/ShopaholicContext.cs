@@ -22,6 +22,7 @@ namespace Shopaholic.Entity.Models
         public virtual DbSet<OrderHeader> OrderHeaders { get; set; }
         public virtual DbSet<OrderLog> OrderLogs { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Shipment> Shipments { get; set; }
         public virtual DbSet<WebFlow> WebFlows { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -55,7 +56,7 @@ namespace Shopaholic.Entity.Models
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK__OrderDet__C3905BCF84B3E1DB");
+                    .HasName("PK__OrderDet__C3905BCFB8159BFD");
 
                 entity.ToTable("OrderDetail");
 
@@ -108,11 +109,21 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.IsSent).HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.Remark).HasMaxLength(50);
+
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.UserId).IsRequired();
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.Shipment)
+                    .WithMany(p => p.OrderHeaders)
+                    .HasForeignKey(d => d.ShipmentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderHeader_Shipment");
             });
 
             modelBuilder.Entity<OrderLog>(entity =>
@@ -160,6 +171,27 @@ namespace Shopaholic.Entity.Models
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_Product_Category");
+            });
+
+            modelBuilder.Entity<Shipment>(entity =>
+            {
+                entity.ToTable("Shipment");
+
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Email).HasMaxLength(50);
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ReceiveMan)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ShipNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<WebFlow>(entity =>
