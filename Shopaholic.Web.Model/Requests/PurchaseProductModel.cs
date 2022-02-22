@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Model.Requests
 {
-    public class PurchaseProductListModel
+    public class PurchaseProductModel
     {
         public int ProductId { get; set; }
         public int Quantity { get; set; }

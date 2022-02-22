@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shopaholic.Web.Model.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface IPurchaseService
     {
-        bool CreateOrder();
+        string CreateOrder(PurchaseReq req);
+        bool Pay(int price);
     }
 }

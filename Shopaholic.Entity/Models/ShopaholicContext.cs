@@ -55,24 +55,24 @@ namespace Shopaholic.Entity.Models
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasKey(e => e.OrderId)
-                    .HasName("PK__OrderDet__C3905BCFB8159BFD");
-
                 entity.ToTable("OrderDetail");
-
-                entity.Property(e => e.OrderId).HasMaxLength(50);
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.OrderId)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Order)
-                    .WithOne(p => p.OrderDetail)
-                    .HasForeignKey<OrderDetail>(d => d.OrderId)
+                    .WithMany(p => p.OrderDetails)
+                    .HasPrincipalKey(p => p.OrderId)
+                    .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_OrderHeader");
 
@@ -87,7 +87,8 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("OrderHeader");
 
-                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.HasIndex(e => e.OrderId, "UQ__OrderHea__C3905BCE294F4562")
+                    .IsUnique();
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnType("datetime")
@@ -109,6 +110,10 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.IsSent).HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.OrderId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Remark).HasMaxLength(50);
 
                 entity.Property(e => e.UpdateTime)
@@ -118,12 +123,6 @@ namespace Shopaholic.Entity.Models
                 entity.Property(e => e.UserId)
                     .IsRequired()
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.Shipment)
-                    .WithMany(p => p.OrderHeaders)
-                    .HasForeignKey(d => d.ShipmentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderHeader_Shipment");
             });
 
             modelBuilder.Entity<OrderLog>(entity =>
@@ -146,6 +145,7 @@ namespace Shopaholic.Entity.Models
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderLogs)
+                    .HasPrincipalKey(p => p.OrderId)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLog_OrderHeader");
@@ -183,6 +183,10 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
+                entity.Property(e => e.OrderId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -192,6 +196,13 @@ namespace Shopaholic.Entity.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.ShipNumber).HasMaxLength(50);
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.Shipments)
+                    .HasPrincipalKey(p => p.OrderId)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Shipment_OrderHeader");
             });
 
             modelBuilder.Entity<WebFlow>(entity =>

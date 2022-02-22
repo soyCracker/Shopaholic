@@ -8,7 +8,7 @@ namespace Shopaholic.Web.Model.Requests
 {
     public class PurchaseReq
     {
-        public PurchaseProductListModel ProductList { get; set; }
+        public List<PurchaseProductModel> ProductList { get; set; }
         public int OrderTypeCode { get; set; }
         public string UserId { get; set; }
         public string ReceiveMan { get; set; }

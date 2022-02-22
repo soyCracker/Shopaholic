@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shopaholic.Service.Common\Shopaholic.Service.Common.csproj" />
     <ProjectReference Include="..\Shopaholic.Service\Shopaholic.Service.csproj" />
+    <ProjectReference Include="..\Shopaholic.Web.Model\Shopaholic.Web.Model.csproj" />
   </ItemGroup>
 
 </Project>

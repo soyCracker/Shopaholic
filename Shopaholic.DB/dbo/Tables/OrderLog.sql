@@ -9,5 +9,5 @@
     [UpdateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
     [CreateTime] DATETIME NOT NULL DEFAULT GETDATE()
 	
-	CONSTRAINT [FK_OrderLog_OrderHeader] FOREIGN KEY ([OrderId]) REFERENCES [OrderHeader]([Id]),
+	CONSTRAINT [FK_OrderLog_OrderHeader] FOREIGN KEY ([OrderId]) REFERENCES [OrderHeader]([OrderId]),
 )

@@ -24,11 +24,11 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
-                var filterData = dbContext.OrderHeaders.Where(x => (x.Id.Contains(searchStr)
-                    || x.ShipNumber.Contains(searchStr)
+                /*searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
+                var filterData = dbContext.OrderHeaders.Where(x => (x.OrderId.Contains(searchStr)
+                    || x.ShipmentId.ToString().Contains(searchStr)
                     || x.StateCode.ToString().Contains(searchStr)
-                    || TimeUtil.DateTimeToYYYYMMdd(x.CreateTime, TimeUtil.yyyyMMddddFormat).Contains(searchStr)));
+                    || TimeUtil.DateTimeToFormatStr(x.CreateTime, TimeUtil.yyyyMMddFormat).Contains(searchStr)));
 
                 List<OrderHeader> orderHeaders = filterData.OrderByDescending(y => y.CreateTime)
                     .Skip((page-1) * pageSize).Take(pageSize).Include(c => c.OrderDetail)
@@ -38,9 +38,10 @@ namespace Shopaholic.Service.Services
                 {
                     OrderHeaderDTO orderHeaderDTO = new OrderHeaderDTO
                     {
-                        Id = order.Id,
+                        //Id = order.Id,
                         UserId = order.UserId,
-                        ShipNumber = order.ShipNumber,
+                        /// TODO
+                        // ShipNumber = order.ShipmentId,
                         Status = order.StateCode,
                         FailCode = order.FailCode,
                         CreateTime = order.CreateTime,
@@ -54,8 +55,8 @@ namespace Shopaholic.Service.Services
                 {
                     OrderHeaderDTOs = orderHeaderDTOs,
                     TotalPages = count % pageSize == 0 ? count / pageSize : count / pageSize + 1
-                };
-                return orderSearchResDTO;
+                };*/
+                return null;// orderSearchResDTO;
             }
         }
     }

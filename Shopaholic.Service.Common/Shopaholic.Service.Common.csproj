@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary\Shopaholic.Util.csproj" />
+    <ProjectReference Include="..\Shopaholic.Entity\Shopaholic.Entity.csproj" />
+    <ProjectReference Include="..\Shopaholic.Web.Model\Shopaholic.Web.Model.csproj" />
+  </ItemGroup>
+
 </Project>

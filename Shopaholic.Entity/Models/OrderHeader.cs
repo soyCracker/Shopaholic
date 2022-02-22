@@ -9,16 +9,18 @@ namespace Shopaholic.Entity.Models
     {
         public OrderHeader()
         {
+            OrderDetails = new HashSet<OrderDetail>();
             OrderLogs = new HashSet<OrderLog>();
+            Shipments = new HashSet<Shipment>();
         }
 
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public string OrderId { get; set; }
         public string UserId { get; set; }
         public int StateCode { get; set; }
         public string Remark { get; set; }
         public DateTime UpdateTime { get; set; }
         public DateTime CreateTime { get; set; }
-        public int ShipmentId { get; set; }
         public int? FailCode { get; set; }
         public int OrderTypeCode { get; set; }
         public bool? IsPaid { get; set; }
@@ -29,8 +31,8 @@ namespace Shopaholic.Entity.Models
         public bool? IsFinish { get; set; }
         public bool? IsDelete { get; set; }
 
-        public virtual Shipment Shipment { get; set; }
-        public virtual OrderDetail OrderDetail { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<OrderLog> OrderLogs { get; set; }
+        public virtual ICollection<Shipment> Shipments { get; set; }
     }
 }
