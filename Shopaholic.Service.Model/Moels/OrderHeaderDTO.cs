@@ -13,8 +13,7 @@ namespace Shopaholic.Service.Model.Moels
         public bool? IsFinish { get; set; }
         public bool? IsSent { get; set; }    
         public int Status { get; set; }       
-        public DateTime UpdateTime { get; set; }
-        public DateTime CreateTime { get; set; }
+        public string FormatCreateTime { get; set; }
         public string ShipNumber { get; set; }
         public int? FailCode { get; set; }
     }

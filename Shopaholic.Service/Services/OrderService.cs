@@ -20,14 +20,16 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
-        public OrderSearchResDTO SearchOrder(string searchStr, int page, int pageSize)
+        public OrderSearchResDTO SearchOrder(string searchStr, int page, int pageSize, DateTime beginTime, DateTime endTime)
         {
             using(dbContext)
             {
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
                 var filterData = dbContext.OrderHeaders.Where(x => (x.OrderId.Contains(searchStr)
                     || x.StateCode.ToString().Contains(searchStr)
-                    || TimeUtil.DateTimeToFormatStr(x.CreateTime, TimeUtil.yyyyMMddFormat).Contains(searchStr)));
+                    && (x.CreateTime>=beginTime && x.CreateTime<=endTime)));
+
+
 
                 List<OrderHeader> orderHeaders = filterData.OrderByDescending(y => y.CreateTime)
                     .Skip((page-1) * pageSize).Take(pageSize).ToList();
@@ -42,8 +44,7 @@ namespace Shopaholic.Service.Services
                         IsSent = order.IsSent,
                         Status = order.StateCode,
                         FailCode = order.FailCode,
-                        CreateTime = order.CreateTime,
-                        UpdateTime = order.UpdateTime
+                        FormatCreateTime = TimeUtil.DateTimeToFormatStr(order.CreateTime, TimeUtil.yyyyMMddhhmmssFormat)
                     };
                     orderHeaderDTOs.Add(orderHeaderDTO);
                 }

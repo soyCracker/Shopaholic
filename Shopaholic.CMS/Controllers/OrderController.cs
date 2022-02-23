@@ -30,7 +30,7 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<OrderSearchResDTO> Search([FromBody] OrderSearchReq req)
         {
-            OrderSearchResDTO res = orderService.SearchOrder(req.SearchStr, req.Page, req.PageSize);
+            OrderSearchResDTO res = orderService.SearchOrder(req.SearchStr, req.Page, req.PageSize, req.BeginTime, req.EndTime);
             return new MessageModel<OrderSearchResDTO>
             {
                 Success = res != null ? true : false,

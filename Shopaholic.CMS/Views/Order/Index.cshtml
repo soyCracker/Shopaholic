@@ -32,16 +32,7 @@
                             </button>
                         </div>
                     </div>                    
-                </div><!-- /.col -->
-                <!--<div class="col-sm-6">
-                    <ol class="float-sm-right">
-                        <a asp-controller="Order" asp-action="CreatePage" class="btn btn-primary btn-sm">
-                            <i class="fas fa-folder">
-                            </i>
-                            新增           
-                        </a>
-                    </ol>
-                </div>-->
+                </div>
             </div>                       
         </div>
         
@@ -71,13 +62,15 @@
                             {{ item.OrderId }}
                         </td>
                         <td>
-                            {{ item.IsSent }}                        
+                            <div v-if=item.IsSent>已出貨</div>       
+                            <div v-else>未出貨</div>  
                         </td>  
                         <td>
-                            {{ item.IsFinish }}                        
+                            <div v-if=item.IsFinish>已完成</div>       
+                            <div v-else>未完成</div>                        
                         </td>
                         <td>
-                            {{ item.CreateTime }}                       
+                            {{ item.FormatCreateTime }}                       
                         </td>
                         <td class="project-actions text-right">        
                             <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.Id">
@@ -119,7 +112,7 @@
             {
                 orderSearchApi: baseurl + "/Order/api/Search",
                 totalPages: 1,
-                pageSize: 5,
+                pageSize: 20,
                 currentPage: 1,
                 orderList: {},
                 pageMaxDisplay: 5,

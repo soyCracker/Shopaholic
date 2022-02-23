@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using ClassLibrary.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Shopaholic.CMS.Console.Class;
 using Shopaholic.Entity.Models;
@@ -11,6 +12,7 @@ using Shopaholic.Web.Model.Requests;
 
 Console.WriteLine("Hello, World!");
 var conStr = "Server=.\\SQLEXPRESS;Database=Shopaholic;Trusted_Connection=True;";
+
 //var conStr = "Data Source=database-1.cjlz3wjjlt1i.ap-northeast-1.rds.amazonaws.com;Database=Shopaholic;Persist Security Info=True;User ID=admin;Password=741852963;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;";
 
 // 寫入測試類別

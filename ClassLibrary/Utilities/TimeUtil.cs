@@ -8,8 +8,9 @@ namespace ClassLibrary.Utilities
 {
     public class TimeUtil
     {
-        public static readonly string yyyyMMddFormat = "yyyy/MM/dd";
+        public static readonly string yyyyMMddFormat = "yyyy\\/MM\\/dd";
         public static readonly string yyyyMMddFormat_02 = "yyyyMMdd";
+        public static readonly string yyyyMMddhhmmssFormat = "yyyy-MM-dd HH:mm:ss";
 
         public static DateTime GetLocalDateTime()
         {
@@ -24,6 +25,19 @@ namespace ClassLibrary.Utilities
         public static DateTime GetLocalTodayDate()
         {
             return DateTime.Today;
+        }
+
+        public static DateTime StrToLocalDateTime(string timeStr)
+        {
+            try
+            {
+                return DateTime.Parse(timeStr);
+            }
+            catch
+            {
+                // error format
+            }
+            return DateTime.MinValue;
         }
     }
 }

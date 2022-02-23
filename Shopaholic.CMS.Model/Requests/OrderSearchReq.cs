@@ -1,6 +1,7 @@
 ﻿using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,5 +16,9 @@ namespace Shopaholic.CMS.Model.Requests
         public int Page { get; set; }
         [SwaggerSchema("每頁數量")]
         public int PageSize { get; set; }
+        [SwaggerSchema("搜索範圍開始日期")]
+        public DateTime BeginTime { get; set; } = SqlDateTime.MinValue.Value;
+        [SwaggerSchema("搜索範圍結束日期")]
+        public DateTime EndTime { get; set; } = SqlDateTime.MaxValue.Value;
     }
 }
