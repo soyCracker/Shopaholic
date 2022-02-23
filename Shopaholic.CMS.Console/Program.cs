@@ -8,6 +8,7 @@ using Shopaholic.Service.Model.Moels;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Model.Requests;
 
+
 Console.WriteLine("Hello, World!");
 var conStr = "Server=.\\SQLEXPRESS;Database=Shopaholic;Trusted_Connection=True;";
 //var conStr = "Data Source=database-1.cjlz3wjjlt1i.ap-northeast-1.rds.amazonaws.com;Database=Shopaholic;Persist Security Info=True;User ID=admin;Password=741852963;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;";
@@ -56,26 +57,96 @@ var conStr = "Server=.\\SQLEXPRESS;Database=Shopaholic;Trusted_Connection=True;"
 //}
 //webFlowService.AddFlowRange(flowDtoList);
 
+List<Task<int>> tasks = new List<Task<int>>();
+TaskFactory factory = new TaskFactory();
 
-for(int i = 0; i < 10; i++)
+tasks.Add(factory.StartNew<int>(() =>
 {
-    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
-    List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
-    purchaseProductList.Add(new PurchaseProductModel
+    //PurchaseClass.Create(conStr);
+    for (int i = 0; i < 10; i++)
     {
-        ProductId = 1,
-        Quantity = 5,
-        CurrentPrice = 777
-    });
-    PurchaseReq req = new PurchaseReq
+        IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
+        List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
+        purchaseProductList.Add(new PurchaseProductModel
+        {
+            ProductId = 1,
+            Quantity = 5,
+            CurrentPrice = 777
+        });
+        PurchaseReq req = new PurchaseReq
+        {
+            OrderTypeCode = OrderTypeCode.TEST,
+            UserId = "TEST0000001GGG",
+            ReceiveMan = "TEST_MAN_GGGGGG52869416",
+            Email = "TESTTEST00000123456798@gmail.com.test",
+            Phone = "1000000000",
+            Address = "TEST_ADDRESS",
+            ProductList = purchaseProductList
+        };
+        Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
+    }
+    return 1;
+}));
+
+
+tasks.Add(factory.StartNew<int>(() =>
+{
+    //PurchaseClass.Create(conStr);
+    for (int i = 0; i < 10; i++)
     {
-        OrderTypeCode = OrderTypeCode.TEST,
-        UserId = "TEST0000001GGG",
-        ReceiveMan = "TEST_MAN_GGGGGG52869416",
-        Email = "TESTTEST00000123456798@gmail.com.test",
-        Phone = "1000000000",
-        Address = "TEST_ADDRESS",
-        ProductList = purchaseProductList
-    };
-    Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
+        IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
+        List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
+        purchaseProductList.Add(new PurchaseProductModel
+        {
+            ProductId = 1,
+            Quantity = 5,
+            CurrentPrice = 777
+        });
+        PurchaseReq req = new PurchaseReq
+        {
+            OrderTypeCode = OrderTypeCode.TEST,
+            UserId = "TEST0000001GGG",
+            ReceiveMan = "TEST_MAN_GGGGGG52869416",
+            Email = "TESTTEST00000123456798@gmail.com.test",
+            Phone = "1000000000",
+            Address = "TEST_ADDRESS",
+            ProductList = purchaseProductList
+        };
+        Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
+    }
+    return 2;
+}));
+
+foreach (var t in tasks)
+{
+    Console.WriteLine("Task:" + t.Result);
 }
+
+//var t1 = Task.Run(() => 
+//{
+
+//});
+//t1.Wait;
+
+//for (int i = 0; i < 10; i++)
+//{
+//    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
+//    List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
+//    purchaseProductList.Add(new PurchaseProductModel
+//    {
+//        ProductId = 1,
+//        Quantity = 5,
+//        CurrentPrice = 777
+//    });
+//    PurchaseReq req = new PurchaseReq
+//    {
+//        OrderTypeCode = OrderTypeCode.TEST,
+//        UserId = "TEST0000001GGG",
+//        ReceiveMan = "TEST_MAN_GGGGGG52869416",
+//        Email = "TESTTEST00000123456798@gmail.com.test",
+//        Phone = "1000000000",
+//        Address = "TEST_ADDRESS",
+//        ProductList = purchaseProductList
+//    };
+//    Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
+//}

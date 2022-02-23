@@ -24,11 +24,14 @@ namespace Shopaholic.Service.Common.Business
             {              
                 if(dbContext.OrderHeaders.Count()>0)
                 {
-                    string maxOrderId = dbContext.OrderHeaders.MaxBy(x => x.OrderId).OrderId;
+                    string maxOrderId = dbContext.OrderHeaders.OrderByDescending(x=>x.OrderId).First().OrderId;
                     if(maxOrderId.Substring(0, 8)==TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMddFormat_02))
                     {
-                        targetOrderId = (int.Parse(maxOrderId) + 1).ToString();
-                    }                   
+                        // 避免執行過程中剛好過一天，用最大OrderId的日期
+                        targetOrderId = maxOrderId.Substring(0, 8) 
+                            + StringUtil.AddZeroPadLeft(
+                                (int.Parse(maxOrderId.Substring(8, 6).TrimStart('0')) + 1).ToString(), 6);
+                    }
                 }
 
                 OrderHeader orderHeader = new OrderHeader
