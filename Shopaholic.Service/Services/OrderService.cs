@@ -24,24 +24,22 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                /*searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
+                searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
                 var filterData = dbContext.OrderHeaders.Where(x => (x.OrderId.Contains(searchStr)
-                    || x.ShipmentId.ToString().Contains(searchStr)
                     || x.StateCode.ToString().Contains(searchStr)
                     || TimeUtil.DateTimeToFormatStr(x.CreateTime, TimeUtil.yyyyMMddFormat).Contains(searchStr)));
 
                 List<OrderHeader> orderHeaders = filterData.OrderByDescending(y => y.CreateTime)
-                    .Skip((page-1) * pageSize).Take(pageSize).Include(c => c.OrderDetail)
-                    .ToList();
+                    .Skip((page-1) * pageSize).Take(pageSize).ToList();
                 List<OrderHeaderDTO> orderHeaderDTOs = new List<OrderHeaderDTO>();
                 foreach (var order in orderHeaders)
                 {
                     OrderHeaderDTO orderHeaderDTO = new OrderHeaderDTO
                     {
-                        //Id = order.Id,
+                        OrderId = order.OrderId,
                         UserId = order.UserId,
-                        /// TODO
-                        // ShipNumber = order.ShipmentId,
+                        IsFinish = order.IsFinish,
+                        IsSent = order.IsSent,
                         Status = order.StateCode,
                         FailCode = order.FailCode,
                         CreateTime = order.CreateTime,
@@ -55,8 +53,8 @@ namespace Shopaholic.Service.Services
                 {
                     OrderHeaderDTOs = orderHeaderDTOs,
                     TotalPages = count % pageSize == 0 ? count / pageSize : count / pageSize + 1
-                };*/
-                return null;// orderSearchResDTO;
+                };
+                return orderSearchResDTO;
             }
         }
     }

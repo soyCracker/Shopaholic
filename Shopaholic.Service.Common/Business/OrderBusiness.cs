@@ -17,12 +17,13 @@ namespace Shopaholic.Service.Common.Business
 
         public static string CreateOrder(ShopaholicContext dbContext, PurchaseReq req)
         {
-            DateTime today = TimeUtil.GetLocalTodayDate();
-            string targetOrderId = TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMddFormat_02)
-                    + OrderNumberFormat.ORDERNUMBER_INIT_SEQ;
+            string targetOrderId = "";
             lock (orderLock)
-            {              
-                if(dbContext.OrderHeaders.Count()>0)
+            {
+                DateTime today = TimeUtil.GetLocalTodayDate();
+                targetOrderId = TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMddFormat_02)
+                        + OrderNumberFormat.ORDERNUMBER_INIT_SEQ;
+                if (dbContext.OrderHeaders.Count()>0)
                 {
                     string maxOrderId = dbContext.OrderHeaders.OrderByDescending(x=>x.OrderId).First().OrderId;
                     if(maxOrderId.Substring(0, 8)==TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMddFormat_02))

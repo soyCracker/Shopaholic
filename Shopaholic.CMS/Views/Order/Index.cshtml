@@ -53,35 +53,29 @@
                             訂單編號
                         </th>
                         <th style="width: 20%">
-                            貨運編號
+                            出貨狀態
                         </th>
                         <th style="width: 20%">
-                            狀態
-                        </th>
-                        <th style="width: 10%">
-                            錯誤
+                            訂單狀態
                         </th>
                         <th style="width: 20%">
                             建立日期
                         </th> 
-                        <th style="width: 10%">
+                        <th style="width: 20%">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item) in orderList" v-bind:key="item.id">
                         <td>
-                            {{ item.Id }}
+                            {{ item.OrderId }}
                         </td>
                         <td>
-                            {{ item.ShipNumber }}                        
+                            {{ item.IsSent }}                        
                         </td>  
                         <td>
-                            {{ item.Status }}                        
+                            {{ item.IsFinish }}                        
                         </td>
-                        <td>
-                            {{ item.FailCode }}                         
-                        </td>  
                         <td>
                             {{ item.CreateTime }}                       
                         </td>
@@ -151,7 +145,7 @@
                         ['SearchStr']: self.searchStr
                     };
 
-                    axios.post(self.productSearchApi, obj)
+                    axios.post(self.orderSearchApi, obj)
                         .then(function (result) {
                             if(result.data.Success)
                             {

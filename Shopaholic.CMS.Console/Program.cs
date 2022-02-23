@@ -59,10 +59,9 @@ var conStr = "Server=.\\SQLEXPRESS;Database=Shopaholic;Trusted_Connection=True;"
 
 List<Task<int>> tasks = new List<Task<int>>();
 TaskFactory factory = new TaskFactory();
-
+object orderLock = new object();
 tasks.Add(factory.StartNew<int>(() =>
 {
-    //PurchaseClass.Create(conStr);
     for (int i = 0; i < 10; i++)
     {
         IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
@@ -83,7 +82,8 @@ tasks.Add(factory.StartNew<int>(() =>
             Address = "TEST_ADDRESS",
             ProductList = purchaseProductList
         };
-        Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
+        lock (orderLock)
+            Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
     }
     return 1;
 }));
@@ -91,7 +91,6 @@ tasks.Add(factory.StartNew<int>(() =>
 
 tasks.Add(factory.StartNew<int>(() =>
 {
-    //PurchaseClass.Create(conStr);
     for (int i = 0; i < 10; i++)
     {
         IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
@@ -102,6 +101,7 @@ tasks.Add(factory.StartNew<int>(() =>
             Quantity = 5,
             CurrentPrice = 777
         });
+
         PurchaseReq req = new PurchaseReq
         {
             OrderTypeCode = OrderTypeCode.TEST,
@@ -112,7 +112,8 @@ tasks.Add(factory.StartNew<int>(() =>
             Address = "TEST_ADDRESS",
             ProductList = purchaseProductList
         };
-        Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
+        lock (orderLock)
+            Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
     }
     return 2;
 }));
@@ -121,32 +122,3 @@ foreach (var t in tasks)
 {
     Console.WriteLine("Task:" + t.Result);
 }
-
-//var t1 = Task.Run(() => 
-//{
-
-//});
-//t1.Wait;
-
-//for (int i = 0; i < 10; i++)
-//{
-//    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
-//    List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
-//    purchaseProductList.Add(new PurchaseProductModel
-//    {
-//        ProductId = 1,
-//        Quantity = 5,
-//        CurrentPrice = 777
-//    });
-//    PurchaseReq req = new PurchaseReq
-//    {
-//        OrderTypeCode = OrderTypeCode.TEST,
-//        UserId = "TEST0000001GGG",
-//        ReceiveMan = "TEST_MAN_GGGGGG52869416",
-//        Email = "TESTTEST00000123456798@gmail.com.test",
-//        Phone = "1000000000",
-//        Address = "TEST_ADDRESS",
-//        ProductList = purchaseProductList
-//    };
-//    Console.WriteLine("OrderId: " + purchaseService.CreateOrder(req));
-//}
