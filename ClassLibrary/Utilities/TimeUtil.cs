@@ -8,8 +8,9 @@ namespace Shopaholic.Util.Utilities
 {
     public class TimeUtil
     {
-        public static readonly string yyyyMMddFormat = "yyyy\\/MM\\/dd";
-        public static readonly string yyyyMMddFormat_02 = "yyyyMMdd";
+        public static readonly string yyyyMMdd_01 = "yyyy\\/MM\\/dd";
+        public static readonly string yyyyMMdd_02 = "yyyyMMdd";
+        public static readonly string yyyyMMdd_03 = "yyyy-MM-dd";
         public static readonly string yyyyMMddhhmmssFormat = "yyyy-MM-dd HH:mm:ss";
 
         public static DateTime GetLocalDateTime()
@@ -39,5 +40,7 @@ namespace Shopaholic.Util.Utilities
             }
             return DateTime.MinValue;
         }
+
+
     }
 }

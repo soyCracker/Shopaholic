@@ -20,12 +20,12 @@ namespace Shopaholic.Service.Common.Business
             lock (orderLock)
             {
                 DateTime today = TimeUtil.GetLocalTodayDate();
-                targetOrderId = TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMddFormat_02)
+                targetOrderId = TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMdd_02)
                         + OrderNumberFormat.ORDERNUMBER_INIT_SEQ;
                 if (dbContext.OrderHeaders.Count()>0)
                 {
                     string maxOrderId = dbContext.OrderHeaders.OrderByDescending(x=>x.OrderId).First().OrderId;
-                    if(maxOrderId.Substring(0, 8)==TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMddFormat_02))
+                    if(maxOrderId.Substring(0, 8)==TimeUtil.DateTimeToFormatStr(today, TimeUtil.yyyyMMdd_02))
                     {
                         // 避免執行過程中剛好過一天，用最大OrderId的日期
                         targetOrderId = maxOrderId.Substring(0, 8) 

@@ -1,4 +1,5 @@
 ﻿@using System.Collections.Generic
+@using Shopaholic.Util.Utilities
 
 <div id="FormTool">
 
@@ -22,9 +23,8 @@
                     <div class="row mb-2">                                           
                         <div class="form-group col-sm-5">
                             <input class="form-control" placeholder="搜索訂單編號" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
-                            <!--<input class="form-control" type="text" name="daterange" value="" />-->
-                            <input id="beginDate" type="date" v-bind:value="searchBeginDate" v-bind:min="minDate" v-bind:max="2014-09-18">
-                            <input id="endDate" type="date" v-bind:value="searchEndDate" v-bind:min="2014-09-09" v-bind:max="maxDate">
+                            <input id="beginDate" type="date" v-model="searchBeginDate" v-bind:min="minDate" v-bind:max="searchEndDate">
+                            <input id="endDate" type="date" v-model="searchEndDate" v-bind:min="searchBeginDate" v-bind:max="maxDate">
                         </div>
                         <div class="input-group-append">
                             <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
@@ -109,28 +109,6 @@
 @section Scripts{
     <script>
 
-        //let searchBegin = null;
-        //let searchEnd = null;
-        /*
-        $(function() {
-            $('input[name="daterange"]').daterangepicker({
-                opens: 'left',
-                locale: {
-                    format: 'YYYY/MM/DD'
-                },
-                showDropdowns: true,
-                minYear: 2000,
-                maxYear: parseInt(moment().format('YYYY'),10),
-                startDate: '2000/01/01',
-                endDate: '2022/02/24',//new Date(),
-            }, function(start, end, label) {
-                //searchBegin = start.format('YYYY-MM-DD');
-                //searchEnd = end.format('YYYY-MM-DD');
-                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-                //console.log("A new date selection was made: " + searchBegin + ' to ' + searchEnd);
-            });
-        });*/
-
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -143,10 +121,10 @@
                 pageMaxDisplay: 5,
                 pageDisplayArray:null,
                 searchStr: '',
-                minDate:'2000/01/01',
-                maxDate:new Date(),
-                searchBeginDate: minDate,
-                searchEndDate: maxDate,
+                minDate:'2000-01-01',
+                maxDate: '@TimeUtil.DateTimeToFormatStr(DateTime.Now, TimeUtil.yyyyMMdd_03)',
+                searchBeginDate: '2000-01-01',
+                searchEndDate: '@TimeUtil.DateTimeToFormatStr(DateTime.Now, TimeUtil.yyyyMMdd_03)',
             },
             mounted: function()
             {
@@ -165,8 +143,8 @@
                         ['Page']: page,
                         ['PageSize']: self.pageSize,
                         ['SearchStr']: self.searchStr,
-                        /*['BeginTime']: searchBegin,
-                        ['EndTime']: searchEnd,*/
+                        ['BeginTime']: self.searchBeginDate,
+                        ['EndTime']: self.searchEndDate,
                     };
 
                     axios.post(self.orderSearchApi, obj)
