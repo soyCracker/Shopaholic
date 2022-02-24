@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using ClassLibrary.Utilities;
+using Shopaholic.Util.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Shopaholic.CMS.Console.Class;
 using Shopaholic.Entity.Models;

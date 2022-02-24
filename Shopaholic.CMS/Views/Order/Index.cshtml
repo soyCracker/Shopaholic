@@ -20,8 +20,11 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <div class="row mb-2">                                           
-                        <div class="form-group col-sm-8">
-                            <input class="form-control" placeholder="搜索" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
+                        <div class="form-group col-sm-5">
+                            <input class="form-control" placeholder="搜索訂單編號" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
+                            <!--<input class="form-control" type="text" name="daterange" value="" />-->
+                            <input id="beginDate" type="date" v-bind:value="searchBeginDate" v-bind:min="minDate" v-bind:max="2014-09-18">
+                            <input id="endDate" type="date" v-bind:value="searchEndDate" v-bind:min="2014-09-09" v-bind:max="maxDate">
                         </div>
                         <div class="input-group-append">
                             <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
@@ -106,6 +109,28 @@
 @section Scripts{
     <script>
 
+        //let searchBegin = null;
+        //let searchEnd = null;
+        /*
+        $(function() {
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left',
+                locale: {
+                    format: 'YYYY/MM/DD'
+                },
+                showDropdowns: true,
+                minYear: 2000,
+                maxYear: parseInt(moment().format('YYYY'),10),
+                startDate: '2000/01/01',
+                endDate: '2022/02/24',//new Date(),
+            }, function(start, end, label) {
+                //searchBegin = start.format('YYYY-MM-DD');
+                //searchEnd = end.format('YYYY-MM-DD');
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                //console.log("A new date selection was made: " + searchBegin + ' to ' + searchEnd);
+            });
+        });*/
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -117,7 +142,11 @@
                 orderList: {},
                 pageMaxDisplay: 5,
                 pageDisplayArray:null,
-                searchStr: ''
+                searchStr: '',
+                minDate:'2000/01/01',
+                maxDate:new Date(),
+                searchBeginDate: minDate,
+                searchEndDate: maxDate,
             },
             mounted: function()
             {
@@ -135,7 +164,9 @@
                     var obj = {
                         ['Page']: page,
                         ['PageSize']: self.pageSize,
-                        ['SearchStr']: self.searchStr
+                        ['SearchStr']: self.searchStr,
+                        /*['BeginTime']: searchBegin,
+                        ['EndTime']: searchEnd,*/
                     };
 
                     axios.post(self.orderSearchApi, obj)

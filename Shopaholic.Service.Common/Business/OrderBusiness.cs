@@ -1,5 +1,4 @@
-﻿using ClassLibrary.Utilities;
-using Shopaholic.Entity.Models;
+﻿using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Constants;
 using Shopaholic.Util.Utilities;
 using Shopaholic.Web.Model.Requests;

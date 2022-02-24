@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Utilities;
+﻿using Shopaholic.Util.Utilities;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Business;
 using Shopaholic.Service.Interfaces;

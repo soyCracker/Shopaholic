@@ -17,8 +17,8 @@ namespace Shopaholic.CMS.Model.Requests
         [SwaggerSchema("每頁數量")]
         public int PageSize { get; set; }
         [SwaggerSchema("搜索範圍開始日期")]
-        public DateTime BeginTime { get; set; } = SqlDateTime.MinValue.Value;
+        public string BeginTime { get; set; }
         [SwaggerSchema("搜索範圍結束日期")]
-        public DateTime EndTime { get; set; } = SqlDateTime.MaxValue.Value;
+        public string EndTime { get; set; }
     }
 }

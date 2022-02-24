@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Utilities;
+﻿using Shopaholic.Util.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Shopaholic.Entity.Models;

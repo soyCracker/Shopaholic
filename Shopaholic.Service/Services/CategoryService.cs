@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Utilities;
+﻿using Shopaholic.Util.Utilities;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
