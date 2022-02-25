@@ -58,21 +58,44 @@ namespace Shopaholic.Service.Services
         {
             using (dbContext)
             {
-                int flowRange = -29;                
-                var webFlowCountByDate = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) && x.CreateTime < DateTime.Now.Date.AddDays(1))
-                    .GroupBy(g => g.CreateTime.Date)
+                int flowRange = -29;      
+                List<DateTime> monthDate = new List<DateTime>();
+                for(int i=flowRange;i<=0;i++)
+                {
+                    monthDate.Add(DateTime.Now.Date.AddDays(i));
+                }          
+
+                var flowInRange = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) && x.CreateTime < DateTime.Now.Date.AddDays(1))
+                    .Select(f=>new
+                    {
+                        FlowId = f.Id,
+                        FlowDate = f.CreateTime.Date
+                    });
+
+                var flowPaddingDate = from m in monthDate
+                    join w in flowInRange on m.Date equals w.FlowDate into sub 
+                    from w in sub.DefaultIfEmpty() 
+                    select new 
+                    { 
+                        FlowDate = m.Date,
+                        HasValue = w!=null?w.FlowId:0
+                    };                     
+
+                var flowCountByDate = flowPaddingDate
+                    .GroupBy(g => g.FlowDate)
                     .Select(s=>new
                     {
-                        Count = s.Count(),
+                        Count = s.Where(e=>e.HasValue!=0).Count(),
                         CreateTime = s.Key
-                    }).OrderBy(o=>o.CreateTime.Date).AsNoTracking().ToList();
+                    }).OrderBy(o=>o.CreateTime.Date).ToList();
+
                 List<FlowCountDTO> flowList = new List<FlowCountDTO>();
-                foreach (var flowDateObj in webFlowCountByDate)
+                foreach (var item in flowCountByDate)
                 {
                     flowList.Add(new FlowCountDTO
                     {
-                        FlowDate = flowDateObj.CreateTime.ToString("MM/dd"),
-                        Count = flowDateObj.Count
+                        FlowDate = item.CreateTime.ToString("MM-dd"),
+                        Count = item.Count
                     });
                 }
                 return flowList;
