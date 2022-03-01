@@ -19,8 +19,13 @@ namespace Shopaholic.Web.Controllers
 
         public IActionResult Index(int Id)
         {
-
             return View(Id);
+        }
+
+        public IActionResult DetailPage(int Id)
+        {
+            ProductDTO productDTO = productService.GetProduct(Id);
+            return View(productDTO);
         }
 
         /// <summary>

@@ -41,27 +41,34 @@
             <table class="table table-striped projects">
                 <thead>
                     <tr>
+                        <th style="width: 30%">
+                            
+                        </th>
                         <th style="width: 50%">
                             商品名稱
                         </th>
-                        <th style="width: 25%">
+                        <th style="width: 10%">
                             價格
                         </th>
-                        <th style="width: 25%">
-                            庫存
+                        <th style="width: 10%">
                         </th> 
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item) in productList" v-bind:key="item.id">
                         <td>
-                            {{ item.Name }}                        
+                            <img v-bind:src="item.Image"  height="200">                           
+                        </td>
+                        <td>
+                            <a v-bind:href="'/Product/DetailPage/'+item.Id">
+                                {{ item.Name }} 
+                            </a>                                                   
                         </td>  
                         <td>
                             {{ item.Price }}                         
                         </td>  
                         <td>
-                            {{ item.Stock }}                       
+                                                  
                         </td>
                     </tr>                        
                 </tbody>

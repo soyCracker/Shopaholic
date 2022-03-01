@@ -37,9 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Util", "ClassLib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Service.Common", "Shopaholic.Service.Common\Shopaholic.Service.Common.csproj", "{9BA9D03B-FB1E-47F2-A692-0D3DABD8C55F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Web.Model", "Shopaholic.Web.Model\Shopaholic.Web.Model.csproj", "{D509FA90-1B60-403B-81C0-59CC8588C084}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Web.Model", "Shopaholic.Web.Model\Shopaholic.Web.Model.csproj", "{D509FA90-1B60-403B-81C0-59CC8588C084}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopaholic.Web.Common", "Shopaholic.Web.Common\Shopaholic.Web.Common.csproj", "{26F8EDA7-960F-4583-A393-6D992DBBB9D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Web.Common", "Shopaholic.Web.Common\Shopaholic.Web.Common.csproj", "{26F8EDA7-960F-4583-A393-6D992DBBB9D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
