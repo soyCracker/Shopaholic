@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Shopaholic.Util.Utilities;
 using Microsoft.EntityFrameworkCore;
-using Shopaholic.CMS.Console.Class;
+using Shopaholic.Base.Console.Class;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Constants;
 using Shopaholic.Service.Interfaces;
@@ -31,7 +31,7 @@ var conStr = "Server=.\\SQLEXPRESS;Database=Shopaholic;Trusted_Connection=True;"
 //        Description = "我的天啊",
 //        CategoryId = testCategoryId,
 //        Content = "我的天啊",
-//        Image = null,
+//        Image = "https:////via.placeholder.com//1200//FFFFFF.png?text=1",
 //        Price = 9999,
 //        Stock = 8787,
 //        IsDelete = false

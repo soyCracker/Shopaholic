@@ -18,6 +18,7 @@ namespace Shopaholic.Entity.Models
         }
 
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<CustomerAccount> CustomerAccounts { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderHeader> OrderHeaders { get; set; }
         public virtual DbSet<OrderLog> OrderLogs { get; set; }
@@ -51,6 +52,25 @@ namespace Shopaholic.Entity.Models
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+            });
+
+            modelBuilder.Entity<CustomerAccount>(entity =>
+            {
+                entity.ToTable("CustomerAccount");
+
+                entity.Property(e => e.AccountId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DisplayName).HasMaxLength(50);
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PhotoUrl).HasColumnName("PhotoURL");
+
+                entity.Property(e => e.Type).HasMaxLength(50);
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -87,7 +107,7 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("OrderHeader");
 
-                entity.HasIndex(e => e.OrderId, "UQ__OrderHea__C3905BCE294F4562")
+                entity.HasIndex(e => e.OrderId, "UQ__OrderHea__C3905BCE7A7339B4")
                     .IsUnique();
 
                 entity.Property(e => e.CreateTime)

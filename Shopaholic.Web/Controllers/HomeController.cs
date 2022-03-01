@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Service.Services;
@@ -10,12 +11,12 @@ namespace Shopaholic.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
         private readonly ICategoryService categoryService;
 
         public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
         {
-            _logger = logger;
+            logger = logger;
             this.categoryService = categoryService;
         }
 
@@ -24,6 +25,7 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
@@ -44,6 +46,15 @@ namespace Shopaholic.Web.Controllers
                 Msg = resList != null ? "Success" : "Fail",
                 Data = resList
             };
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("[controller]/api/[action]")]
+        public IActionResult Test()
+        {
+
+            return Ok(new { Value = true, ErrorCode = 0, Res = "Good Auth" });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

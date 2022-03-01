@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
@@ -22,6 +25,21 @@ builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder
     builder.Configuration.GetValue<string>("Imgur:ClientSecret")));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.Authority = "https://securetoken.google.com/shopaholic-39229";
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = "https://securetoken.google.com/shopaholic-39229",
+                            ValidateAudience = true,
+                            ValidAudience = "shopaholic-39229",
+                            ValidateLifetime = true
+                        };
+                    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
 var app = builder.Build();
 
@@ -38,6 +56,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

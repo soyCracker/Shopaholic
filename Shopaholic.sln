@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Service.Model", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{F6101B27-5E35-41D2-BB3E-155860CF3E37}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.CMS.Console", "Shopaholic.CMS.Console\Shopaholic.CMS.Console.csproj", "{635E8351-9BD2-40FE-AA07-55F2FDFA6833}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Base.Console", "Shopaholic.CMS.Console\Shopaholic.Base.Console.csproj", "{635E8351-9BD2-40FE-AA07-55F2FDFA6833}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopaholic.Util", "ClassLibrary\Shopaholic.Util.csproj", "{F4115852-3D15-4743-9BAD-740C8A16B76E}"
 EndProject

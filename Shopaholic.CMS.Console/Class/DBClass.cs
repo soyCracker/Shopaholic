@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shopaholic.CMS.Console.Class
+namespace Shopaholic.Base.Console.Class
 {
     public class DBClass
     {
