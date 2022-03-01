@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMvc()
     //取消json小駝峰式命名法
-    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null); ;
+    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
 builder.Services.AddSwaggerGen(c =>
 {

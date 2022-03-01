@@ -1,0 +1,160 @@
+﻿@using System.Collections.Generic
+@model int
+
+<div id="FormTool">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">商品列表</h1>
+                </div><!-- /.col -->                
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <div class="row mb-2">                                           
+                        <div class="form-group col-sm-8">
+                            <input class="form-control" placeholder="搜索" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
+                              <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-navbar"  data-widget="navbar-search" v-on:click="ClearFilter()">
+                              <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>                    
+                </div><!-- /.col -->
+            </div>                       
+        </div>
+        
+        <div id="TableTool" class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 50%">
+                            商品名稱
+                        </th>
+                        <th style="width: 25%">
+                            價格
+                        </th>
+                        <th style="width: 25%">
+                            庫存
+                        </th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item) in productList" v-bind:key="item.id">
+                        <td>
+                            {{ item.Name }}                        
+                        </td>  
+                        <td>
+                            {{ item.Price }}                         
+                        </td>  
+                        <td>
+                            {{ item.Stock }}                       
+                        </td>
+                    </tr>                        
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-tools">
+            <ul class="pagination pagination-sm float-right">
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(1)">&laquo;</a></li>
+                <li v-for="(n, index) in pageDisplayArray" v-bind:key=n>
+                    <a class="page-link" v-on:click="RefreshUI(n)" v-bind:class="n==currentPage?'page-num-clicked':''">
+                        {{ n }}
+                    </a>
+                </li>
+                <li><a class="page-link" v-if="pageDisplayArray.length==5 && pageDisplayArray[4]<totalPages">...</a></li>
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(totalPages)">&raquo;</a></li>
+            </ul>
+        </div>
+
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>
+
+@section Scripts{
+    <script>
+
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                productSearchApi: baseurl + "/Product/api/Search",
+                totalPages: 1,
+                pageSize: 20,
+                currentPage: 1,
+                productList: {},
+                categoryId: @Model,
+                pageMaxDisplay: 5,
+                pageDisplayArray:[],
+                searchStr: ''
+            },
+            mounted: function()
+            {
+                var self = this;  
+                self.RefreshUI(1);
+            },
+            methods:
+            {
+                RefreshUI: function (page) {
+                    var self = this;
+                    self.currentPage = page;               
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['CategoryId']: self.categoryId,
+                        ['Page']: page,
+                        ['PageSize']: self.pageSize,
+                        ['SearchStr']: self.searchStr
+                    };
+
+                    axios.post(self.productSearchApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.productList = result.data.Data.ProductDTOs;
+                                self.totalPages = result.data.Data.TotalPages;
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                ClearFilter: function(){
+                    var self = this;
+                    self.searchStr = '';
+                    self.RefreshUI(1);
+                }                    
+            }
+        });
+    </script>
+}
+
+<style>
+    .page-num-clicked{
+        background-color: #dee2e6;
+    }
+</style>

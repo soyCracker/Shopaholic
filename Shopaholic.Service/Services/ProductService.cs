@@ -137,15 +137,6 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public int GetProductPages(int pageSize)
-        {
-            using(dbContext)
-            {
-                int count = dbContext.Products.Count(x=>!x.IsDelete);
-                return count%pageSize==0 ? count/pageSize : count/pageSize+1;
-            }       
-        }
-
         public ProductSearchResDTO SearchProductWithCategory(string searchStr, int page, int pageSize)
         {
             using (dbContext)
@@ -204,6 +195,45 @@ namespace Shopaholic.Service.Services
                 }
                 dbContext.Products.AddRange(productList);
                 dbContext.SaveChanges();
+            }
+        }
+
+        public ProductSearchResDTO SearchProductByCategory(int categoryId, string searchStr, int page, int pageSize)
+        {
+            using (dbContext)
+            {
+                searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
+                var filterData = dbContext.Products.Where(x => x.CategoryId==categoryId && !x.IsDelete && (x.Id.ToString().Contains(searchStr) 
+                    || x.Name.Contains(searchStr)
+                    || x.Description.Contains(searchStr) 
+                    || x.Content.Contains(searchStr) ) );
+
+                List<Product> products = filterData.OrderBy(y => y.Id).Skip((page-1) * pageSize)
+                    .Take(pageSize).ToList();
+                List<ProductDTO> productDTOs = new List<ProductDTO>();
+                foreach (Product product in products)
+                {
+                    ProductDTO productDTO = new ProductDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Description = product.Description,
+                        CategoryId = product.CategoryId,
+                        Content = product.Content,
+                        Image = product.Image,
+                        Price = product.Price,
+                        Stock = product.Stock
+                    };
+                    productDTOs.Add(productDTO);
+                }
+
+                int count = filterData.Count();
+                ProductSearchResDTO productSearchResDTO = new ProductSearchResDTO
+                {
+                    ProductDTOs = productDTOs,
+                    TotalPages = count % pageSize == 0 ? count / pageSize : count / pageSize + 1
+                };
+                return productSearchResDTO;
             }
         }
     }

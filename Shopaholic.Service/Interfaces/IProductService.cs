@@ -19,8 +19,10 @@ namespace Shopaholic.Service.Interfaces
 
         ProductSearchResDTO SearchProductWithCategory(string searchStr, int page, int pageSize);
 
+        ProductSearchResDTO SearchProductByCategory(int categoryId, string searchStr, int page, int pageSize);
+
         ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
 
-        int GetProductPages(int pageSize);
+
     }
 }

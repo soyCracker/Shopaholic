@@ -222,21 +222,5 @@ namespace Shopaholic.CMS.Controllers
                 Data = url
             };
         }
-
-        /// <summary>
-        /// 取得商品頁數
-        /// </summary>
-        [Route("[controller]/api/[action]")]
-        [HttpPost]
-        public async Task<MessageModel<int>> GetProductPages([FromBody] ProductGetPageCountRequest req)
-        {
-            int pages = productService.GetProductPages(req.PageSize);
-            return new MessageModel<int>
-            {
-                Success = true,
-                Msg = pages != null ? "" : "Fail",
-                Data = pages
-            };
-        }
     }
 }

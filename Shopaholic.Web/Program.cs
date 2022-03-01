@@ -1,7 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using Shopaholic.Entity.Models;
+using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddMvc()
+    //取消json小駝峰式命名法
+    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+
+builder.Services.AddDbContext<ShopaholicContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV")/*,
+        providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
+});
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder.Configuration.GetValue<string>("Imgur:ClientID"),
+    builder.Configuration.GetValue<string>("Imgur:ClientSecret")));
+builder.Services.AddScoped<IWebFlowService, WebFlowService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 

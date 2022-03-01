@@ -11,10 +11,10 @@ namespace Shopaholic.CMS.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ILogger Logger;
+        private readonly ILogger<CategoryController> Logger;
         private readonly ICategoryService categoryService;
 
-        public CategoryController(ILogger<ProductController> logger, ICategoryService categoryService)
+        public CategoryController(ILogger<CategoryController> logger, ICategoryService categoryService)
         {
             this.Logger = logger;
             this.categoryService = categoryService;
