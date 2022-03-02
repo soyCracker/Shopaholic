@@ -1,0 +1,124 @@
+﻿@*
+
+*@
+@{
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Login Page</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="error-page">
+            <h2 class="headline text-warning"> 登入中...</h2>
+            <div class="error-content">
+                <h3><i class="fas fa-exclamation-triangle text-warning"></i>即將跳轉</h3>
+
+                <p>
+                    登入成功將跳轉回首頁
+                    <a asp-controller="Home" asp-action="Index">return to dashboard</a>
+                </p>
+            </div>
+        <!-- /.error-content -->
+        </div>
+        <!-- /.error-page -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<script>
+
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    // 登入狀態變換
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            // User is signed in.
+            FirebaseLog(user);
+
+            localStorage.setItem('isSignIn', '1');
+
+            firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+                console.log("ID Token: ", idToken);
+                var userData =
+                {
+                    ['AccessToken']: idToken,
+                    ['Uid']: user.uid,
+                    ['DisplayName']: user.displayName,
+                    ['Email']: user.email,
+                    ['EmailVerified']: user.emailVerified,
+                    ['PhotoURL']: user.photoURL,
+                    ['IsAnonymous']: user.isAnonymous,
+                };
+                   
+                LoginPost(window.location.origin + "/Auth/api/Login", userData);
+            }).catch(function (error) {
+                // Handle error
+                ToastUtil.ErrorAlert('登入失敗');
+            });
+        }
+        else{
+            FirebaseLogin();
+        }
+    });
+
+    function FirebaseLog(user){
+        console.log("user:"+user);
+        console.log("Uid:" + user.uid);
+        console.log("DisplayName:" + user.displayName);
+        console.log("Email:" + user.email);
+        console.log("EmailVerified:" + user.emailVerified);
+        console.log("PhotoURL:" + user.photoURL);
+        console.log("IsAnonymous:" + user.isAnonymous);
+    }
+
+    function FirebaseLogin(){
+        provider.setCustomParameters({
+            prompt: 'select_account'
+        });
+        firebase.auth().signInWithRedirect(provider);
+        firebase.auth().getRedirectResult().then(function (result) {
+            if (result.credential) {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = result.credential.accessToken;
+            }
+            // The signed-in user info.
+            var user = result.user;
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+        });
+    }
+
+    function LoginPost(url, data) {
+        axios.post(url, data)
+            .then(res => {
+                ToastUtil.InfoFire('登入中...');
+                if(res.data.Data)
+                {
+                    location.href = window.location.origin;
+                }
+            })
+            .catch(err => { 
+                console.log(err) 
+                ToastUtil.ErrorAlert('登入失敗')
+            })
+    }
+</script>

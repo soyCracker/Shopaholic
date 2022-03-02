@@ -26,7 +26,32 @@
     <!-- Daterange picker -->
     <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
-    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">    
+    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">   
+    
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig =
+        {
+            apiKey: "AIzaSyBlEBx2Anflj2e0Gx7t2QSGEO0R2INVb3E",
+            authDomain: "shopaholic-39229.firebaseapp.com",
+            databaseURL: "https://thirdpartylogin-9c8ee.firebaseio.com",
+            projectId: "shopaholic-39229",
+            storageBucket: "shopaholic-39229.appspot.com",
+            messagingSenderId: "317632759938",
+            appId: "1:317632759938:web:0906e9340ca583de20cc9b",
+            measurementId: "G-WH2CJD2CFX"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
 </head>
 <body>   
     <div class="wrapper">
@@ -76,8 +101,8 @@
           </li>
 
           <li class="nav-item">
-            <div id="LoginApp">
-                <a class="nav-link" v-on:click="Login" v-if="!isLogin">
+            <div id="LoginTool">
+                <a asp-controller="Home" asp-action="Login" class="nav-link" v-if="!isLogin">
                     <i class="fa-brands fa-google">登入</i>       
                 </a>
                 <a class="nav-link" v-on:click="Logout" v-if="isLogin">
@@ -188,32 +213,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
     <!-- Font Awesome   -->
-    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        var firebaseConfig =
-        {
-            apiKey: "AIzaSyBlEBx2Anflj2e0Gx7t2QSGEO0R2INVb3E",
-            authDomain: "shopaholic-39229.firebaseapp.com",
-            databaseURL: "https://thirdpartylogin-9c8ee.firebaseio.com",
-            projectId: "shopaholic-39229",
-            storageBucket: "shopaholic-39229.appspot.com",
-            messagingSenderId: "317632759938",
-            appId: "1:317632759938:web:0906e9340ca583de20cc9b",
-            measurementId: "G-WH2CJD2CFX"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    </script>
+    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>  
 
     <!-- 雜 -->
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -221,55 +221,22 @@
     <script src="~/js/PageUtil.js" ></script>
 
     <script>
-        var baseurl = window.location.origin;
+        var baseurl = window.location.origin;        
         var provider = new firebase.auth.GoogleAuthProvider();
 
         // 登入狀態變換
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 // User is signed in.
-                console.log("Uid:" + user.uid);
-                console.log("DisplayName:" + user.displayName);
-                console.log("Email:" + user.email);
-                console.log("EmailVerified:" + user.emailVerified);
-                console.log("PhotoURL:" + user.photoURL);
-                console.log("IsAnonymous:" + user.isAnonymous);
-
-                firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
-                    console.log("ID Token: ", idToken);
-                    var userData =
-                    {
-                        ['AccessToken']: idToken,
-                        ['Uid']: user.uid,
-                        ['DisplayName']: user.displayName,
-                        ['Email']: user.email,
-                        ['EmailVerified']: user.emailVerified,
-                        ['PhotoURL']: user.photoURL,
-                        ['IsAnonymous']: user.isAnonymous,
-                    };
-                   
-                    LoginPost(window.location.origin + "/Auth/api/Login", userData);
-                }).catch(function (error) {
-                    // Handle error
-                    ToastUtil.ErrorAlert('登入失敗');
-                });
+                LoginTool.isLogin = true;
+                localStorage.setItem('isSignIn', '1');
             }
-        });
-
-        function LoginPost(url, data) {
-            axios.post(url, data)
-                .then(res => {
-                    console.log(res);
-                    if(res.data.Data)
-                    {
-                        LoginApp.isLogin = true;
-                    }
-                })
-                .catch(err => { 
-                    console.log(err) 
-                    ToastUtil.ErrorAlert('登入失敗')
-                })
-        }
+            else
+            {
+                LoginTool.isLogin = false;
+                localStorage.removeItem('isSignIn'); 
+            }
+        }); 
 
         var LayoutApp = new Vue({
             el: '#LayoutApp',
@@ -309,44 +276,20 @@
             }
         });
 
-        var LoginApp = new Vue({
-            el: '#LoginApp',
+        var LoginTool = new Vue({
+            el: '#LoginTool',
             data:
             {
                 isLogin: false, 
             },
             methods:
             {
-                Login: function () {
-                    provider.setCustomParameters({
-                       prompt: 'select_account'
-                    });
-                    firebase.auth().signInWithRedirect(provider);
-                    firebase.auth().getRedirectResult().then(function (result) {
-                        if (result.credential) {
-                            // This gives you a Google Access Token. You can use it to access the Google API.
-                            var token = result.credential.accessToken;
-                        }
-                        // The signed-in user info.
-                        var user = result.user;
-                    }).catch(function (error) {
-                        // Handle Errors here.
-                        var errorCode = error.code;
-                        var errorMessage = error.message;
-                        // The email of the user's account used.
-                        var email = error.email;
-                        // The firebase.auth.AuthCredential type that was used.
-                        var credential = error.credential;
-                    });
-                },
-
                 Logout: function () {
                     var self = this;
                     ToastUtil.InfoFire('登出中...');
                     firebase.auth().signOut().then(function ()
                     {     
-                        self.isLogin = false;
-                        // Sign-out successful.          
+                        // Sign-out successful.                                                       
                     }).catch(function (error) {
                         // An error happened.
                     });

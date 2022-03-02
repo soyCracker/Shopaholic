@@ -25,8 +25,12 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
-        [Authorize]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Login()
         {
             return View();
         }
@@ -53,7 +57,6 @@ namespace Shopaholic.Web.Controllers
         [Route("[controller]/api/[action]")]
         public IActionResult Test()
         {
-
             return Ok(new { Value = true, ErrorCode = 0, Res = "Good Auth" });
         }
 
