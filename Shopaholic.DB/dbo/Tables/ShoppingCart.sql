@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[ShoppingCart]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[ProductId] INT NOT NULL, 
+    [Quantity] INT NOT NULL, 
+	[CreateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
+    [UpdateTime] DATETIME NOT NULL DEFAULT GETDATE(), 
+    [AccountId] NVARCHAR(50) NOT NULL,
+)

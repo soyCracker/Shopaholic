@@ -24,6 +24,7 @@ namespace Shopaholic.Entity.Models
         public virtual DbSet<OrderLog> OrderLogs { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Shipment> Shipments { get; set; }
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public virtual DbSet<WebFlow> WebFlows { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -223,6 +224,23 @@ namespace Shopaholic.Entity.Models
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Shipment_OrderHeader");
+            });
+
+            modelBuilder.Entity<ShoppingCart>(entity =>
+            {
+                entity.ToTable("ShoppingCart");
+
+                entity.Property(e => e.AccountId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UpdateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<WebFlow>(entity =>

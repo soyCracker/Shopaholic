@@ -1,0 +1,151 @@
+﻿@using System.Collections.Generic
+
+<div id="FormTool">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">購物車</h1>
+                </div><!-- /.col -->                
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Default box -->
+    <div class="card">      
+        <div id="TableTool" class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 30%">
+                            
+                        </th>
+                        <th style="width: 40%">
+                            商品名稱
+                        </th>
+                        <th style="width: 10%">
+                            數量
+                        </th>
+                        <th style="width: 10%">
+                            價格
+                        </th>
+                        <th style="width: 10%">
+                        </th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item) in cartList" v-bind:key="item.Id">
+                        <td>
+                            <img v-bind:src="item.ProductImage"  height="100">                           
+                        </td>
+                        <td>
+                            <a v-bind:href="'/Product/DetailPage/'+item.Id">
+                                {{ item.ProductName }} 
+                            </a>                                                   
+                        </td>  
+                        <td>
+                            {{ item.Quantity }}                         
+                        </td> 
+                        <td>
+                            {{ item.Price*item.Quantity }}                         
+                        </td>  
+                        <td class="project-actions text-right">
+                            <a class="btn btn-danger btn-sm" v-on:click="DeleteProduct(item.Id)">
+                                <i class="fas fa-trash">
+                                </i>
+                                刪除
+                            </a>                   
+                        </td>
+                    </tr>                        
+                </tbody>
+            </table>
+        </div>
+
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>
+<script src="~/js/FirebaseAuth.js"></script>
+@section Scripts{
+    
+
+    <script>
+
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                userEmail: localStorage.getItem('signInId'),
+                deleteApi: baseurl + "/Cart/api/Delete",
+                cartApi: baseurl + "/Cart/api/GetCart",
+                cartList: {},
+            },
+            mounted: function()
+            {
+                var self = this;  
+                self.GetCartList();
+            },
+            methods:
+            {
+                GetCartList: function () {
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['AccountId']: self.userEmail,                        
+                    };
+
+                    axios.post(self.cartApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.cartList = result.data.Data;                                                  
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },                      
+
+                DeleteProduct: function (id) {
+                    var self = this;
+                    if(confirm("確定刪除?")) {
+
+                        ToastUtil.InfoFire('處理中')
+
+                        var obj = {
+                            ['CartId']: id
+                        };
+
+                        axios.post(self.deleteApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.GetCartList();
+                            }                         
+                        })
+                        .catch(function (error) {                                    
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                    }
+                }                  
+            }
+        });
+    </script>
+}
+
+<style>
+    .page-num-clicked{
+        background-color: #dee2e6;
+    }
+</style>

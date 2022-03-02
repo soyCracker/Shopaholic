@@ -101,13 +101,13 @@
                 </li>
 
                 <li class="nav-item">
-                    <a asp-controller="Order" asp-action="Index" class="nav-link" v-if="isLogin">
+                    <a asp-controller="Cart" asp-action="Index" class="nav-link" v-if="isLogin">
                         <i class="fa-solid fa-cart-arrow-down">購物車</i>          
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a asp-controller="Order" asp-action="Cart" class="nav-link" v-if="isLogin">
+                    <a asp-controller="Order" asp-action="Index" class="nav-link" v-if="isLogin">
                         <i class="fa-solid fa-send-backward">訂單</i>          
                     </a>
                 </li>
@@ -239,12 +239,12 @@
             if (user) {
                 // User is signed in.
                 LoginTool.isLogin = true;
-                localStorage.setItem('isSignIn', '1');
+                localStorage.setItem('signInId', user.email);
             }
             else
             {
                 LoginTool.isLogin = false;
-                localStorage.removeItem('isSignIn'); 
+                localStorage.removeItem('signInId'); 
             }
         }); 
 

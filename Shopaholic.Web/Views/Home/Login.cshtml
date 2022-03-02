@@ -48,7 +48,7 @@
             // User is signed in.
             FirebaseLog(user);
 
-            localStorage.setItem('isSignIn', '1');
+            localStorage.setItem('signInId', user.email);
 
             firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
                 console.log("ID Token: ", idToken);

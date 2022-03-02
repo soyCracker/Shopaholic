@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
@@ -10,11 +11,14 @@ namespace Shopaholic.Web.Controllers
     {
         private readonly ILogger Logger;
         private readonly IProductService productService;
+        private readonly ICartService cartService;
 
-        public ProductController(ILogger<ProductController> logger, IProductService productService)
+        public ProductController(ILogger<ProductController> logger, IProductService productService,
+            ICartService cartService)
         {
             this.Logger = logger;
             this.productService = productService;
+            this.cartService = cartService;
         }
 
         public IActionResult Index(int Id)
