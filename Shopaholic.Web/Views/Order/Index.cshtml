@@ -1,5 +1,186 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using System.Collections.Generic
+@using Shopaholic.Util.Utilities
+
+<div id="FormTool">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">訂單列表</h1>
+                </div><!-- /.col -->                
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <div class="row mb-2">                                           
+                        <div class="form-group col-sm-5">
+                            <div class="form-group">
+                                <div class="input-group-append">                              
+                                    <input class="form-control" placeholder="搜索訂單編號" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
+                                    <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-navbar"  data-widget="navbar-search" v-on:click="ClearFilter()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div> 
+                            </div>                            
+                            <div class="form-group">
+                                <label>開始日期</label>
+                                <input type="date" v-model="searchBeginDate" v-bind:min="minDate" v-bind:max="searchEndDate">
+                            </div>
+                            <div class="form-group">
+                                <label>結束日期</label>
+                                <input type="date" v-model="searchEndDate" v-bind:min="searchBeginDate" v-bind:max="maxDate">
+                            </div>                   
+                        </div>                        
+                    </div>                    
+                </div>
+            </div>                       
+        </div>
+        
+        <div id="TableTool" class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 20%">
+                            訂單編號
+                        </th>
+                        <th style="width: 20%">
+                            出貨狀態
+                        </th>
+                        <th style="width: 20%">
+                            訂單狀態
+                        </th>
+                        <th style="width: 20%">
+                            建立日期
+                        </th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item) in orderList" v-bind:key="item.id">
+                        <td>
+                            {{ item.OrderId }}
+                        </td>
+                        <td>
+                            <div v-if=item.IsSent>已出貨</div>       
+                            <div v-else>未出貨</div>  
+                        </td>  
+                        <td>
+                            <div v-if=item.IsFinish>已完成</div>       
+                            <div v-else>未完成</div>                        
+                        </td>
+                        <td>
+                            {{ item.FormatCreateTime }}                       
+                        </td>
+                    </tr>                        
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-tools">
+            <ul class="pagination pagination-sm float-right">
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(1)">&laquo;</a></li>
+                <li v-for="(n, index) in pageDisplayArray" v-bind:key=n>
+                    <a class="page-link" v-on:click="RefreshUI(n)" v-bind:class="n==currentPage?'page-num-clicked':''">
+                        {{ n }}
+                    </a>
+                </li>
+                <li><a class="page-link" v-if="pageDisplayArray.length==5 && pageDisplayArray[4]<totalPages">...</a></li>
+                <li class="page-item"><a class="page-link" v-on:click="RefreshUI(totalPages)">&raquo;</a></li>
+            </ul>
+        </div>
+
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>
+
+<script src="~/js/FirebaseAuth.js"></script>
+
+@section Scripts{
+    <script>
+
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                userEmail: localStorage.getItem('signInId'),
+                orderSearchApi: baseurl + "/Order/api/Search",
+                totalPages: 1,
+                pageSize: 20,
+                currentPage: 1,
+                orderList: {},
+                pageMaxDisplay: 5,
+                pageDisplayArray:null,
+                searchStr: '',
+                minDate:'2000-01-01',
+                maxDate: '@TimeUtil.DateTimeToFormatStr(DateTime.Now, TimeUtil.yyyyMMdd_03)',
+                searchBeginDate: '2000-01-01',
+                searchEndDate: '@TimeUtil.DateTimeToFormatStr(DateTime.Now, TimeUtil.yyyyMMdd_03)',
+            },
+            mounted: function()
+            {
+                var self = this;  
+                self.RefreshUI(1);
+            },
+            methods:
+            {
+                RefreshUI: function (page) {
+                    var self = this;
+                    self.currentPage = page;               
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['Email']: self.userEmail,
+                        ['Page']: page,
+                        ['PageSize']: self.pageSize,
+                        ['SearchStr']: self.searchStr,
+                        ['BeginTime']: self.searchBeginDate,
+                        ['EndTime']: self.searchEndDate,
+                    };
+
+                    axios.post(self.orderSearchApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.orderList = result.data.Data.OrderHeaderDTOs;
+                                self.totalPages = result.data.Data.TotalPages;
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                ClearFilter: function(){
+                    var self = this;
+                    self.searchStr = '';
+                    self.RefreshUI(1);
+                }                             
+            }
+        });
+    </script>
 }
+
+<style>
+    .page-num-clicked{
+        background-color: #dee2e6;
+    }
+</style>

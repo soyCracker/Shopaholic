@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Model.Requests
 {
-    public class GetCartListReq
+    public class PayReq
     {
-        public string AccountId { get; set; }
-        public string Email { get; set; }
+        public int Price { get; set; }
+        public string OrderId { get; set; }
     }
 }

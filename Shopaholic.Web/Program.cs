@@ -1,3 +1,4 @@
+using AspNetCore.Firebase.Authentication.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +9,6 @@ using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddMvc()
-    //取消json小駝峰式命名法
-    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
@@ -28,8 +24,30 @@ builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
+builder.Services.AddScoped<IPurchaseService, TestPurchaseService>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://securetoken.google.com/shopaholic-39229";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/shopaholic-39229",
+            ValidateAudience = true,
+            ValidAudience = "shopaholic-39229",
+            ValidateLifetime = true
+        };
+    });
+
+/*
+var FirebaseAuthentication_Issuer = "https://securetoken.google.com/shopaholic-39229";
+var FirebaseAuthentication_Audience = "shopaholic-39229";
+builder.Services.AddFirebaseAuthentication(FirebaseAuthentication_Issuer,
+                                   FirebaseAuthentication_Audience);*/
+
+/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
                         options.Authority = "https://securetoken.google.com/shopaholic-39229";
@@ -41,7 +59,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                             ValidAudience = "shopaholic-39229",
                             ValidateLifetime = true
                         };
-                    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+                    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);*/
+
+// Add services to the container.
+builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
+    //取消json小駝峰式命名法
+    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
 var app = builder.Build();
 
@@ -58,7 +81,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

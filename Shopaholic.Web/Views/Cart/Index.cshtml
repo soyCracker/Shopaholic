@@ -65,6 +65,10 @@
         </div>
 
         <!-- /.card-body -->
+
+        <div class="card-footer">
+            <a asp-controller="Order" asp-action="Create" class="btn btn-primary">結帳</a>
+        </div>  
     </div>
     <!-- /.card -->
 
@@ -97,7 +101,7 @@
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
-                        ['AccountId']: self.userEmail,                        
+                        ['Email']: self.userEmail,                        
                     };
 
                     axios.post(self.cartApi, obj)

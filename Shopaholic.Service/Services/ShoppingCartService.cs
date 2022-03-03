@@ -18,7 +18,7 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
-        public bool Add(string accountId, int productId, int quantity)
+        public bool Add(string email, int productId, int quantity)
         {
             using(dbContext)
             {
@@ -29,10 +29,11 @@ namespace Shopaholic.Service.Services
                 }
                 else
                 {
+                    var user = dbContext.CustomerAccounts.SingleOrDefault(c => c.Email == email);
                     product.Stock = product.Stock - quantity;
                     dbContext.ShoppingCarts.Add(new ShoppingCart
                     {
-                        AccountId = accountId,
+                        AccountId = user.AccountId,
                         ProductId = productId,
                         Quantity = quantity
                     });
@@ -52,11 +53,12 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public List<CartWithProductDTO> GetCartWithProductList(string accountId)
+        public List<CartWithProductDTO> GetCartWithProductList(string email)
         {
             using (dbContext)
             {
-                var carts = dbContext.ShoppingCarts.Where(x=>x.AccountId==accountId).ToList();
+                var user = dbContext.CustomerAccounts.SingleOrDefault(c => c.Email == email);
+                var carts = dbContext.ShoppingCarts.Where(x=>x.AccountId==user.AccountId).ToList();
                 List<CartWithProductDTO> cartDtoList = new List<CartWithProductDTO>();
                 foreach (var cart in carts)
                 {

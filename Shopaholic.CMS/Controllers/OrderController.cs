@@ -11,7 +11,6 @@ namespace Shopaholic.CMS.Controllers
         private readonly ILogger Logger;
         private readonly IOrderService orderService;
 
-
         public OrderController(ILogger<ProductController> logger, IOrderService orderService)
         {
             this.Logger = logger;

@@ -13,6 +13,6 @@ namespace Shopaholic.Service.Interfaces
 
         void Delete(int cartId);
 
-        List<CartWithProductDTO> GetCartWithProductList(string accountId);
+        List<CartWithProductDTO> GetCartWithProductList(string email);
     }
 }

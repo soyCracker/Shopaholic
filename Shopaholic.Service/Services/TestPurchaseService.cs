@@ -24,7 +24,26 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
+                req.UserId = dbContext.CustomerAccounts.SingleOrDefault(x => x.Email==req.Email).AccountId;
+                var carts = dbContext.ShoppingCarts.Where(x => x.AccountId==req.UserId).ToList();
+                List<PurchaseProductModel> ProductList = new List<PurchaseProductModel>();
+                foreach (var cart in carts)
+                {
+                    var product = dbContext.Products.SingleOrDefault(p => p.Id==cart.ProductId);
+                    ProductList.Add(new PurchaseProductModel
+                    {
+                        ProductId = cart.ProductId,
+                        Quantity = cart.Quantity,
+                        CurrentPrice = product.Price
+                    });
+                }
+                req.ProductList = ProductList;
+
+                //// TODO 未來要改成獨立Server建立訂單編號
                 string orderId = OrderBusiness.CreateOrder(dbContext, req);
+
+                dbContext.ShoppingCarts.RemoveRange(carts);
+
                 dbContext.SaveChanges();
                 return orderId;
             }

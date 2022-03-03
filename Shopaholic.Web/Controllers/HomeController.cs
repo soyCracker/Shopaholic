@@ -6,6 +6,7 @@ using Shopaholic.Service.Services;
 using Shopaholic.Web.Model.Responses;
 using Shopaholic.Web.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers
 {
@@ -25,8 +26,14 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
+            var tokenInfo = HttpContext.User;
+            var uid = tokenInfo.FindFirst("user_id");
+            var name = tokenInfo.FindFirst("name");
+            var email = tokenInfo.FindFirst(ClaimTypes.Email);
+            var isAuth= HttpContext.User.Identity.IsAuthenticated;
             return View();
         }
 
@@ -34,7 +41,6 @@ namespace Shopaholic.Web.Controllers
         {
             return View();
         }
-
 
         /// <summary>
         /// 取得商品類別清單
@@ -58,12 +64,6 @@ namespace Shopaholic.Web.Controllers
         public IActionResult Test()
         {
             return Ok(new { Value = true, ErrorCode = 0, Res = "Good Auth" });
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

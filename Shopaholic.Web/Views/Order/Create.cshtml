@@ -1,0 +1,232 @@
+﻿
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">結帳</h1>
+            </div><!-- /.col -->           
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+
+
+<section class="content">
+    <div id="FormTool" class="row">
+        <div class="col-md-10">
+            <div class="card">      
+                <div class="card-body p-0">
+                    <table class="table table-striped projects">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%">
+                            
+                                </th>
+                                <th style="width: 40%">
+                                    商品名稱
+                                </th>
+                                <th style="width: 20%">
+                                    數量
+                                </th>
+                                <th style="width: 20%">
+                                    價格
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item) in cartList" v-bind:key="item.Id">
+                                <td>
+                                    <img v-bind:src="item.ProductImage"  height="100">                           
+                                </td>
+                                <td>
+                                    {{ item.ProductName }}                                                   
+                                </td>  
+                                <td>
+                                    {{ item.Quantity }}                         
+                                </td> 
+                                <td>
+                                    {{ item.Price*item.Quantity }}                         
+                                </td>  
+                            </tr>                        
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <label>總金額</label><div>{{ totalPrice }}</div> 
+                </div>  
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <!-- general form elements -->
+            <div class="card card-outline card-info">
+                
+                <!-- /.card-header -->
+                <!-- form start -->
+                
+                <div class="card-body">                  
+
+                    <validation-observer ref="validObserver" v-slot="{ valid }" >
+                        <validation-provider rules="required" v-slot="{ errors }">
+                            <div class="form-group">
+                                <label>收貨人</label>
+                                <input class="form-control" v-model="nameInput" placeholder="輸入姓名">
+                                <span>{{ errors[0] }}</span>
+                            </div> 
+                        </validation-provider>           
+
+                        <validation-provider rules="required" v-slot="{ errors }">
+                            <div class="form-group">
+                                <label>收貨地址</label>
+                                <input class="form-control" v-model="addressInput" placeholder="輸入地址">
+                                <span>{{ errors[0] }}</span>
+                            </div>
+                        </validation-provider>
+                     
+                        <validation-provider rules="required" v-slot="{ errors }">
+                            <div class="form-group">
+                                <label>連絡電話</label>
+                                <input class="form-control" v-model="phoneInput" placeholder="輸入電話">
+                                <span>{{ errors[0] }}</span>
+                            </div> 
+                        </validation-provider>                    
+                    </validation-observer>                   
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <a v-on:click="CreateOrder" v-on:keydown.enter="CreateOrder" class="btn btn-primary">付款</a>
+                </div>                
+            </div>
+            <!-- /.card -->
+        </div>       
+    </div><!-- /.container-fluid -->
+</section>
+
+
+@section Scripts{
+    <script>  
+
+        Vue.component('validation-provider', VeeValidate.ValidationProvider);
+        Vue.component('validation-observer', VeeValidate.ValidationObserver);
+                
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                userEmail: localStorage.getItem('signInId'),
+                createOrderApi: baseurl + "/Order/api/CreateOrder",
+                payApi: baseurl + "/Order/api/Pay",
+                cartApi: baseurl + "/Cart/api/GetCart",
+                cartList: {},
+                totalPrice: 0,
+
+                nameInput: '',
+                addressInput: '',
+                phoneInput: '',
+            },
+            mounted: function(){
+                var self = this;  
+                self.GetCartList();
+            },
+            methods:
+            {       
+                GetCartList: function () {
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['Email']: self.userEmail,                        
+                    };
+
+                    axios.post(self.cartApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.cartList = result.data.Data;     
+                                self.totalPrice = self.ComputeTotalPrice(self.cartList);
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                ComputeTotalPrice: function(cartList){
+                    let totalPrice = 0;
+                    cartList.forEach(function(item) {
+                        totalPrice += item.Price*item.Quantity;
+                    });
+                    return totalPrice;
+                },
+
+                CreateOrder: function(){
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['Email']: self.userEmail,   
+                        ['ReceiveMan']: self.nameInput,
+                        ['Phone']: self.phoneInput,
+                        ['Address']: self.addressInput
+                    };
+
+                    axios.post(self.createOrderApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.Pay(result.data.Data);
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                Pay: function(orderId){
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['Price']: self.totalPrice,   
+                        ['OrderId']: orderId
+                    };
+
+                    axios.post(self.payApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                ToastUtil.InfoFire('購買完成')
+                                location.href = window.location.origin;
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                }
+            }
+        });
+
+    </script>
+}

@@ -29,7 +29,7 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<bool> AddToCart([FromBody] AddToCartReq req)
         {
-            bool res = cartService.Add(req.AccountId, req.ProductId, req.Quantity);
+            bool res = cartService.Add(req.Email, req.ProductId, req.Quantity);
             return new MessageModel<bool>
             {
                 Success = res,
@@ -61,7 +61,7 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<List<CartWithProductDTO>> GetCart([FromBody] GetCartListReq req)
         {
-            List<CartWithProductDTO> cartDTOs = cartService.GetCartWithProductList(req.AccountId);
+            List<CartWithProductDTO> cartDTOs = cartService.GetCartWithProductList(req.Email);
             return new MessageModel<List<CartWithProductDTO>>
             {
                 Success = true,
