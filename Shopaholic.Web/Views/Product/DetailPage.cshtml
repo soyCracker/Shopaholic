@@ -57,17 +57,16 @@
                                 </div>                                
                             </div>   
                             
-                            <div class="row mb-2">
-                                <div class="col-sm-6">
-                                    <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-primary">加入購物車</a>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label>購買數量</label>
-                                    <input class="form-control" v-model="quantity" placeholder="購買數量">
-                                </div>
+                            <div class="row mb-4">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>購買數量</label>
+                                        <input class="form-control" v-model="quantity" placeholder="購買數量">
+                                        <code>{{ quantityInfo }}</code>
+                                    </div> 
+                                    <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-warning">加入購物車</a>                                    
+                                </div>                               
                             </div>
-
                         </div>                           
                     </div>                 
 
@@ -107,6 +106,7 @@
                 coverVisible: false,
                 quantity: 0,
                 userEmail: localStorage.getItem('signInId'),
+                quantityInfo: '',
             },
             mounted: function(){
                 var self = this;
@@ -139,7 +139,8 @@
                             .then(function (result) {
                                 if(result.data.Success)
                                 {
-                                    ToastUtil.InfoFire('已加入購物車');                   
+                                    ToastUtil.InfoFire('已加入購物車');   
+                                    self.Clear();
                                 }
                                 else
                                 {
@@ -156,16 +157,24 @@
                 AddCartCheck: function () {
                     var self = this;
                     if(self.quantity==0 || self.quantity>self.stockInput){
-                        ToastUtil.ErrorAlert('商品數量錯誤');
+                        //ToastUtil.ErrorAlert('商品數量錯誤');
+                        self.quantityInfo = '商品數量錯誤';
                         return false;
                     }
                     else if(!self.userEmail){
                         ToastUtil.ErrorAlert('請重新登入!');
+                        //self.quantityInfo = '請重新登入!';
                         return false;
                     }
                     else{
                         return true;
                     }
+                },
+
+                Clear: function(){
+                    var self = this;
+                    self.quantityInfo = '';
+                    self.quantity = 0;
                 }
             }
         });
