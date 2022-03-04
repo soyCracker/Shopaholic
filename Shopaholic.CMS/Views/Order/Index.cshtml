@@ -78,7 +78,7 @@
                         </td>  
                         <td>
                             <div v-if=item.IsFinish>已完成</div>       
-                            <div v-else>未完成</div>                        
+                            <div v-else>{{ item.StatusMsg }}</div>                        
                         </td>
                         <td>
                             {{ item.FormatCreateTime }}                       

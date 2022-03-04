@@ -19,5 +19,10 @@ namespace Shopaholic.Service.Services
         {
             throw new NotImplementedException();
         }
+
+        public bool Pay(PayReq req)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

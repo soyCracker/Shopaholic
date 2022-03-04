@@ -16,5 +16,6 @@ namespace Shopaholic.Service.Model.Moels
         public string FormatCreateTime { get; set; }
         public string ShipNumber { get; set; }
         public int? FailCode { get; set; }
+        public string StatusMsg { get; set; }
     }
 }

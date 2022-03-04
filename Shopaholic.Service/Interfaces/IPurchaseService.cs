@@ -10,6 +10,6 @@ namespace Shopaholic.Service.Interfaces
     public interface IPurchaseService
     {
         string CreateOrder(PurchaseReq req);
-        bool Pay(int price);
+        bool Pay(PayReq req);
     }
 }

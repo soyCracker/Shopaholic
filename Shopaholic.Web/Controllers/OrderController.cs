@@ -63,13 +63,29 @@ namespace Shopaholic.Web.Controllers
         }
 
         /// <summary>
-        /// 建立訂單
+        /// 付款
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<bool> Pay([FromBody] PayReq req)
         {
-            var res = purchaseService.Pay(req.Price);
+            var res = purchaseService.Pay(req);
+            return new MessageModel<bool>
+            {
+                Success = res,
+                Msg = res != null ? "" : "Fail",
+                Data = res
+            };
+        }
+
+        /// <summary>
+        /// 申請退貨
+        /// </summary>
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public MessageModel<bool> ApplyReturn([FromBody] OrderApplyReturnReq req)
+        {
+            var res = orderService.ApplyReturn(req.OrderId);
             return new MessageModel<bool>
             {
                 Success = res,

@@ -68,37 +68,33 @@
                 <!-- form start -->
                 
                 <div class="card-body">                  
-
-                    <validation-observer ref="validObserver" v-slot="{ valid }" >
-                        <validation-provider rules="required" v-slot="{ errors }">
-                            <div class="form-group">
-                                <label>收貨人</label>
-                                <input class="form-control" v-model="nameInput" placeholder="輸入姓名">
-                                <span>{{ errors[0] }}</span>
-                            </div> 
-                        </validation-provider>           
-
-                        <validation-provider rules="required" v-slot="{ errors }">
-                            <div class="form-group">
-                                <label>收貨地址</label>
-                                <input class="form-control" v-model="addressInput" placeholder="輸入地址">
-                                <span>{{ errors[0] }}</span>
-                            </div>
-                        </validation-provider>
+                    
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>收貨人</label>
+                            <input class="form-control" v-model="nameInput" placeholder="輸入姓名">
+                            <code>{{ nameInputInfo }}</code>
+                        </div> 
+                    </div> 
+                                  
+                    <div class="form-group">
+                        <label>收貨地址</label>
+                        <input class="form-control" v-model="addressInput" placeholder="輸入地址">
+                        <code>{{ addressInputInfo }}</code>
+                    </div>
                      
-                        <validation-provider rules="required" v-slot="{ errors }">
-                            <div class="form-group">
-                                <label>連絡電話</label>
-                                <input class="form-control" v-model="phoneInput" placeholder="輸入電話">
-                                <span>{{ errors[0] }}</span>
-                            </div> 
-                        </validation-provider>                    
-                    </validation-observer>                   
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>連絡電話</label>
+                            <input class="form-control" v-model="phoneInput" placeholder="輸入電話">
+                            <code>{{ phoneInputInfo }}</code>
+                        </div>  
+                    </div> 
 
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                    <a v-on:click="CreateOrder" v-on:keydown.enter="CreateOrder" class="btn btn-primary">付款</a>
+                    <a v-on:click="CreateOrder" v-on:keydown.enter="CreateOrder" class="btn btn-danger">付款</a>
                 </div>                
             </div>
             <!-- /.card -->
@@ -127,6 +123,10 @@
                 nameInput: '',
                 addressInput: '',
                 phoneInput: '',
+
+                nameInputInfo:'',
+                addressInputInfo:'',
+                phoneInputInfo:'',
             },
             mounted: function(){
                 var self = this;  
@@ -172,30 +172,33 @@
                 CreateOrder: function(){
                     var self = this;              
 
-                    ToastUtil.InfoFire('處理中')
+                    if(self.CheckPostData()){
+                        ToastUtil.InfoFire('處理中')
 
-                    var obj = {
-                        ['Email']: self.userEmail,   
-                        ['ReceiveMan']: self.nameInput,
-                        ['Phone']: self.phoneInput,
-                        ['Address']: self.addressInput
-                    };
+                        var obj = {
+                            ['OrderTypeCode']: 0,
+                            ['Email']: self.userEmail,   
+                            ['ReceiveMan']: self.nameInput,
+                            ['Phone']: self.phoneInput,
+                            ['Address']: self.addressInput
+                        };
 
-                    axios.post(self.createOrderApi, obj)
-                        .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.Pay(result.data.Data);
-                            }
-                            else
-                            {
-                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
-                        })
-                        .catch(function (error) {
-                            ExceptUtil.PostExceptionFuc(error);
-                        });
+                        axios.post(self.createOrderApi, obj)
+                            .then(function (result) {
+                                if(result.data.Success)
+                                {
+                                    self.Pay(result.data.Data);
+                                }
+                                else
+                                {
+                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg)
+                                }                           
+                            })
+                            .catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });
+                    }                    
                 },
 
                 Pay: function(orderId){
@@ -204,7 +207,7 @@
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
-                        ['Price']: self.totalPrice,   
+                        ['Email']: self.userEmail,   
                         ['OrderId']: orderId
                     };
 
@@ -224,7 +227,30 @@
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                }
+                },
+
+                CheckPostData: function(){
+                    var self = this;
+                    self.nameInputInfo = '';
+                    self.addressInputInfo = '';
+                    self.phoneInputInfo = '';
+                    if(!self.nameInput)
+                    {
+                        self.nameInputInfo = '請輸入收貨人';
+                        return false;
+                    }                    
+                    else if(!self.addressInput)
+                    {
+                        self.addressInputInfo = '請輸入地址';
+                        return false;
+                    }                   
+                    else if(!ValiUtil.IsPhone(self.phoneInput))
+                    {
+                        self.phoneInputInfo = '請輸入手機號碼';
+                        return false;
+                    }
+                    return true;
+                },
             }
         });
 

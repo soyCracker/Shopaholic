@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Model.Requests
 {
-    public class PayReq
+    public class OrderApplyReturnReq
     {
-        public string UserId { get; set; }
         [Required]
         public string Email { get; set; }
-        public int Price { get; set; }
         [Required]
         public string OrderId { get; set; }
     }

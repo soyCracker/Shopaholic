@@ -13,5 +13,6 @@ namespace Shopaholic.Service.Common.Constants
         public static readonly int PICKUP = 2;
         public static readonly int SENT = 3;
         public static readonly int ARRIVED = 4;
+        public static readonly int CONFIRM_RETURN = 5;
     }
 }

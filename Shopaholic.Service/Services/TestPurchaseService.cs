@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shopaholic.Service.Common.Constants;
 
 namespace Shopaholic.Service.Services
 {
@@ -49,9 +50,29 @@ namespace Shopaholic.Service.Services
             }
         }      
 
-        public bool Pay(int price)
+        public bool Pay(PayReq req)
         {
-            return true;
+            using (dbContext)
+            {
+                req.UserId = dbContext.CustomerAccounts.SingleOrDefault(x => x.Email==req.Email).AccountId;
+                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==req.OrderId);
+                List<OrderDetail> orderDetails = dbContext.OrderDetails.Where(x => x.OrderId==req.OrderId).ToList();
+                int totalPrice = 0;
+                foreach (var detail in orderDetails)
+                {
+                    int price = dbContext.Products.SingleOrDefault(x => x.Id==detail.ProductId).Price;
+                    totalPrice+=detail.Quantity*price;
+                }
+
+                //金流付款成功
+                if (true)
+                {
+                    order.StateCode = OrderStateCode.PAID;
+                    dbContext.SaveChanges();
+                    return true;
+                }
+                return false;
+            }                           
         }
     }
 }

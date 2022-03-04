@@ -63,6 +63,9 @@
                         <th style="width: 20%">
                             建立日期
                         </th> 
+                        <th style="width: 20%">
+                            
+                        </th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -76,10 +79,16 @@
                         </td>  
                         <td>
                             <div v-if=item.IsFinish>已完成</div>       
-                            <div v-else>未完成</div>                        
+                            <div v-else>{{ item.StatusMsg }}</div>                        
                         </td>
                         <td>
                             {{ item.FormatCreateTime }}                       
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" v-if="(item.FailCode!=1 || item.FailCode!=5)" v-on:click="ApplyReturn(item.OrderId)">
+                                申請退貨
+                            </a>  
+                            <div v-else>已申請退貨</div>
                         </td>
                     </tr>                        
                 </tbody>
@@ -116,6 +125,7 @@
             {
                 userEmail: localStorage.getItem('signInId'),
                 orderSearchApi: baseurl + "/Order/api/Search",
+                orderApplyReturnApi: baseurl + "/Order/api/ApplyReturn/",
                 totalPages: 1,
                 pageSize: 20,
                 currentPage: 1,
@@ -169,11 +179,38 @@
                         });
                 },
 
+                ApplyReturn: function(orderId){
+                    var self = this;
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['Email']: self.userEmail,
+                        ['OrderId']: orderId,                       
+                    };
+
+                    axios.post(self.orderApplyReturnApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                ToastUtil.InfoFire('已申請退貨');   
+                                RefreshUI(1);
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
                 ClearFilter: function(){
                     var self = this;
                     self.searchStr = '';
                     self.RefreshUI(1);
-                }                             
+                },                          
             }
         });
     </script>

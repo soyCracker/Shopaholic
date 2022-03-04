@@ -12,5 +12,7 @@ namespace Shopaholic.Service.Interfaces
         OrderSearchResDTO SearchOrder(string searchStr, int page, int pageSize, string beginTime, string endTime);
 
         OrderSearchResDTO SearchUserOrder(string email, string searchStr, int page, int pageSize, string beginTime, string endTime);
+
+        bool ApplyReturn(string orderId);
     }
 }
