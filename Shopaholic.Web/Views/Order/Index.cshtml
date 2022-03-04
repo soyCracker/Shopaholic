@@ -85,10 +85,12 @@
                             {{ item.FormatCreateTime }}                       
                         </td>
                         <td>
-                            <a class="btn btn-danger" v-if="(item.FailCode!=1 || item.FailCode!=5)" v-on:click="ApplyReturn(item.OrderId)">
-                                申請退貨
-                            </a>  
-                            <div v-else>已申請退貨</div>
+                            <div v-if="(item.FailCode==1 || item.FailCode==5)">已申請退貨</div>
+                            <div v-else>
+                                <a class="btn btn-danger"  v-on:click="ApplyReturn(item.OrderId)">
+                                    申請退貨
+                                </a>
+                            </div>                           
                         </td>
                     </tr>                        
                 </tbody>
@@ -193,7 +195,7 @@
                             if(result.data.Success)
                             {
                                 ToastUtil.InfoFire('已申請退貨');   
-                                RefreshUI(1);
+                                self.RefreshUI(1);
                             }
                             else
                             {
