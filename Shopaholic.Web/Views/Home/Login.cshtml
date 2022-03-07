@@ -45,7 +45,7 @@
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-            FirebaseLog(user);
+            //FirebaseLog(user);
 
             localStorage.setItem('signInId', user.email);
 
@@ -106,8 +106,16 @@
         });
     }
 
-    function LoginPost(url, data) {
-        axios.post(url, data)
+    async function LoginPost(url, data) {
+
+        const myHeader = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + data['AccessToken']
+        };
+
+        await axios.post(url, data, {
+                headers: myHeader
+            })
             .then(res => {
                 ToastUtil.InfoFire('登入中...');
                 if(res.data.Data)

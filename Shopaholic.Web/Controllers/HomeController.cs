@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
@@ -14,11 +15,13 @@ namespace Shopaholic.Web.Controllers
     {
         private readonly ILogger<HomeController> logger;
         private readonly ICategoryService categoryService;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IHttpContextAccessor httpContextAccessor)
         {
             logger = logger;
             this.categoryService = categoryService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public IActionResult Index()
@@ -26,7 +29,7 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Privacy()
         {
             var tokenInfo = HttpContext.User;
@@ -63,6 +66,7 @@ namespace Shopaholic.Web.Controllers
         [Route("[controller]/api/[action]")]
         public IActionResult Test()
         {
+            var isAuth = HttpContext.User.Identity.IsAuthenticated;
             return Ok(new { Value = true, ErrorCode = 0, Res = "Good Auth" });
         }
     }

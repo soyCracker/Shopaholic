@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
@@ -20,11 +22,13 @@ namespace Shopaholic.Web.Controllers
             this.orderService = orderService;
         }
 
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Create()
         {
             return View();

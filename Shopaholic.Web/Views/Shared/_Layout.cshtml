@@ -293,15 +293,31 @@
             data:
             {
                 isLogin: false, 
+                logoutApi: baseurl + '/Auth/api/Logout',
             },
             methods:
             {
-                Logout: function () {
+                Logout: async function () {
                     var self = this;
                     ToastUtil.InfoFire('登出中...');
-                    firebase.auth().signOut().then(function ()
-                    {     
-                        // Sign-out successful.                                                       
+                    firebase.auth().signOut().then(async function ()
+                    {   
+                        // Sign-out successful.   
+                        await axios.post(self.logoutApi)
+                            .then(function (result) {
+                                if(result.data.Success)
+                                {
+                                       console.log('Logout')         
+                                }
+                                else
+                                {
+                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg)
+                                }                           
+                            })
+                            .catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });
                     }).catch(function (error) {
                         // An error happened.
                     });

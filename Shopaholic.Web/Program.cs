@@ -7,6 +7,9 @@ using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Middlewares;
+using Microsoft.AspNetCore.Identity;
+using Shopaholic.Web.Data;
+using Shopaholic.Web.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,10 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DEV")/*,
         providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
 });
+builder.Services.AddDefaultIdentity<CustomerUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ShopaholicCustomerUserContext>().AddDefaultTokenProviders();
+builder.Services.AddDbContext<ShopaholicCustomerUserContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ShopaholicCustomerUserContextConnection")));
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -39,31 +46,11 @@ builder.Services
             ValidAudience = "shopaholic-39229",
             ValidateLifetime = true
         };
-    });
-
-/*
-var FirebaseAuthentication_Issuer = "https://securetoken.google.com/shopaholic-39229";
-var FirebaseAuthentication_Audience = "shopaholic-39229";
-builder.Services.AddFirebaseAuthentication(FirebaseAuthentication_Issuer,
-                                   FirebaseAuthentication_Audience);*/
-
-/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.Authority = "https://securetoken.google.com/shopaholic-39229";
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidIssuer = "https://securetoken.google.com/shopaholic-39229",
-                            ValidateAudience = true,
-                            ValidAudience = "shopaholic-39229",
-                            ValidateLifetime = true
-                        };
-                    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);*/
+    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
 // Add services to the container.
 builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
-    //¨ú®øjson¤p¾m®p¦¡©R¦Wªk
+    //ï¿½ï¿½ï¿½ï¿½jsonï¿½pï¿½mï¿½pï¿½ï¿½ï¿½Rï¿½Wï¿½k
     .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
 var app = builder.Build();

@@ -1,0 +1,2 @@
+﻿Add-Migration InitialIdentity -Context ShopaholicCustomerUserContext
+Update-Database -Context ShopaholicCustomerUserContext
