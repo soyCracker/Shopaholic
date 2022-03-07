@@ -9,8 +9,6 @@ namespace Shopaholic.Web.Model.Requests
 {
     public class UserOrderSearchReq
     {
-        [SwaggerSchema("使用者Email")]
-        public string Email { get; set; }
         [SwaggerSchema("搜索字串")]
         public string SearchStr { get; set; }
         [SwaggerSchema("頁數")]

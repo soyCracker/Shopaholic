@@ -39,7 +39,10 @@ builder.Services
             ValidAudience = "shopaholic-39229",
             ValidateLifetime = true
         };
-    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options=>
+    {
+        //options.LoginPath = new PathString("/Home/Login");
+    });
 
 // Add services to the container.
 builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })

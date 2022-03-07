@@ -125,7 +125,6 @@
             el: '#FormTool',
             data:
             {
-                userEmail: localStorage.getItem('signInId'),
                 orderSearchApi: baseurl + "/Order/api/Search",
                 orderApplyReturnApi: baseurl + "/Order/api/ApplyReturn/",
                 totalPages: 1,
@@ -154,7 +153,6 @@
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
-                        ['Email']: self.userEmail,
                         ['Page']: page,
                         ['PageSize']: self.pageSize,
                         ['SearchStr']: self.searchStr,
@@ -186,7 +184,6 @@
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
-                        ['Email']: self.userEmail,
                         ['OrderId']: orderId,                       
                     };
 

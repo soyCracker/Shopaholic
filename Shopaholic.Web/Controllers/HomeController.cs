@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
-using Shopaholic.Service.Services;
 using Shopaholic.Web.Model.Responses;
-using Shopaholic.Web.Models;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers

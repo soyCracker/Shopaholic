@@ -15,7 +15,6 @@ namespace Shopaholic.Web.Model.Requests
         public string UserId { get; set; }
         [Required]
         public string ReceiveMan { get; set; }
-        [Required]
         public string Email { get; set; }
         [Required]
         public string Phone { get; set; }

@@ -10,7 +10,6 @@ namespace Shopaholic.Web.Model.Requests
     public class PayReq
     {
         public string UserId { get; set; }
-        [Required]
         public string Email { get; set; }
         public int Price { get; set; }
         [Required]
