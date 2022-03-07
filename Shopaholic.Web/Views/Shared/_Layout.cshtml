@@ -241,12 +241,10 @@
             if (user) {
                 // User is signed in.
                 LoginTool.isLogin = true;
-                localStorage.setItem('signInId', user.email);
             }
             else
             {
                 LoginTool.isLogin = false;
-                localStorage.removeItem('signInId'); 
             }
         }); 
 
@@ -293,18 +291,49 @@
             data:
             {
                 isLogin: false, 
+                logoutApi: baseurl + '/Auth/api/Logout',
+                loginStateApi: baseurl + '/Auth/api/GetLoginState',
             },
             methods:
             {
-                Logout: function () {
+                Logout: async function () {
                     var self = this;
-                    ToastUtil.InfoFire('登出中...');
-                    firebase.auth().signOut().then(function ()
+                    //ToastUtil.InfoFire('登出中...');
+                    firebase.auth().signOut().then(async function ()
                     {     
-                        // Sign-out successful.                                                       
+                        // Sign-out successful. 
+                        await axios.post(self.logoutApi)
+                            .then(function (result) {
+                                if(result.data.Data)
+                                {
+                                    console.log('Logout')   
+                                    self.isLogin = false;
+                                }
+                                else
+                                {
+                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg)
+                                }                           
+                            })
+                            .catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });
                     }).catch(function (error) {
                         // An error happened.
+                        ToastUtil.ErrorAlert('Firebase logout error')
                     });
+                },
+
+                GetLoginState: function () {
+                    var self = this;
+                    console.log('GetLoginState()')
+                    axios.post(self.loginStateApi)
+                        .then(function (result) {
+                            self.isLogin = result.data.Data;                             
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
                 }
             },
         });

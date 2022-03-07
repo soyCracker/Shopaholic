@@ -39,27 +39,7 @@ builder.Services
             ValidAudience = "shopaholic-39229",
             ValidateLifetime = true
         };
-    });
-
-/*
-var FirebaseAuthentication_Issuer = "https://securetoken.google.com/shopaholic-39229";
-var FirebaseAuthentication_Audience = "shopaholic-39229";
-builder.Services.AddFirebaseAuthentication(FirebaseAuthentication_Issuer,
-                                   FirebaseAuthentication_Audience);*/
-
-/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.Authority = "https://securetoken.google.com/shopaholic-39229";
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidIssuer = "https://securetoken.google.com/shopaholic-39229",
-                            ValidateAudience = true,
-                            ValidAudience = "shopaholic-39229",
-                            ValidateLifetime = true
-                        };
-                    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);*/
+    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
 // Add services to the container.
 builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })

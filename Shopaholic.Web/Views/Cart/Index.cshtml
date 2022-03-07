@@ -73,17 +73,13 @@
     <!-- /.card -->
 
 </div>
-<script src="~/js/FirebaseAuth.js"></script>
 @section Scripts{
-    
-
     <script>
 
         var FormTool = new Vue({
             el: '#FormTool',
             data:
             {
-                userEmail: localStorage.getItem('signInId'),
                 deleteApi: baseurl + "/Cart/api/Delete",
                 cartApi: baseurl + "/Cart/api/GetCart",
                 cartList: {},
@@ -98,13 +94,9 @@
                 GetCartList: function () {
                     var self = this;              
 
-                    ToastUtil.InfoFire('處理中')
+                    ToastUtil.InfoFire('處理中');
 
-                    var obj = {
-                        ['Email']: self.userEmail,                        
-                    };
-
-                    axios.post(self.cartApi, obj)
+                    axios.post(self.cartApi)
                         .then(function (result) {
                             if(result.data.Success)
                             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
@@ -26,13 +27,12 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        // Firebase auth只針對api，view的auth是依靠Cookie-based Authentication，要在action指定
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Privacy()
         {
             var tokenInfo = HttpContext.User;
-            var uid = tokenInfo.FindFirst("user_id");
-            var name = tokenInfo.FindFirst("name");
-            var email = tokenInfo.FindFirst(ClaimTypes.Email);
+            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
             var isAuth= HttpContext.User.Identity.IsAuthenticated;
             return View();
         }

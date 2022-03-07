@@ -113,7 +113,6 @@
             el: '#FormTool',
             data:
             {
-                userEmail: localStorage.getItem('signInId'),
                 createOrderApi: baseurl + "/Order/api/CreateOrder",
                 payApi: baseurl + "/Order/api/Pay",
                 cartApi: baseurl + "/Cart/api/GetCart",
@@ -139,11 +138,7 @@
 
                     ToastUtil.InfoFire('處理中')
 
-                    var obj = {
-                        ['Email']: self.userEmail,                        
-                    };
-
-                    axios.post(self.cartApi, obj)
+                    axios.post(self.cartApi)
                         .then(function (result) {
                             if(result.data.Success)
                             {
@@ -176,8 +171,7 @@
                         ToastUtil.InfoFire('處理中')
 
                         var obj = {
-                            ['OrderTypeCode']: 0,
-                            ['Email']: self.userEmail,   
+                            ['OrderTypeCode']: 0,  
                             ['ReceiveMan']: self.nameInput,
                             ['Phone']: self.phoneInput,
                             ['Address']: self.addressInput
@@ -206,8 +200,7 @@
 
                     ToastUtil.InfoFire('處理中')
 
-                    var obj = {
-                        ['Email']: self.userEmail,   
+                    var obj = {  
                         ['OrderId']: orderId
                     };
 

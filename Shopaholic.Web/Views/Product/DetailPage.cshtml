@@ -105,7 +105,6 @@
                 content: '@Html.Raw(@Model.Content)',
                 coverVisible: false,
                 quantity: 0,
-                userEmail: localStorage.getItem('signInId'),
                 quantityInfo: '',
             },
             mounted: function(){
@@ -130,7 +129,6 @@
                         ToastUtil.InfoFire('處理中')
 
                         var obj = {
-                            ['Email']: self.userEmail,
                             ['ProductId']: self.productId,
                             ['Quantity']: self.quantity,
                         };
@@ -159,11 +157,6 @@
                     if(self.quantity==0 || self.quantity>self.stockInput){
                         //ToastUtil.ErrorAlert('商品數量錯誤');
                         self.quantityInfo = '商品數量錯誤';
-                        return false;
-                    }
-                    else if(!self.userEmail){
-                        ToastUtil.ErrorAlert('請重新登入!');
-                        //self.quantityInfo = '請重新登入!';
                         return false;
                     }
                     else{

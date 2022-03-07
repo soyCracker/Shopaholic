@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
 using Shopaholic.Web.Model.Responses;
+using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers
 {
@@ -17,19 +20,25 @@ namespace Shopaholic.Web.Controllers
             this.cartService = cartService;
         }
 
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Index()
         {
+            /*var tokenInfo = HttpContext.User;
+            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;*/
             return View();
         }
 
         // <summary>
         /// 加入購物車
         /// </summary>
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<bool> AddToCart([FromBody] AddToCartReq req)
         {
-            bool res = cartService.Add(req.Email, req.ProductId, req.Quantity);
+            var tokenInfo = HttpContext.User;
+            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
+            bool res = cartService.Add(email, req.ProductId, req.Quantity);
             return new MessageModel<bool>
             {
                 Success = res,
@@ -41,6 +50,7 @@ namespace Shopaholic.Web.Controllers
         // <summary>
         /// 刪除購物車商品
         /// </summary>
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<bool> Delete([FromBody] DeleteCartProductReq req)
@@ -55,13 +65,16 @@ namespace Shopaholic.Web.Controllers
         }
 
         // <summary>
-        /// 刪除購物車商品
+        /// 取得購物車商品
         /// </summary>
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<List<CartWithProductDTO>> GetCart([FromBody] GetCartListReq req)
+        public MessageModel<List<CartWithProductDTO>> GetCart()
         {
-            List<CartWithProductDTO> cartDTOs = cartService.GetCartWithProductList(req.Email);
+            var tokenInfo = HttpContext.User;
+            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
+            List<CartWithProductDTO> cartDTOs = cartService.GetCartWithProductList(email);
             return new MessageModel<List<CartWithProductDTO>>
             {
                 Success = true,

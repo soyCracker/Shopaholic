@@ -38,22 +38,18 @@
 
 
 <script>
-
     var provider = new firebase.auth.GoogleAuthProvider();
 
     // 登入狀態變換
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-            FirebaseLog(user);
-
-            localStorage.setItem('signInId', user.email);
+            //FirebaseLog(user);
 
             firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
-                console.log("ID Token: ", idToken);
+                //console.log("ID Token: ", idToken);
                 var userData =
                 {
-                    ['AccessToken']: idToken,
                     ['Uid']: user.uid,
                     ['DisplayName']: user.displayName,
                     ['Email']: user.email,
@@ -62,7 +58,7 @@
                     ['IsAnonymous']: user.isAnonymous,
                 };
                    
-                LoginPost(window.location.origin + "/Auth/api/Login", userData);
+                LoginPost(window.location.origin + "/Auth/api/Login", userData, idToken);
             }).catch(function (error) {
                 // Handle error
                 ToastUtil.ErrorAlert('登入失敗');
@@ -94,7 +90,7 @@
                 var token = result.credential.accessToken;
             }
             // The signed-in user info.
-            var user = result.user;
+            var user = result.user;           
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
@@ -106,8 +102,16 @@
         });
     }
 
-    function LoginPost(url, data) {
-        axios.post(url, data)
+    async function LoginPost(url, data, accessToken) {
+
+        const myHeader = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + accessToken
+        };
+
+        await axios.post(url, data, {
+                headers: myHeader
+            })
             .then(res => {
                 ToastUtil.InfoFire('登入中...');
                 if(res.data.Data)
