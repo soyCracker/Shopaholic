@@ -1,5 +1,346 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using Shopaholic.CMS.Model.ViewModels
+@model OrderIdVM
+
+<div id="FormTool">
+
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">訂單詳細資料</h1>
+                </div><!-- /.col -->                
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <div class="text-center">
+                <div class="progress-group">
+                    訂單進度
+                    <span class="float-right"><b>{{ progressNum }}</b>%</span>
+                    <div class="progress progress-sm">
+                    <div class="progress-bar bg-primary" v-bind:style="'width: ' + progressNum + '%'"></div>
+                    </div>
+                </div>
+                <!-- /.progress-group -->
+            </div>                       
+        </div>
+        
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-sm-4">
+                    <span>訂單編號: <b>{{ orderId }}</b></span>
+                </div>
+
+                <div class="col-sm-4">
+                    <span>貨運編號: <b>{{ orderAllData.ShipNumber }}</b></span>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-4">
+                    <span>使用者Email: <b>{{ orderAllData.Email }}</b></span>
+                </div>
+
+                <div class="col-sm-4">
+                    <span>收貨人: <b>{{ orderAllData.ReceiveMan }}</b></span>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-4">
+                    <span>連絡電話: <b>{{ orderAllData.Phone }}</b></span>
+                </div>
+
+                <div class="col-sm-4">
+                    <span>地址: <b>{{ orderAllData.Address }}</b></span>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">
+                                StatusCode
+                            </th>
+                            <th style="width: 20%">
+                                FailCode
+                            </th>
+                            <th style="width: 20%">
+                                完成狀態
+                            </th>
+                            <th style="width: 20%">
+                                出貨狀態
+                            </th>
+                            <th style="width: 20%">
+                                狀態訊息
+                            </th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                {{ orderAllData.Status }}
+                            </td>
+                            <td>
+                                {{ orderAllData.FailCode }}                        
+                            </td>  
+                            <td>
+                                {{ orderAllData.IsFinish }}                        
+                            </td>
+                            <td>
+                                {{ orderAllData.IsSent }}                         
+                            </td>  
+                            <td>
+                                {{ orderAllData.StatusMsg }}                       
+                            </td>
+                        </tr>                        
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="row mb-2">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">
+                                商品編號
+                            </th>
+                            <th style="width: 20%">
+                                名稱
+                            </th>
+                            <th style="width: 20%">
+                                數量
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item) in orderAllData.Details" v-bind:key="item.ProductId">
+                            <td>
+                                {{ item.ProductId }}
+                            </td>
+                            <td>
+                                {{ item.ProductName }}                        
+                            </td>  
+                            <td>
+                                {{ item.Quantity }}                        
+                            </td>
+                        </tr>                        
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="card-tools">
+            <div class="row mb-2">
+                <div class="form-group col-sm-4 text-center">  
+                    <a v-if="pickupAble" v-on:click="PickupConfirm" class="btn btn-primary">撿貨確認</a>
+                </div>
+                <div class="form-group col-sm-4 text-center">                    
+                    <a v-if="returnAble" v-on:click="ReturnConfirm" class="btn btn-info">退貨確認</a>
+                </div>
+                <div class="form-group col-sm-4 text-center">                   
+                    <a v-if="finishAble" v-on:click="ManualFinish" class="btn btn-danger">手動完成</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</div>
+
+@section Scripts{
+    <script>
+
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                getOrderDataApi: baseurl + '/Order/api/GetOrderData',
+                pickupConfirmApi: baseurl + '/Order/api/PickupConfirm',
+                returnConfirmApi: baseurl + '/Order/api/ReturnConfirm',
+                manualFinishApi: baseurl + '/Order/api/ManunlFinish',
+                progressNum: 0,
+                orderId: '@Html.Raw(@Model.OrderId)',
+                orderAllData: null,
+                pickupAble: false,
+                returnAble: false,
+                finishAble: false,
+            },
+            mounted: function()
+            {
+                var self = this;
+                self.RefreshUI();
+            },
+            methods:
+            {
+                RefreshUI: function () {
+                    var self = this;
+                                  
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['OrderId']: self.orderId,
+                    };
+
+                    axios.post(self.getOrderDataApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.orderAllData = result.data.Data;   
+                                self.SetProcessNum(self.orderAllData);
+                                self.PickupBtnAble(self.orderAllData);
+                                self.ReturnBtnAble(self.orderAllData);
+                                self.FinishBtnAble(self.orderAllData);
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },   
+                
+                PickupConfirm: function(){
+                    var self = this;
+                                  
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['OrderId']: self.orderId,
+                    };
+
+                    axios.post(self.pickupConfirmApi, obj)
+                        .then(function (result) {
+                            if(result.data.Data)
+                            {
+                                self.RefreshUI();           
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                ReturnConfirm: function(){
+                    var self = this;
+                                  
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['OrderId']: self.orderId,
+                    };
+
+                    axios.post(self.returnConfirmApi, obj)
+                        .then(function (result) {
+                            if(result.data.Data)
+                            {
+                                self.RefreshUI();           
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                ManualFinish: function(){
+                    var self = this;
+                                  
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {
+                        ['OrderId']: self.orderId,
+                    };
+
+                    axios.post(self.manualFinishApi, obj)
+                        .then(function (result) {
+                            if(result.data.Data)
+                            {
+                                self.RefreshUI();           
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg)
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
+
+                SetProcessNum: function(orderAllData){
+                    if(orderAllData.IsFinish){
+                        self.progressNum = 100;
+                    }
+                    else if(orderAllData.Status == 0){
+                        self.progressNum = 0;
+                    }
+                    else if(orderAllData.Status == 1){
+                        self.progressNum = 20;
+                    }
+                    else if(orderAllData.Status == 2){
+                        self.progressNum = 40;
+                    }
+                    else if(orderAllData.Status == 3){
+                        self.progressNum = 60;
+                    }
+                    else if(orderAllData.Status == 4){
+                        self.progressNum = 80;
+                    }                   
+                },
+
+                PickupBtnAble: function(orderAllData){
+                    var self = this;
+                    if(orderAllData.Status==1 && orderAllData.FailCode==0){
+                        self.pickupAble = true;
+                    }
+                    else{
+                        self.pickupAble = false;
+                    }
+                },
+
+                ReturnBtnAble: function(orderAllData){
+                    var self = this;
+                    if(orderAllData.Status==4 && orderAllData.FailCode==1){
+                        self.returnAble = true;
+                    }
+                    else{
+                        self.returnAble = false;
+                    }
+                },
+
+                FinishBtnAble: function(orderAllData){
+                    var self = this;
+                    if(!orderAllData.IsFinish){
+                        self.finishAble = true;
+                    }
+                    else{
+                        self.finishAble = false;
+                    }
+                }
+            }
+        });
+    </script>
 }

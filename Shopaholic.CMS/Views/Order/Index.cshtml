@@ -47,7 +47,7 @@
             </div>                       
         </div>
         
-        <div id="TableTool" class="card-body p-0">
+        <div class="card-body p-0">
             <table class="table table-striped projects">
                 <thead>
                     <tr>
@@ -68,7 +68,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item) in orderList" v-bind:key="item.id">
+                    <tr v-for="(item) in orderList" v-bind:key="item.OrderId">
                         <td>
                             {{ item.OrderId }}
                         </td>
@@ -84,7 +84,7 @@
                             {{ item.FormatCreateTime }}                       
                         </td>
                         <td class="project-actions text-right">        
-                            <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.Id">
+                            <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.OrderId">
                                 <i class="fas fa-pencil-alt">
                                 </i>
                                 修改

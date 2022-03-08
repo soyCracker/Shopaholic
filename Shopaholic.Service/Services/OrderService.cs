@@ -180,5 +180,104 @@ namespace Shopaholic.Service.Services
             }
                
         }
+
+        public OrderAllDataDTO GetOrderData(string orderId)
+        {
+            using(dbContext)
+            {
+                var orderHeader = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==orderId);
+                var shipment = dbContext.Shipments.SingleOrDefault(x => x.OrderId==orderId);
+                List<OrderDetail> orderDetails = dbContext.OrderDetails.Where(x => x.OrderId==orderId).ToList();
+                List<OrderDetailDTO> detailDtoList = new List<OrderDetailDTO>();
+                foreach (var orderDetail in orderDetails)
+                {
+                    detailDtoList.Add(new OrderDetailDTO
+                    {
+                        OrderId = orderDetail.OrderId,
+                        ProductId = orderDetail.ProductId,
+                        Quantity = orderDetail.Quantity,
+                        RealQuantity = orderDetail.RealQuantity,
+                        IsBroken = orderDetail.IsBroken,
+                        BrokenQuantity = orderDetail.BrokenQuantity,
+                        CreateTime = orderDetail.CreateTime,
+                        UpdateTime = orderDetail.UpdateTime,
+                        ProductName = dbContext.Products.SingleOrDefault(x => x.Id==orderDetail.ProductId).Name
+                    });
+                }
+                OrderAllDataDTO orderAllDataDTO = new OrderAllDataDTO
+                {
+                    OrderId = orderId,
+                    UserId = orderHeader.UserId,
+                    Status = orderHeader.StateCode,
+                    FailCode = orderHeader.FailCode,
+                    IsFinish = orderHeader.IsFinish,
+                    IsSent = orderHeader.IsSent,
+                    ShipNumber = shipment.ShipNumber,
+                    FormatCreateTime = TimeUtil.DateTimeToFormatStr(orderHeader.CreateTime, TimeUtil.yyyyMMddhhmmssFormat),
+                    StatusMsg = GetOrderStatus(orderHeader.StateCode, orderHeader.FailCode),
+                    ReceiveMan = shipment.ReceiveMan,
+                    Phone = shipment.Phone,
+                    Address = shipment.Address,
+                    Email = shipment.Email,
+                    Details = detailDtoList
+                };
+                return orderAllDataDTO;
+            }
+        }
+
+        public bool PickupConfirm(string orderId)
+        {
+            using (dbContext)
+            {
+                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==orderId);
+                if(order!=null)
+                {
+                    if ((order.StateCode==OrderStateCode.CREATE || order.StateCode==OrderStateCode.PAID)
+                        && order.FailCode==OrderFailCode.COMMON)
+                    {
+                        order.StateCode = OrderStateCode.PICKUP;
+                        dbContext.SaveChanges();
+                        return true;
+                    }                                                        
+                }
+                return false;
+            }
+        }
+
+        public bool ReturnConfirm(string orderId)
+        {
+            using (dbContext)
+            {
+                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==orderId);
+                if (order!=null)
+                {
+                    if (order.StateCode==OrderStateCode.ARRIVED && order.FailCode==OrderFailCode.RETURN)
+                    {
+                        order.StateCode = OrderStateCode.CONFIRM_RETURN;
+                        dbContext.SaveChanges();
+                        return true;
+                    }                                       
+                }
+                return false;
+            }
+        }
+
+        public bool ForceFinish(string orderId)
+        {
+            using (dbContext)
+            {
+                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==orderId);
+                if (order!=null)
+                {
+                    if (!(bool)order.IsFinish)
+                    {
+                        order.IsFinish = true;
+                        dbContext.SaveChanges();
+                        return true;
+                    }                                    
+                }
+                return false;
+            }
+        }
     }
 }

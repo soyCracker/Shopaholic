@@ -13,6 +13,14 @@ namespace Shopaholic.Service.Interfaces
 
         OrderSearchResDTO SearchUserOrder(string email, string searchStr, int page, int pageSize, string beginTime, string endTime);
 
+        OrderAllDataDTO GetOrderData(string orderId);
+
         bool ApplyReturn(string orderId);
+
+        bool PickupConfirm(string orderId);
+
+        bool ReturnConfirm(string orderId);
+
+        bool ForceFinish(string orderId);
     }
 }
