@@ -32,6 +32,17 @@ var ToastUtil = new Vue({
                 icon: 'info',
                 confirmButtonText: 'Cool'
             })
-        }
+        },
+
+        RedirectAlert: function (info, url) {
+            Swal.fire({
+                title: 'Redirect',
+                text: info,
+                icon: 'info',
+                confirmButtonText: 'OK'
+            }).then(function () {
+                location.href = url;
+            });
+        },
     }
 });

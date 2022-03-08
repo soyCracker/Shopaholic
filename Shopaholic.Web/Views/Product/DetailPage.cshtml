@@ -135,6 +135,7 @@
 
                         axios.post(self.addToCartApi, obj)
                             .then(function (result) {
+
                                 if(result.data.Success)
                                 {
                                     ToastUtil.InfoFire('已加入購物車');   

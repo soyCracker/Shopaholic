@@ -7,7 +7,7 @@ var ToastUtil = new Vue({
     methods:
     {
         InfoFire: function (info) {
-            Swal.fire({               
+            Swal.fire({
                 icon: 'info',
                 title: info,
                 position: 'top-end',
@@ -32,6 +32,17 @@ var ToastUtil = new Vue({
                 icon: 'info',
                 confirmButtonText: 'Cool'
             })
-        }
+        },
+
+        RedirectAlert: function (info, url) {
+            Swal.fire({
+                title: 'Redirect',
+                text: info,
+                icon: 'info',
+                confirmButtonText: 'OK'
+            }).then(function () {
+                location.href = url;
+            });
+        },
     }
 });

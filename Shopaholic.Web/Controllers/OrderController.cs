@@ -30,7 +30,7 @@ namespace Shopaholic.Web.Controllers
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
-        public IActionResult Create()
+        public IActionResult CreatePage()
         {
             return View();
         }

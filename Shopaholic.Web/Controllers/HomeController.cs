@@ -34,7 +34,7 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        public IActionResult LoginPage()
         {
             return View();
         }

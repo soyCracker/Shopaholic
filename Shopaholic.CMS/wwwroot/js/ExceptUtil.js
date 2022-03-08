@@ -8,13 +8,12 @@ var ExceptUtil = new Vue({
     methods:
     {
         PostExceptionFuc: function (error) {
-            if (error.response) {
-                console.log(error.response.data); // => the response payload 
-                ToastUtil.ErrorAlert('Success:' + error.response.data.Success + '\n' +
-                    'Msg:' + error.response.data.Msg)
+            if (error.response.status == 401) {
+
+                ToastUtil.RedirectAlert(error.response.status + ' 未登入', window.location.origin + '/Home/LoginPage')
             }
             else {
-                ToastUtil.ErrorAlert('post error')
+                ToastUtil.ErrorAlert(error.response.status + ' post error')
             }
         }
     }

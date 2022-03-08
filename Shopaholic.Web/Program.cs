@@ -7,6 +7,7 @@ using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Middlewares;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,17 @@ builder.Services
         };
     }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options=>
     {
-        //options.LoginPath = new PathString("/Home/Login");
+        options.LoginPath = new PathString(builder.Configuration.GetValue<string>("LoginUrl"));
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.OnStarting(() =>
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                return Task.CompletedTask;
+            });
+            return Task.CompletedTask;
+        };
     });
 
 // Add services to the container.

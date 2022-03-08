@@ -113,7 +113,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Login" class="nav-link" v-if="!isLogin">
+                    <a asp-controller="Home" asp-action="LoginPage" class="nav-link" v-if="!isLogin">
                         <i class="fa-brands fa-google">登入</i>       
                     </a>
                     <a class="nav-link" v-on:click="Logout" v-if="isLogin">
@@ -298,7 +298,7 @@
             {
                 Logout: async function () {
                     var self = this;
-                    //ToastUtil.InfoFire('登出中...');
+                    ToastUtil.InfoFire('登出中...');
                     firebase.auth().signOut().then(async function ()
                     {     
                         // Sign-out successful. 

@@ -30,15 +30,23 @@ namespace Shopaholic.Web.Common.Middlewares
             {
                 await next(httpContext);
 
-                // 404 NotFound
-                if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                bool isApi = Regex.IsMatch(httpContext.Request.Path.Value, "/api/", RegexOptions.IgnoreCase);
+                if(isApi)
                 {
-                    httpContext.Response.Redirect("/Error/Error404");
+                    
                 }
-                else if(httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                else
                 {
-                    httpContext.Response.Redirect("/Error/Error401");
-                }
+                    // 404 NotFound
+                    if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                    {
+                        httpContext.Response.Redirect("/Error/Error404");
+                    }
+                    else if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                    {
+                        httpContext.Response.Redirect("/Error/Error401");
+                    }
+                }                
             }
             catch (Exception ex)
             {
