@@ -69,6 +69,7 @@
     <Build Include="dbo\Tables\Shipment.sql" />
     <Build Include="dbo\Tables\CustomerAccount.sql" />
     <Build Include="dbo\Tables\ShoppingCart.sql" />
+    <Build Include="dbo\Tables\LinePayOrder.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Shopaholic.DB.refactorlog" />

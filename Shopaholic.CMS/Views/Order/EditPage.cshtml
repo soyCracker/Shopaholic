@@ -23,7 +23,7 @@
                     訂單進度
                     <span class="float-right"><b>{{ progressNum }}</b>%</span>
                     <div class="progress progress-sm">
-                    <div class="progress-bar bg-primary" v-bind:style="'width: ' + progressNum + '%'"></div>
+                    <div class="progress-bar bg-warning" v-bind:style="'width: ' + progressNum + '%'"></div>
                     </div>
                 </div>
                 <!-- /.progress-group -->
@@ -38,6 +38,10 @@
 
                 <div class="col-sm-4">
                     <span>貨運編號: <b>{{ orderAllData.ShipNumber }}</b></span>
+                </div>
+
+                <div class="col-sm-4">
+                    <span>建立日期: <b>{{ orderAllData.FormatCreateTime }}</b></span>
                 </div>
             </div>
 
@@ -291,6 +295,7 @@
                 },
 
                 SetProcessNum: function(orderAllData){
+                    var self = this;
                     if(orderAllData.IsFinish){
                         self.progressNum = 100;
                     }

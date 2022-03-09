@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-
-#nullable disable
 
 namespace Shopaholic.Entity.Models
 {
@@ -17,15 +16,16 @@ namespace Shopaholic.Entity.Models
         {
         }
 
-        public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<CustomerAccount> CustomerAccounts { get; set; }
-        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-        public virtual DbSet<OrderHeader> OrderHeaders { get; set; }
-        public virtual DbSet<OrderLog> OrderLogs { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<Shipment> Shipments { get; set; }
-        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
-        public virtual DbSet<WebFlow> WebFlows { get; set; }
+        public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<CustomerAccount> CustomerAccounts { get; set; } = null!;
+        public virtual DbSet<LinePayOrder> LinePayOrders { get; set; } = null!;
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
+        public virtual DbSet<OrderHeader> OrderHeaders { get; set; } = null!;
+        public virtual DbSet<OrderLog> OrderLogs { get; set; } = null!;
+        public virtual DbSet<Product> Products { get; set; } = null!;
+        public virtual DbSet<Shipment> Shipments { get; set; } = null!;
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
+        public virtual DbSet<WebFlow> WebFlows { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -38,7 +38,7 @@ namespace Shopaholic.Entity.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+            modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Category>(entity =>
             {
@@ -47,8 +47,6 @@ namespace Shopaholic.Entity.Models
                 entity.Property(e => e.CreateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Name).IsRequired();
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
@@ -59,19 +57,34 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("CustomerAccount");
 
-                entity.Property(e => e.AccountId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.AccountId).HasMaxLength(50);
 
                 entity.Property(e => e.DisplayName).HasMaxLength(50);
 
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.PhotoUrl).HasColumnName("PhotoURL");
 
                 entity.Property(e => e.Type).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<LinePayOrder>(entity =>
+            {
+                entity.ToTable("LinePayOrder");
+
+                entity.HasIndex(e => e.OrderId, "UQ__LinePayO__C3905BCED2BBA8A0")
+                    .IsUnique();
+
+                entity.Property(e => e.LinePayOrderId).HasMaxLength(50);
+
+                entity.Property(e => e.OrderId).HasMaxLength(50);
+
+                entity.HasOne(d => d.Order)
+                    .WithOne(p => p.LinePayOrder)
+                    .HasPrincipalKey<OrderHeader>(p => p.OrderId)
+                    .HasForeignKey<LinePayOrder>(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LinePayOrder_OrderHeader");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -82,9 +95,7 @@ namespace Shopaholic.Entity.Models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.OrderId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OrderId).HasMaxLength(50);
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
@@ -108,7 +119,7 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("OrderHeader");
 
-                entity.HasIndex(e => e.OrderId, "UQ__OrderHea__C3905BCE7A7339B4")
+                entity.HasIndex(e => e.OrderId, "UQ__OrderHea__C3905BCE3E1B6C41")
                     .IsUnique();
 
                 entity.Property(e => e.CreateTime)
@@ -131,9 +142,7 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.IsSent).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.OrderId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OrderId).HasMaxLength(50);
 
                 entity.Property(e => e.Remark).HasMaxLength(50);
 
@@ -141,9 +150,7 @@ namespace Shopaholic.Entity.Models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.UserId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.UserId).HasMaxLength(50);
             });
 
             modelBuilder.Entity<OrderLog>(entity =>
@@ -156,9 +163,7 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.FailCode).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.OrderId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OrderId).HasMaxLength(50);
 
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
@@ -182,8 +187,6 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.Description).HasColumnName("Description ");
 
-                entity.Property(e => e.Name).IsRequired();
-
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
@@ -198,23 +201,15 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("Shipment");
 
-                entity.Property(e => e.Address)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Address).HasMaxLength(50);
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
-                entity.Property(e => e.OrderId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.OrderId).HasMaxLength(50);
 
-                entity.Property(e => e.Phone)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Phone).HasMaxLength(50);
 
-                entity.Property(e => e.ReceiveMan)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.ReceiveMan).HasMaxLength(50);
 
                 entity.Property(e => e.ShipNumber).HasMaxLength(50);
 
@@ -230,9 +225,7 @@ namespace Shopaholic.Entity.Models
             {
                 entity.ToTable("ShoppingCart");
 
-                entity.Property(e => e.AccountId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.AccountId).HasMaxLength(50);
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnType("datetime")
@@ -252,7 +245,6 @@ namespace Shopaholic.Entity.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Enter)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 

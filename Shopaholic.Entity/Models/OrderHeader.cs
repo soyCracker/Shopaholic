@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace Shopaholic.Entity.Models
 {
     public partial class OrderHeader
@@ -15,10 +13,10 @@ namespace Shopaholic.Entity.Models
         }
 
         public int Id { get; set; }
-        public string OrderId { get; set; }
-        public string UserId { get; set; }
+        public string OrderId { get; set; } = null!;
+        public string UserId { get; set; } = null!;
         public int StateCode { get; set; }
-        public string Remark { get; set; }
+        public string? Remark { get; set; }
         public DateTime UpdateTime { get; set; }
         public DateTime CreateTime { get; set; }
         public int? FailCode { get; set; }
@@ -31,6 +29,7 @@ namespace Shopaholic.Entity.Models
         public bool? IsFinish { get; set; }
         public bool? IsDelete { get; set; }
 
+        public virtual LinePayOrder LinePayOrder { get; set; } = null!;
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<OrderLog> OrderLogs { get; set; }
         public virtual ICollection<Shipment> Shipments { get; set; }

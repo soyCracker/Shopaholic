@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace Shopaholic.Entity.Models
 {
     public partial class OrderDetail
     {
         public int Id { get; set; }
-        public string OrderId { get; set; }
+        public string OrderId { get; set; } = null!;
         public int ProductId { get; set; }
         public int Quantity { get; set; }
         public int CurrentPrice { get; set; }
@@ -18,7 +16,7 @@ namespace Shopaholic.Entity.Models
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
 
-        public virtual OrderHeader Order { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual OrderHeader Order { get; set; } = null!;
+        public virtual Product Product { get; set; } = null!;
     }
 }

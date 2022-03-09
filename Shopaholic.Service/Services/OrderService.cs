@@ -28,7 +28,7 @@ namespace Shopaholic.Service.Services
             using(dbContext)
             {
                 DateTime searchBegin = string.IsNullOrEmpty(beginTime)?SqlDateTime.MinValue.Value:TimeUtil.StrToLocalDateTime(beginTime);
-                DateTime searchEnd = string.IsNullOrEmpty(endTime)?SqlDateTime.MaxValue.Value:TimeUtil.StrToLocalDateTime(endTime);
+                DateTime searchEnd = string.IsNullOrEmpty(endTime)?SqlDateTime.MaxValue.Value:TimeUtil.StrToLocalDateTime(endTime).AddDays(1);
 
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
                 var filterData = dbContext.OrderHeaders.Where(x => ( (x.OrderId.Contains(searchStr)

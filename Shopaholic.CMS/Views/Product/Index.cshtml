@@ -86,7 +86,7 @@
                             {{ item.Stock }}                       
                         </td>
                         <td class="project-actions text-right">        
-                            <a class="btn btn-info btn-sm" v-bind:href="baseurl+'/Product/EditPage/'+item.Id">
+                            <a class="btn btn-info btn-sm" v-bind:href="editPageUrl+item.Id">
                                 <i class="fas fa-pencil-alt">
                                 </i>
                                 修改
@@ -130,6 +130,7 @@
             {
                 deleteApi: baseurl + "/Product/api/Delete",
                 productSearchApi: baseurl + "/Product/api/Search",
+                editPageUrl: baseurl + "/Product/EditPage/",
                 totalPages: 1,
                 pageSize: 20,
                 currentPage: 1,
@@ -143,6 +144,7 @@
             {
                 var self = this;  
                 self.RefreshUI(1);
+                console.log(baseurl);
             },
             methods:
             {
