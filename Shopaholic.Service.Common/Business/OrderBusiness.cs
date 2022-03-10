@@ -14,7 +14,7 @@ namespace Shopaholic.Service.Common.Business
     {
         private static readonly object orderLock = new object();
 
-        public static string CreateOrder(ShopaholicContext dbContext, PurchaseReq req)
+        public static string CreateOrder(ShopaholicContext dbContext, PurchaseOrderCreateReq req)
         {
             string targetOrderId = "";
             lock (orderLock)

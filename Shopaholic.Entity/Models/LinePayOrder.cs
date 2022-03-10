@@ -8,6 +8,7 @@ namespace Shopaholic.Entity.Models
         public int Id { get; set; }
         public string OrderId { get; set; } = null!;
         public string LinePayOrderId { get; set; } = null!;
+        public string? TransactionId { get; set; }
 
         public virtual OrderHeader Order { get; set; } = null!;
     }

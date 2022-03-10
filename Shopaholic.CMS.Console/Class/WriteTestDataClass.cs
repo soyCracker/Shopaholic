@@ -15,10 +15,12 @@ namespace Shopaholic.Base.Console.Class
     public class WriteTestDataClass
     {
         private readonly ILogger<WriteTestDataClass> logger;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public WriteTestDataClass(ILogger<WriteTestDataClass> logger)
+        public WriteTestDataClass(ILogger<WriteTestDataClass> logger, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public void WriteCategory(string conStr)
@@ -87,7 +89,7 @@ namespace Shopaholic.Base.Console.Class
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
+                    IPurchaseService purchaseService = new LinePayPurchaseService(DBClass.GetDbContext(conStr), httpClientFactory);
                     List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
                     purchaseProductList.Add(new PurchaseProductModel
                     {
@@ -95,7 +97,7 @@ namespace Shopaholic.Base.Console.Class
                         Quantity = 5,
                         CurrentPrice = 777
                     });
-                    PurchaseReq req = new PurchaseReq
+                    PurchaseOrderCreateReq req = new PurchaseOrderCreateReq
                     {
                         OrderTypeCode = OrderTypeCode.TEST,
                         UserId = "TEST0000001GGG",
@@ -116,7 +118,7 @@ namespace Shopaholic.Base.Console.Class
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
+                    IPurchaseService purchaseService = new LinePayPurchaseService(DBClass.GetDbContext(conStr), httpClientFactory);
                     List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
                     purchaseProductList.Add(new PurchaseProductModel
                     {
@@ -125,7 +127,7 @@ namespace Shopaholic.Base.Console.Class
                         CurrentPrice = 777
                     });
 
-                    PurchaseReq req = new PurchaseReq
+                    PurchaseOrderCreateReq req = new PurchaseOrderCreateReq
                     {
                         OrderTypeCode = OrderTypeCode.TEST,
                         UserId = "TEST0000001GGG",

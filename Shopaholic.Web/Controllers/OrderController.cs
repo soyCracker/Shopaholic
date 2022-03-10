@@ -60,7 +60,7 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<string> CreateOrder([FromBody] PurchaseReq req)
+        public MessageModel<string> CreateOrder([FromBody] PurchaseOrderCreateReq req)
         {
             var tokenInfo = HttpContext.User;
             req.Email = tokenInfo.FindFirst(ClaimTypes.Email).Value;            
@@ -79,17 +79,32 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<bool> Pay([FromBody] PayReq req)
+        public async Task<MessageModel<PurchasePayRes>> Pay([FromBody] PurchasePayReq req)
         {
-            var tokenInfo = HttpContext.User;
-            req.Email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
-            var res = purchaseService.Pay(req);
-            return new MessageModel<bool>
+            var res = await purchaseService.Pay(req);
+            return new MessageModel<PurchasePayRes>
             {
-                Success = res,
-                Msg = res != null ? "" : "Fail",
+                Success = res.IsSuccess,
+                Msg = res.Msg,
                 Data = res
             };
+        }
+
+        /// <summary>
+        /// LinePay付款確認
+        /// </summary>
+        [Route("[controller]/api/[action]")]
+        [HttpGet]
+        public IActionResult LinePayConfirm([FromQuery] string orderId, [FromQuery]string transactionId)
+        {
+            PurchaseConfirmReq req = new PurchaseConfirmReq
+            {
+                OtherSysOrderId = orderId,
+                TransactionId = transactionId
+            };
+            var res = purchaseService.PayConfirm(req);
+
+            return RedirectToAction("Index", "Order");
         }
 
         /// <summary>

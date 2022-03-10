@@ -115,7 +115,9 @@
             {
                 createOrderApi: baseurl + "/Order/api/CreateOrder",
                 payApi: baseurl + "/Order/api/Pay",
+                payConfirmApi: baseurl + "/Order/api/LinePayConfirm",
                 cartApi: baseurl + "/Cart/api/GetCart",
+                orderIndexPage: baseurl + "/Order/Index",
                 cartList: {},
                 totalPrice: 0,
 
@@ -186,7 +188,7 @@
                                 else
                                 {
                                     ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                            'Msg:' + result.data.Msg)
+                                            'Msg:' + result.data.Msg);
                                 }                           
                             })
                             .catch(function (error) {
@@ -201,20 +203,21 @@
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {  
-                        ['OrderId']: orderId
+                        ['OrderId']: orderId,
+                        ['ConfirmUrl']: self.payConfirmApi
                     };
 
                     axios.post(self.payApi, obj)
                         .then(function (result) {
                             if(result.data.Success)
                             {
-                                ToastUtil.InfoFire('購買完成')
-                                location.href = window.location.origin;
+                                ToastUtil.InfoFire('處理中...')
+                                location.href = result.data.Data.CallbackUrl;
                             }
                             else
                             {
-                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
+                                ToastUtil.RedirectAlert('付款失敗:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg, self.orderIndexPage);
                             }                           
                         })
                         .catch(function (error) {

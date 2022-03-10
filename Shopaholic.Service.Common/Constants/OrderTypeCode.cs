@@ -9,7 +9,7 @@ namespace Shopaholic.Service.Common.Constants
     public class OrderTypeCode
     {
         public static readonly int CREDIT_CARD = 1;
-
         public static readonly int TEST = 0;
+        public static readonly int LINE_PAY = 2;
     }
 }

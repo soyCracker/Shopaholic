@@ -79,6 +79,8 @@ namespace Shopaholic.Entity.Models
 
                 entity.Property(e => e.OrderId).HasMaxLength(50);
 
+                entity.Property(e => e.TransactionId).HasMaxLength(50);
+
                 entity.HasOne(d => d.Order)
                     .WithOne(p => p.LinePayOrder)
                     .HasPrincipalKey<OrderHeader>(p => p.OrderId)

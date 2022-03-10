@@ -17,6 +17,8 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
         providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
 });
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder.Configuration.GetValue<string>("Imgur:ClientID"),
@@ -25,7 +27,7 @@ builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
-builder.Services.AddScoped<IPurchaseService, TestPurchaseService>();
+builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

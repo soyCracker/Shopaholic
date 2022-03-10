@@ -1,4 +1,5 @@
 ﻿using Shopaholic.Web.Model.Requests;
+using Shopaholic.Web.Model.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface IPurchaseService
     {
-        string CreateOrder(PurchaseReq req);
-        bool Pay(PayReq req);
+        string CreateOrder(PurchaseOrderCreateReq req);
+        Task<PurchasePayRes> Pay(PurchasePayReq req);
+        bool PayConfirm(PurchaseConfirmReq req);
     }
 }

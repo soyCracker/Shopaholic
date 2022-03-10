@@ -51,19 +51,19 @@
             <table class="table table-striped projects">
                 <thead>
                     <tr>
-                        <th style="width: 20%">
+                        <th style="width: 15%">
                             訂單編號
                         </th>
-                        <th style="width: 20%">
+                        <th style="width: 15%">
                             出貨狀態
                         </th>
-                        <th style="width: 20%">
+                        <th style="width: 15%">
                             訂單狀態
                         </th>
-                        <th style="width: 20%">
+                        <th style="width: 15%">
                             建立日期
                         </th> 
-                        <th style="width: 20%">
+                        <th style="width: 40%">
                             
                         </th> 
                     </tr>
@@ -85,12 +85,24 @@
                             {{ item.FormatCreateTime }}                       
                         </td>
                         <td>
-                            <div v-if="(item.FailCode==1 || item.FailCode==5)">已申請退貨</div>
-                            <div v-else>
-                                <a class="btn btn-danger"  v-on:click="ApplyReturn(item.OrderId)">
-                                    申請退貨
-                                </a>
-                            </div>                           
+                            <div class="row mb-2">
+                                <div class="col-sm-4">
+                                    <div v-if="(item.Status==0 && item.FailCode==0)">
+                                        <a class="btn btn-info"  v-on:click="Pay(item.OrderId)">
+                                            立即付款
+                                        </a>
+                                    </div>                                 
+                                </div>
+                               
+                                <div class="col-sm-4">
+                                    <div v-if="(item.FailCode==1 || item.FailCode==5)">已申請退貨</div>
+                                    <div v-else>
+                                        <a class="btn btn-danger"  v-on:click="ApplyReturn(item.OrderId)">
+                                            申請退貨/取消
+                                        </a>
+                                    </div>  
+                                </div>
+                            </div>                          
                         </td>
                     </tr>                        
                 </tbody>
@@ -127,6 +139,8 @@
             {
                 orderSearchApi: baseurl + "/Order/api/Search",
                 orderApplyReturnApi: baseurl + "/Order/api/ApplyReturn/",
+                payApi: baseurl + "/Order/api/Pay",
+                payConfirmApi: baseurl + "/Order/api/LinePayConfirm",
                 totalPages: 1,
                 pageSize: 20,
                 currentPage: 1,
@@ -209,7 +223,35 @@
                     var self = this;
                     self.searchStr = '';
                     self.RefreshUI(1);
-                },                          
+                },       
+                
+                Pay: function(orderId){
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {  
+                        ['OrderId']: orderId,
+                        ['ConfirmUrl']: self.payConfirmApi
+                    };
+
+                    axios.post(self.payApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                ToastUtil.InfoFire('處理中...')
+                                location.href = result.data.Data.CallbackUrl;
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('付款失敗:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg);
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                },
             }
         });
     </script>

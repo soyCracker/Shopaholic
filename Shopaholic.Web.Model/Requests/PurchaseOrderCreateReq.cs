@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Model.Requests
 {
-    public class PurchaseReq
+    public class PurchaseOrderCreateReq
     {
         public List<PurchaseProductModel> ProductList { get; set; }
         [Required]
