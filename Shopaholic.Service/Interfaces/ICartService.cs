@@ -14,5 +14,7 @@ namespace Shopaholic.Service.Interfaces
         void Delete(int cartId);
 
         List<CartWithProductDTO> GetCartWithProductList(string email);
+
+        int Count(string accountId);
     }
 }

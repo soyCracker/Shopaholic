@@ -236,5 +236,34 @@ namespace Shopaholic.Service.Services
                 return productSearchResDTO;
             }
         }
+
+        public List<ProductDTO> GetProductByMonthFlowTop()
+        {
+            using (dbContext)
+            {
+                int flowRange = -29;
+                var flowInRange = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) 
+                    && x.CreateTime < DateTime.Now.Date.AddDays(1));
+                var group = flowInRange.GroupBy(x => x.Enter.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Last())
+                    .Select(s => new
+                    {
+                        ProductId = s.Key,
+                        Count = s.Key.Count(),
+                    });
+                var topFive = group.OrderByDescending(o => o.Count).Take(5);
+                List<ProductDTO> productDTOs = new List<ProductDTO>();
+                foreach(var flow in topFive)
+                {
+                    var product = dbContext.Products.SingleOrDefault(x => x.Id.ToString()==flow.ProductId);
+                    productDTOs.Add(new ProductDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                    });
+                }
+                return productDTOs;
+            }
+        }
     }
 }

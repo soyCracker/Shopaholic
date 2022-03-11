@@ -98,4 +98,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ShipmentId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c0e586eb-e18f-4535-bd80-9936ae13a0c3" ChangeDateTime="03/11/2022 03:17:51">
+    <Property Name="ElementName" Value="[dbo].[WebFlow].[UserId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[WebFlow]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserInfo" />
+  </Operation>
 </Operations>

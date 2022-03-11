@@ -60,18 +60,5 @@ namespace Shopaholic.Web.Controllers.Api
                 Data = true
             };
         }
-
-        [Route("[controller]/api/[action]")]
-        [HttpPost]
-        public MessageModel<bool> GetLoginState()
-        {
-            bool isAuth = HttpContext.User.Identity.IsAuthenticated;
-            return new MessageModel<bool>
-            {
-                Success = true,
-                Msg = "登入狀態",
-                Data = isAuth
-            };
-        }
     }
 }

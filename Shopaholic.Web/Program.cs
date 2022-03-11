@@ -1,6 +1,7 @@
 using AspNetCore.Firebase.Authentication.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
@@ -13,10 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS")/*,
-        providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
+        providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
+// IHttpClientFactory
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -28,7 +30,9 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
+builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 
+// Firebase Authentication
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -42,6 +46,7 @@ builder.Services
             ValidAudience = "shopaholic-39229",
             ValidateLifetime = true
         };
+        // 網站本身的Cookie-based Authentication
     }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options=>
     {
         options.LoginPath = new PathString(builder.Configuration.GetValue<string>("LoginUrl"));
@@ -62,6 +67,7 @@ builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
     //取消json小駝峰式命名法
     .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
+// 設定PORT
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12970); // to listen for incoming http connection on port 5001
@@ -89,5 +95,12 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// 取得IP
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+    ForwardedHeaders.XForwardedProto
+});
 
 app.Run();

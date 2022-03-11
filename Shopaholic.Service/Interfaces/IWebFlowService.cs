@@ -11,7 +11,7 @@ namespace Shopaholic.Service.Interfaces
     {
         List<FlowCountDTO> GetMonthFlow();
 
-        void AddFlow(string ip, string enter);
+        void AddFlow(string ip, string enter, string userId);
 
         void AddFlowRange(List<FlowDTO> flowDtoList);
         

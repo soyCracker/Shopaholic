@@ -2,7 +2,54 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div id="FormTool" class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Shopaholic 購物網站展示</p>
 </div>
+
+
+@section Scripts{
+    <script>  
+
+        Vue.component('validation-provider', VeeValidate.ValidationProvider);
+        Vue.component('validation-observer', VeeValidate.ValidationObserver);
+                
+        var FormTool = new Vue({
+            el: '#FormTool',
+            data:
+            {
+                getProductFlowTopApi: baseurl + "/Product/api/GetFlowTopFive",
+                
+            },
+            mounted: function(){
+                var self = this;  
+                self.GetProductFlowTop();
+            },
+            methods:
+            {       
+                GetProductFlowTop: function(){
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                        axios.post(self.getProductFlowTopApi)
+                            .then(function (result) {
+                                if(result.data.Success)
+                                {
+                                    console.log(result.data.Data);
+                                }
+                                else
+                                {
+                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg);
+                                }                           
+                            })
+                            .catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });                  
+                },
+            }
+        });
+
+    </script>
+}

@@ -102,7 +102,10 @@
 
                 <li class="nav-item">
                     <a asp-controller="Cart" asp-action="Index" class="nav-link" v-if="isLogin">
-                        <i class="fa-solid fa-cart-arrow-down">購物車</i>          
+                        <i class="fa-solid fa-cart-arrow-down">
+                            <span v-if="cartCount>0" class="badge badge-danger navbar-badge">{{ cartCount }}</span>
+                            購物車
+                        </i>          
                     </a>
                 </li>
 
@@ -241,6 +244,7 @@
             if (user) {
                 // User is signed in.
                 LoginTool.isLogin = true;
+                LoginTool.GetCartCount();
             }
             else
             {
@@ -293,6 +297,11 @@
                 isLogin: false, 
                 logoutApi: baseurl + '/Auth/api/Logout',
                 loginStateApi: baseurl + '/Auth/api/GetLoginState',
+                getCartCountApi: baseurl + '/Cart/api/Count',
+                cartCount: 0,
+            },
+            mounted: function(){
+                var self = this;               
             },
             methods:
             {
@@ -307,7 +316,7 @@
                                 if(result.data.Data)
                                 {
                                     console.log('Logout')   
-                                    self.isLogin = false;
+                                    self.isLogin = false;                                    
                                 }
                                 else
                                 {
@@ -324,16 +333,13 @@
                     });
                 },
 
-                GetLoginState: function () {
+                GetCartCount: function(){
                     var self = this;
-                    console.log('GetLoginState()')
-                    axios.post(self.loginStateApi)
+                    axios.post(self.getCartCountApi)
                         .then(function (result) {
-                            self.isLogin = result.data.Data;                             
+                            self.cartCount = result.data.Data;                             
                         })
-                        .catch(function (error) {
-                            ExceptUtil.PostExceptionFuc(error);
-                        });
+                        .catch(function (error) {});
                 }
             },
         });

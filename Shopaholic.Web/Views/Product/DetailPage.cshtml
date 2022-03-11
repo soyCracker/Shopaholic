@@ -37,22 +37,20 @@
 
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label>名稱</label>
-                                <div>{{ nameInput }}</div>  
+                                <label>名稱: {{ nameInput }}</label>
                             </div>
 
                             <div class="row mb-2">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>價格</label>
-                                        <div>{{ priceInput }}</div> 
+                                        <label>價格: {{ priceInput }}</label>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>庫存</label>
-                                        <div>{{ stockInput }}</div> 
+                                        <label v-if="stockInput>0">庫存: {{ stockInput }}</label>
+                                        <label v-else><code>無庫存</code></label>
                                     </div> 
                                 </div>                                
                             </div>   
@@ -61,7 +59,10 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>購買數量</label>
-                                        <input class="form-control" v-model="quantity" placeholder="購買數量">
+                                        <!--<input class="form-control" v-model="quantity" placeholder="購買數量">-->
+                                        <select>
+                                            <option v-for="n in quantityMax" v-bind:key="n">{{ n }}</option>
+                                        </select>
                                         <code>{{ quantityInfo }}</code>
                                     </div> 
                                     <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-warning">加入購物車</a>                                    
@@ -96,19 +97,24 @@
             data:
             {
                 addToCartApi: baseurl + "/Cart/api/AddToCart",
+                addFlowApi: baseurl + "/Flow/api/Add",
+                getProductApi: baseurl + "/Product/api/Get",
                 productId: @Model.Id,
-                coverUrl: '@Model.Image',
-                nameInput: '@Html.Raw(@Model.Name)',
-                descInput: '@Html.Raw(@Model.Description)',
-                priceInput: @Model.Price,
-                stockInput: @Model.Stock,
-                content: '@Html.Raw(@Model.Content)',
+                coverUrl: '',
+                nameInput: '',
+                descInput: '',
+                priceInput: 0,
+                stockInput: 0,
+                content: '',
                 coverVisible: false,
-                quantity: 0,
+                quantity: 1,
                 quantityInfo: '',
+                quantityMax:10,
             },
             mounted: function(){
                 var self = this;
+                self.InitUI();
+                self.AddFlow();
             },
             methods:
             {       
@@ -120,6 +126,34 @@
                 CoverHandleHide: function() {
                     var self = this;
                     self.coverVisible = false;
+                },
+
+                InitUI: function(){
+                    var self = this;
+                    ToastUtil.InfoFire('處理中')
+
+                    axios.get(self.getProductApi + '?ID=' + self.productId)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                self.productId = result.data.Data.Id;
+                                self.coverUrl = result.data.Data.Image;
+                                self.nameInput = result.data.Data.Name;
+                                self.descInput = result.data.Data.Description;
+                                self.priceInput = result.data.Data.Price;
+                                self.stockInput = result.data.Data.Stock;
+                                self.content = result.data.Data.Content;
+                                self.quantityMax = self.stockInput>10?10:self.stockInput
+                            }
+                            else
+                            {
+                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg);
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
                 },
 
                 SubmitBtn: function () {
@@ -140,6 +174,7 @@
                                 {
                                     ToastUtil.InfoFire('已加入購物車');   
                                     self.Clear();
+                                    LoginTool.GetCartCount();
                                 }
                                 else
                                 {
@@ -169,7 +204,17 @@
                     var self = this;
                     self.quantityInfo = '';
                     self.quantity = 0;
-                }
+                },
+
+                AddFlow: function () {
+                    var self = this;
+                    var obj = {
+                        ['Enter']: window.location.pathname,
+                    };
+                    axios.post(self.addFlowApi, obj)
+                        .then(function (result) {})
+                        .catch(function (error) {});                   
+                },
             }
         });
 

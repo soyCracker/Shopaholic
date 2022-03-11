@@ -20,14 +20,17 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
-        public void AddFlow(string ip, string enter)
+        public void AddFlow(string ip, string enter, string email)
         {
             using(dbContext)
             {
+                var user = dbContext.CustomerAccounts.SingleOrDefault(x=>x.Email == email);
+                string userId = user==null ? "" : user.AccountId;
                 WebFlow flow = new WebFlow
                 {
                     Ip = ip,
-                    Enter = enter
+                    Enter = enter,
+                    UserInfo = userId
                 };
                 dbContext.WebFlows.Add(flow);
                 dbContext.SaveChanges();

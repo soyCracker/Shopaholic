@@ -23,6 +23,6 @@ namespace Shopaholic.Service.Interfaces
 
         ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
 
-
+        List<ProductDTO> GetProductByMonthFlowTop();
     }
 }

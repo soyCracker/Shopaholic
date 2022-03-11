@@ -23,8 +23,6 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Index()
         {
-            /*var tokenInfo = HttpContext.User;
-            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;*/
             return View();
         }
 
@@ -80,6 +78,30 @@ namespace Shopaholic.Web.Controllers
                 Success = true,
                 Msg = "Success",
                 Data = cartDTOs
+            };
+        }
+
+        // <summary>
+        /// 取得購物車品項數量
+        /// </summary>
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public MessageModel<int> Count()
+        {
+            var tokenInfo = HttpContext.User;
+            int count = 0;
+            if(tokenInfo.Identity.IsAuthenticated)
+            {
+                string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
+                count = cartService.Count(email);
+            }           
+            return new MessageModel<int>
+            {
+                Success = true,
+                Msg = "取得購物車品項數量",
+                Data = count
             };
         }
     }

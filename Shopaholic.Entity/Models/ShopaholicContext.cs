@@ -258,6 +258,8 @@ namespace Shopaholic.Entity.Models
                 entity.Property(e => e.UpdateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UserInfo).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

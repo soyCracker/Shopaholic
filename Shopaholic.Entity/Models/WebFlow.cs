@@ -10,5 +10,6 @@ namespace Shopaholic.Entity.Models
         public string Enter { get; set; } = null!;
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
+        public string? UserInfo { get; set; }
     }
 }

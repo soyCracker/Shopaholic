@@ -43,6 +43,16 @@ namespace Shopaholic.Service.Services
             }
         }
 
+        public int Count(string email)
+        {
+            using (dbContext)
+            {
+                var user = dbContext.CustomerAccounts.SingleOrDefault(c => c.Email == email);
+                int count = dbContext.ShoppingCarts.Count(c => c.AccountId == user.AccountId);
+                return count;
+            }
+        }
+
         public void Delete(int cartId)
         {
             using (dbContext)
