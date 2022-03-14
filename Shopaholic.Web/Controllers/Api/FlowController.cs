@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Web.Model.Requests;
@@ -21,6 +23,8 @@ namespace Shopaholic.Web.Controllers.Api
         /// <summary>
         /// 增加瀏覽紀錄
         /// </summary>
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public MessageModel<bool> Add([FromBody]FlowAddReq req)

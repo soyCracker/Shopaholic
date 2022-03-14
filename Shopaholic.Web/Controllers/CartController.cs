@@ -90,10 +90,10 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<int> Count()
         {
-            var tokenInfo = HttpContext.User;
             int count = 0;
-            if(tokenInfo.Identity.IsAuthenticated)
+            if(HttpContext.User.Identity.IsAuthenticated)
             {
+                var tokenInfo = HttpContext.User;
                 string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
                 count = cartService.Count(email);
             }           

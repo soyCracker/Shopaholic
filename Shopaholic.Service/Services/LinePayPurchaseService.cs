@@ -13,6 +13,7 @@ using System.Text.Json;
 using Shopaholic.Web.Model.Responses;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Shopaholic.Service.Services
 {
@@ -20,15 +21,20 @@ namespace Shopaholic.Service.Services
     {
         private readonly ShopaholicContext dbContext;
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly string apiurl = "/v3/payments/request";
-        private readonly string channelSecret = "cf9fc5f9e08b667be05c5d2774dc214d";
-        private readonly string channelId = "1656957986";
-        private readonly string linepayUrl = "https://sandbox-api-pay.line.me";
+        private readonly string api ;
+        private readonly string channelSecret;
+        private readonly string channelId;
+        private readonly string linepayUrl;
 
-        public LinePayPurchaseService(ShopaholicContext dbContext, IHttpClientFactory httpClientFactory)
+        public LinePayPurchaseService(ShopaholicContext dbContext, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             this.dbContext = dbContext;
             this.httpClientFactory = httpClientFactory;
+            api = configuration["LinePay:ApiUrl"];
+            channelSecret = configuration["LinePay:ChannelSecret"];
+            channelId = configuration["LinePay:ChannelId"];
+            linepayUrl = configuration["LinePay:BaseUrl"];
+
         }
 
         public string CreateOrder(PurchaseOrderCreateReq req)
@@ -99,12 +105,12 @@ namespace Shopaholic.Service.Services
             using (var httpClient = httpClientFactory.CreateClient())
             {               
                 string nonce = Guid.NewGuid().ToString();              
-                string Signature = HashLinePayRequest(channelSecret, apiurl, reqBody, nonce, channelSecret);
+                string Signature = HashLinePayRequest(channelSecret, api, reqBody, nonce, channelSecret);
                 httpClient.DefaultRequestHeaders.Add("X-LINE-ChannelId", channelId);
                 httpClient.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
                 httpClient.DefaultRequestHeaders.Add("X-LINE-Authorization", Signature);
                 var content = new StringContent(reqBody, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(linepayUrl + apiurl, content);
+                var response = await httpClient.PostAsync(linepayUrl + api, content);
                 var result = await response.Content.ReadAsStringAsync();
 
                 return JsonSerializer.Deserialize<LinePayRes>(result);

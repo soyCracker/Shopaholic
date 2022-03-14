@@ -17,12 +17,14 @@ namespace Shopaholic.Service.Interfaces
 
         bool DeleteProduct(int id);
 
-        ProductSearchResDTO SearchProductWithCategory(string searchStr, int page, int pageSize);
+        ProductSearchResDTO AdminSearch(string searchStr, int page, int pageSize);
 
-        ProductSearchResDTO SearchProductByCategory(int categoryId, string searchStr, int page, int pageSize);
+        ProductSearchResDTO Search(int? categoryId, string searchStr, int page, int pageSize);
 
         ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
 
-        List<ProductDTO> GetProductByMonthFlowTop();
+        List<ProductTopDTO> GetProductByMonthFlowTop();
+
+        List<ProductTopDTO> GetProductByMonthOrderTop();
     }
 }

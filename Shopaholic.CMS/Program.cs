@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS")/*,
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV")/*,
         providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
 });
 

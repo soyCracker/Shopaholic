@@ -4,6 +4,8 @@ using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
 using Shopaholic.Web.Model.Responses;
+using Shopaholic.Web.Model.ViewModels;
+using System;
 using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers
@@ -24,9 +26,9 @@ namespace Shopaholic.Web.Controllers
             this.flowService = flowService;
         }
 
-        public IActionResult Index(int Id)
+        public IActionResult Index(ProductSearchVM vm)
         {
-            return View(Id);
+            return View(vm);
         }
 
         public IActionResult DetailPage(int Id)
@@ -37,7 +39,7 @@ namespace Shopaholic.Web.Controllers
 
 
         /// <summary>
-        /// 搜索商品
+        /// 取得商品
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpGet]
@@ -47,7 +49,7 @@ namespace Shopaholic.Web.Controllers
             return new MessageModel<ProductDTO>
             {
                 Success = res != null ? true : false,
-                Msg = res != null ? "" : "Fail",
+                Msg = res != null ? "取得商品" : "Fail",
                 Data = res
             };
         }
@@ -59,27 +61,43 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<ProductSearchResDTO> Search([FromBody] ProductSearchByCategoryReq req)
         {
-            ProductSearchResDTO res = productService.SearchProductByCategory(req.CategoryId, req.SearchStr, req.Page, req.PageSize);
+            ProductSearchResDTO res = productService.Search(Convert.ToInt32(req.CategoryId), req.SearchStr, req.Page, req.PageSize);
             return new MessageModel<ProductSearchResDTO>
             {
                 Success = res != null ? true : false,
-                Msg = res != null ? "" : "Fail",
+                Msg = res != null ? "搜索商品" : "Fail",
                 Data = res
             };
         }
 
         /// <summary>
-        /// 取得商品TOP5
+        /// 取得商品瀏覽TOP5
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<List<ProductDTO>> GetFlowTopFive()
+        public MessageModel<List<ProductTopDTO>> GetFlowTopFive()
         {
-            List<ProductDTO> res = productService.GetProductByMonthFlowTop();
-            return new MessageModel<List<ProductDTO>>
+            List<ProductTopDTO> res = productService.GetProductByMonthFlowTop();
+            return new MessageModel<List<ProductTopDTO>>
             {
                 Success = res != null ? true : false,
-                Msg = res != null ? "" : "Fail",
+                Msg = res != null ? "取得商品瀏覽TOP5" : "Fail",
+                Data = res
+            };
+        }
+
+        /// <summary>
+        /// 取得商品購買TOP5
+        /// </summary>
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public MessageModel<List<ProductTopDTO>> GetOrderTopFive()
+        {
+            List<ProductTopDTO> res = productService.GetProductByMonthOrderTop();
+            return new MessageModel<List<ProductTopDTO>>
+            {
+                Success = res != null ? true : false,
+                Msg = res != null ? "取得商品購買TOP5" : "Fail",
                 Data = res
             };
         }

@@ -10,7 +10,7 @@ namespace Shopaholic.Web.Model.Requests
     public class ProductSearchByCategoryReq
     {
         [SwaggerSchema("類別Id")]
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
         [SwaggerSchema("搜索字串")]
         public string SearchStr { get; set; }
         [SwaggerSchema("頁數")]

@@ -182,7 +182,7 @@ namespace Shopaholic.CMS.Controllers
         [HttpPost]
         public MessageModel<ProductSearchResDTO> Search([FromBody] ProductSearchRequest req)
         {
-            ProductSearchResDTO res = productService.SearchProductWithCategory(req.SearchStr, req.Page, req.PageSize);
+            ProductSearchResDTO res = productService.AdminSearch(req.SearchStr, req.Page, req.PageSize);
             return new MessageModel<ProductSearchResDTO>
             {
                 Success = res != null ? true : false,

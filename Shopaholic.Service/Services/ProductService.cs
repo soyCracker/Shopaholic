@@ -137,7 +137,7 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public ProductSearchResDTO SearchProductWithCategory(string searchStr, int page, int pageSize)
+        public ProductSearchResDTO AdminSearch(string searchStr, int page, int pageSize)
         {
             using (dbContext)
             {
@@ -198,18 +198,22 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public ProductSearchResDTO SearchProductByCategory(int categoryId, string searchStr, int page, int pageSize)
+        public ProductSearchResDTO Search(int? categoryId, string searchStr, int page, int pageSize)
         {
             using (dbContext)
             {
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
-                var filterData = dbContext.Products.Where(x => x.CategoryId==categoryId && !x.IsDelete && (x.Id.ToString().Contains(searchStr) 
+                var filterData = dbContext.Products.Where(x => !x.IsDelete && (x.Id.ToString().Contains(searchStr) 
                     || x.Name.Contains(searchStr)
                     || x.Description.Contains(searchStr) 
                     || x.Content.Contains(searchStr) ) );
+                if(categoryId!=0 && categoryId!=null)
+                {
+                    filterData = filterData.Where(x => x.CategoryId==categoryId);
+                }
 
                 List<Product> products = filterData.OrderBy(y => y.Id).Skip((page-1) * pageSize)
-                    .Take(pageSize).ToList();
+                    .Take(pageSize).Include(c => c.Category).ToList();
                 List<ProductDTO> productDTOs = new List<ProductDTO>();
                 foreach (Product product in products)
                 {
@@ -219,6 +223,7 @@ namespace Shopaholic.Service.Services
                         Name = product.Name,
                         Description = product.Description,
                         CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name,
                         Content = product.Content,
                         Image = product.Image,
                         Price = product.Price,
@@ -237,32 +242,72 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public List<ProductDTO> GetProductByMonthFlowTop()
+        public List<ProductTopDTO> GetProductByMonthFlowTop()
         {
             using (dbContext)
             {
                 int flowRange = -29;
                 var flowInRange = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) 
-                    && x.CreateTime < DateTime.Now.Date.AddDays(1));
-                var group = flowInRange.GroupBy(x => x.Enter.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Last())
+                    && x.CreateTime < DateTime.Now.Date.AddDays(1)).AsEnumerable();
+                var group = flowInRange.GroupBy(x => x.Enter)
                     .Select(s => new
                     {
-                        ProductId = s.Key,
-                        Count = s.Key.Count(),
+                        ProductId = s.Key.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Last(),
+                        Count = s.Count(),
+                        Enter = s.Key
                     });
                 var topFive = group.OrderByDescending(o => o.Count).Take(5);
-                List<ProductDTO> productDTOs = new List<ProductDTO>();
+                List<ProductTopDTO> productTopDTOs = new List<ProductTopDTO>();
                 foreach(var flow in topFive)
                 {
                     var product = dbContext.Products.SingleOrDefault(x => x.Id.ToString()==flow.ProductId);
-                    productDTOs.Add(new ProductDTO
+                    if(product != null)
                     {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Price = product.Price,
-                    });
+                        productTopDTOs.Add(new ProductTopDTO
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            Price = product.Price,
+                            Image = product.Image,
+                            Count = flow.Count,
+                        });
+                    }                   
                 }
-                return productDTOs;
+                return productTopDTOs;
+            }
+        }
+
+        public List<ProductTopDTO> GetProductByMonthOrderTop()
+        {
+            using (dbContext)
+            {
+                int dateRange = -29;
+                var orderInRange = dbContext.OrderDetails.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(dateRange)
+                    && x.CreateTime < DateTime.Now.Date.AddDays(1)).AsEnumerable();
+                var group = orderInRange.GroupBy(x => x.ProductId)
+                    .Select(s => new
+                    {
+                        ProductId = s.Key,
+                        Count = s.Count(),
+                    });
+                var topFive = group.OrderByDescending(o => o.Count).Take(5);
+                List<ProductTopDTO> productTopDTOs = new List<ProductTopDTO>();
+                foreach (var order in topFive)
+                {
+                    var product = dbContext.Products.SingleOrDefault(x => x.Id==order.ProductId);
+                    if (product != null)
+                    {
+                        productTopDTOs.Add(new ProductTopDTO
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            Price = product.Price,
+                            Image = product.Image,
+                            Count = order.Count,
+                        });
+                    }
+                }
+                return productTopDTOs;
             }
         }
     }
