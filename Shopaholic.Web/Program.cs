@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
@@ -71,7 +71,7 @@ builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12970); // to listen for incoming http connection on port 5001
-    options.ListenAnyIP(12971, configure => configure.UseHttps()); // to listen for incoming https connection on port 7001
+    //options.ListenAnyIP(12971, configure => configure.UseHttps()); // to listen for incoming https connection on port 7001
 });
 
 var app = builder.Build();
@@ -88,6 +88,13 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// 取得IP
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+    ForwardedHeaders.XForwardedProto
+});
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -95,12 +102,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-// 取得IP
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-    ForwardedHeaders.XForwardedProto
-});
 
 app.Run();

@@ -1,4 +1,6 @@
-﻿
+﻿@{
+    ViewData["Title"] = "結帳";
+}
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -243,6 +245,10 @@
                     else if(!ValiUtil.IsPhone(self.phoneInput))
                     {
                         self.phoneInputInfo = '請輸入手機號碼';
+                        return false;
+                    }
+                    else if(self.cartList.length==0)
+                    {
                         return false;
                     }
                     return true;

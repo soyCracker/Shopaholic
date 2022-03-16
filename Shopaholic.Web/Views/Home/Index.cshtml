@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "購物網站展示";
 }
 
 <div id="HomeTool"> 
@@ -10,7 +10,7 @@
 
     <section class="content">
         <div class="container-fluid">
-            <h5 class="mb-2">每月最多人瀏覽</h5>
+            <h5 class="mb-2" v-if="productFlowTopList.length>0">每月最多人瀏覽</h5>
             <div class="row">
               <div class="col-md-3 col-sm-6 col-12" v-for="(item) in productFlowTopList" v-bind:key="item.Count">
                 <div class="info-box">
@@ -28,7 +28,7 @@
               </div>
             </div>
 
-            <h5 class="mb-2">每月最多人購買</h5>
+            <h5 class="mb-2" v-if="productOrderTopList.length>0">每月最多人購買</h5>
             <div class="row">
               <div class="col-md-3 col-sm-6 col-12" v-for="(item) in productOrderTopList" v-bind:key="item.Count">
                 <div class="info-box">

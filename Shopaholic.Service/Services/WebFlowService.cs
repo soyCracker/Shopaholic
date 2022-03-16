@@ -97,7 +97,7 @@ namespace Shopaholic.Service.Services
                 {
                     flowList.Add(new FlowCountDTO
                     {
-                        FlowDate = item.CreateTime.ToString("MM-dd"),
+                        FlowDate = item.CreateTime.ToString("MM/dd"),
                         Count = item.Count
                     });
                 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -31,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV")/*,
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS")/*,
         providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
 });
 
@@ -42,10 +43,11 @@ builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
-    options.ListenAnyIP(12771, configure => configure.UseHttps()); // to listen for incoming https connection on port 7001
+    //options.ListenAnyIP(12771, configure => configure.UseHttps()); // to listen for incoming https connection on port 7001
 });
 
 var app = builder.Build();
@@ -75,6 +77,11 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseRouting();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseAuthorization();
 

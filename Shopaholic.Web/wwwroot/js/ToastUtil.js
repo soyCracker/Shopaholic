@@ -12,7 +12,7 @@ var ToastUtil = new Vue({
                 title: info,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 1000
+                timer: 3000
             })
         },
 

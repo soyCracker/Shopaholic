@@ -1,5 +1,9 @@
 ﻿@using System.Collections.Generic
 
+@{
+    ViewData["Title"] = "購物車";
+}
+
 <div id="FormTool">
 
     <!-- Content Header (Page header) -->
@@ -66,9 +70,12 @@
 
         <!-- /.card-body -->
 
-        <div class="card-footer">
+        <div class="card-footer" v-if="cartList.length>0">
             <a asp-controller="Order" asp-action="CreatePage" class="btn btn-primary">結帳</a>
-        </div>  
+        </div> 
+        <div class="text-center" v-else>
+            <h3>購物車沒有東西喔!</h3>
+        </div>
     </div>
     <!-- /.card -->
 
@@ -128,7 +135,7 @@
                             if(result.data.Success)
                             {
                                 self.GetCartList();
-                                LoginTool.GetCartCount();
+                                LayoutTopBarTool.GetCartCount();
                             }                         
                         })
                         .catch(function (error) {                                    
