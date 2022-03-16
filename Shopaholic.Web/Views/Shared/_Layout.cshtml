@@ -103,7 +103,7 @@
                 <li class="nav-item">
                     <a asp-controller="Cart" asp-action="Index" class="nav-link" v-if="isLogin">
                         <i class="fa-solid fa-cart-arrow-down">
-                            <span v-if="cartCount>0" class="badge badge-danger navbar-badge">{{ cartCount }}</span>
+                            <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
                             購物車
                         </i>          
                     </a>
@@ -244,6 +244,7 @@
             if (user) {
                 // User is signed in.
                 LayoutTopBarTool.isLogin = true;
+                //LayoutTopBarTool.ChkLoginState();
                 LayoutTopBarTool.GetCartCount();
             }
             else
@@ -296,7 +297,7 @@
             {
                 isLogin: false, 
                 logoutApi: baseurl + '/Auth/api/Logout',
-                loginStateApi: baseurl + '/Auth/api/GetLoginState',
+                chkLoginStateApi: baseurl + '/Auth/api/ChkExist',
                 getCartCountApi: baseurl + '/Cart/api/Count',
                 cartCount: 0,
                 layoutSearchStr: '',
@@ -334,13 +335,47 @@
                     });
                 },
 
+                ChkLoginState: async function () {
+                    var self = this;
+                    await axios.post(self.chkLoginStateApi)
+                            .then(function (result) {
+                                if(!result.data.Data)
+                                {
+                                    firebase.auth().signOut().then(async function ()
+                                    {}).catch(function (error) {});                                   
+                                }                          
+                            }).catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });                   
+                },
+
                 GetCartCount: function(){
                     var self = this;
-                    axios.post(self.getCartCountApi)
+                    var cart = localStorage.getItem('Cart');
+                    if(cart)
+                    {
+                        self.cartCount = 1;
+                    }
+                    else{
+                        self.cartCount = 0;
+                    }
+                    /*axios.post(self.getCartCountApi)
                         .then(function (result) {
                             self.cartCount = result.data.Data;                             
                         })
-                        .catch(function (error) {});
+                        .catch(function (error) {});*/
+                },
+
+                PutCart: function(){
+                    var self = this;
+                    localStorage.setItem('Cart', true);
+                    self.GetCartCount();
+                },
+
+                ClearCart: function(){
+                    var self = this;
+                    localStorage.removeItem('Cart');
+                    self.GetCartCount();
                 },
 
                 LayoutSearchBtn: function(){

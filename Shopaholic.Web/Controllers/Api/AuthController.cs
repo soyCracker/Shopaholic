@@ -60,5 +60,33 @@ namespace Shopaholic.Web.Controllers.Api
                 Data = true
             };
         }
+
+        /// <summary>
+        /// 確認帳號有效性
+        /// </summary>
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public async Task<MessageModel<bool>> ChkExist()
+        {
+            bool res = false;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var tokenInfo = HttpContext.User;
+                string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
+                res = authService.ChkExist("", email);
+            }
+            if(!res)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            return new MessageModel<bool>
+            {
+                Success = true,
+                Msg = "確認帳號有效性",
+                Data = res
+            };
+        }
     }
 }

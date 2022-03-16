@@ -45,7 +45,7 @@ namespace Shopaholic.Web.Controllers
             };
         }
 
-        // <summary>
+        /// <summary>
         /// 刪除購物車商品
         /// </summary>
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]

@@ -10,5 +10,7 @@ namespace Shopaholic.Service.Interfaces
     {
         void UpdateUser(string accessToken, string uid, string displayName, string email,
             bool emailVerified, string photoUrl, bool isAnonymous);
+
+        bool ChkExist(string uid, string email);
     }
 }

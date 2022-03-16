@@ -18,6 +18,19 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
+        public bool ChkExist(string uid, string email)
+        {
+            using (dbContext)
+            {
+                var user = dbContext.CustomerAccounts.SingleOrDefault(x => x.Email==email);
+                if (user == null)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
         public void UpdateUser(string accessToken, string uid, string displayName, string email,
             bool emailVerified, string photoUrl, bool isAnonymous)
         {

@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
