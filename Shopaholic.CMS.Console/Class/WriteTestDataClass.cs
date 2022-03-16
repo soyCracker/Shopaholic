@@ -15,12 +15,10 @@ namespace Shopaholic.Base.Console.Class
     public class WriteTestDataClass
     {
         private readonly ILogger<WriteTestDataClass> logger;
-        private readonly IHttpClientFactory httpClientFactory;
 
-        public WriteTestDataClass(ILogger<WriteTestDataClass> logger, IHttpClientFactory httpClientFactory)
+        public WriteTestDataClass(ILogger<WriteTestDataClass> logger)
         {
             this.logger = logger;
-            this.httpClientFactory = httpClientFactory;
         }
 
         public void WriteCategory(string conStr)
@@ -58,13 +56,13 @@ namespace Shopaholic.Base.Console.Class
             IWebFlowService webFlowService = new WebFlowService(DBClass.GetDbContext(conStr));
             for (DateTime date = DateTime.Now.Date.AddDays(-29); date <= DateTime.Now.Date; date = date.AddDays(1))
             {
-                int rndMax = Random.Shared.Next(5, 50);
+                int rndMax = Random.Shared.Next(0, 5);
                 for (int r = 0; r<rndMax; r++)
                 {
                     flowDtoList.Add(new FlowDTO
                     {
                         Ip = "127.0.0.1",
-                        Enter = "Test Flow " + r.ToString().PadLeft(2, '0'),
+                        Enter = "/Product/DetailPage/" + rndMax,
                         CreateTime = date
                     });
                     logger.LogDebug("Write " + r.ToString().PadLeft(2, '0') + " " + date + " Success");
@@ -87,9 +85,9 @@ namespace Shopaholic.Base.Console.Class
             object orderLock = new object();
             tasks.Add(factory.StartNew<int>(() =>
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 3; i++)
                 {
-                    IPurchaseService purchaseService = new LinePayPurchaseService(DBClass.GetDbContext(conStr), httpClientFactory);
+                    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
                     List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
                     purchaseProductList.Add(new PurchaseProductModel
                     {
@@ -108,7 +106,15 @@ namespace Shopaholic.Base.Console.Class
                         ProductList = purchaseProductList
                     };
                     lock (orderLock)
-                        logger.LogDebug("OrderId: " + purchaseService.CreateOrder(req));
+                    {
+                        string orderId = purchaseService.CreateOrder(req);
+                        IPurchaseService purchaseService2 = new TestPurchaseService(DBClass.GetDbContext(conStr));
+                        purchaseService2.PayConfirm(new PurchaseConfirmReq
+                        {
+                            SelfOrderId = orderId,
+                        });
+                        logger.LogDebug("OrderId: " + orderId);
+                    }                   
                 }
                 return 1;
             }));
@@ -116,13 +122,13 @@ namespace Shopaholic.Base.Console.Class
 
             tasks.Add(factory.StartNew<int>(() =>
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 3; i++)
                 {
-                    IPurchaseService purchaseService = new LinePayPurchaseService(DBClass.GetDbContext(conStr), httpClientFactory);
+                    IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
                     List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
                     purchaseProductList.Add(new PurchaseProductModel
                     {
-                        ProductId = 1,
+                        ProductId = 5,
                         Quantity = 5,
                         CurrentPrice = 777
                     });
@@ -138,7 +144,15 @@ namespace Shopaholic.Base.Console.Class
                         ProductList = purchaseProductList
                     };
                     lock (orderLock)
-                        logger.LogDebug("OrderId: " + purchaseService.CreateOrder(req));
+                    {
+                        string orderId = purchaseService.CreateOrder(req);
+                        IPurchaseService purchaseService2 = new TestPurchaseService(DBClass.GetDbContext(conStr));
+                        purchaseService2.PayConfirm(new PurchaseConfirmReq
+                        {
+                            SelfOrderId = orderId,
+                        });
+                        logger.LogDebug("OrderId: " + orderId);
+                    }
                 }
                 return 2;
             }));

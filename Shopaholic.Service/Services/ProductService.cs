@@ -181,17 +181,20 @@ namespace Shopaholic.Service.Services
                 List<Product> productList = new List<Product>();
                 foreach (ProductDTO productDto in productDTOs)
                 {
-                    productList.Add(new Product
+                    if(dbContext.Products.SingleOrDefault(x=>x.Name==productDto.Name)==null)
                     {
-                        Name = productDto.Name,
-                        Description = productDto.Description,
-                        Content = productDto.Content,
-                        Price = productDto.Price,
-                        Stock = productDto.Stock,
-                        Image = productDto.Image,
-                        CategoryId = productDto.CategoryId,
-                        IsDelete = productDto.IsDelete
-                    });
+                        productList.Add(new Product
+                        {
+                            Name = productDto.Name,
+                            Description = productDto.Description,
+                            Content = productDto.Content,
+                            Price = productDto.Price,
+                            Stock = productDto.Stock,
+                            Image = productDto.Image,
+                            CategoryId = productDto.CategoryId,
+                            IsDelete = productDto.IsDelete
+                        });
+                    }                    
                 }
                 dbContext.Products.AddRange(productList);
                 dbContext.SaveChanges();

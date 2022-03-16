@@ -48,8 +48,12 @@ namespace Shopaholic.Service.Services
             using (dbContext)
             {
                 var user = dbContext.CustomerAccounts.SingleOrDefault(c => c.Email == email);
-                int count = dbContext.ShoppingCarts.Count(c => c.AccountId == user.AccountId);
-                return count;
+                if (user != null)
+                {
+                    int count = dbContext.ShoppingCarts.Count(c => c.AccountId == user.AccountId);
+                    return count;
+                }              
+                return 0;
             }
         }
 
