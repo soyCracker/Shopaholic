@@ -87,7 +87,12 @@
                 ToastUtil.InfoFire('登入中...');
                 if(res.data.Data)
                 {
-                    location.href = window.location.origin;
+                    if(sessionStorage.getItem('LoginReturnUrl')){
+                        location.href = sessionStorage.getItem('LoginReturnUrl');
+                    }
+                    else{
+                        location.href = window.location.origin;
+                    }                   
                 }
             })
             .catch(err => { 

@@ -1,12 +1,16 @@
 ﻿@using Shopaholic.Service.Model.Moels;
 @model ProductDTO;
 
+@{
+    ViewData["Title"] = "商品介紹";
+}
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">編輯商品</h1>
+                <h1 class="m-0">商品介紹</h1>
             </div><!-- /.col -->           
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -178,6 +182,7 @@
                                 }
                                 else
                                 {
+                                    console.log(result);
                                     ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
                                             'Msg:' + result.data.Msg);
                                 }                           
