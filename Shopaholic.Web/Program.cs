@@ -9,12 +9,13 @@ using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Middlewares;
 using System.Net;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
@@ -52,14 +53,16 @@ builder.Services
         options.LoginPath = new PathString(builder.Configuration.GetValue<string>("LoginUrl"));
         options.Events.OnRedirectToLogin = context =>
         {
-            context.Response.OnStarting(() =>
+            //讓MVC及API驗證失敗時有不同的行為
+            if (Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
                 return Task.CompletedTask;
-            });
+            }
+            context.Response.Redirect(context.RedirectUri);
             return Task.CompletedTask;
-        };
+        };        
     });
 
 // Add services to the container.
