@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
@@ -50,17 +50,16 @@ builder.Services
         // 網站本身的Cookie-based Authentication
     }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options=>
     {
-        options.LoginPath = new PathString(builder.Configuration.GetValue<string>("LoginUrl"));
+        //options.LoginPath = new PathString(builder.Configuration.GetValue<string>("LoginUrl"));
         options.Events.OnRedirectToLogin = context =>
         {
             //讓MVC及API驗證失敗時有不同的行為
             if (Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
                 return Task.CompletedTask;
             }
-            context.Response.Redirect(context.RedirectUri);
+            context.Response.Redirect(new PathString(builder.Configuration.GetValue<string>("LoginUrl")));
             return Task.CompletedTask;
         };        
     });
