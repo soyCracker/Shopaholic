@@ -69,8 +69,7 @@
                 <!-- /.card-header -->
                 <!-- form start -->
                 
-                <div class="card-body">                  
-                    
+                <div class="card-body">                                     
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>收貨人</label>
@@ -78,13 +77,7 @@
                             <code>{{ nameInputInfo }}</code>
                         </div> 
                     </div> 
-                                  
-                    <div class="form-group">
-                        <label>收貨地址</label>
-                        <input class="form-control" v-model="addressInput" placeholder="輸入地址">
-                        <code>{{ addressInputInfo }}</code>
-                    </div>
-                     
+                              
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>連絡電話</label>
@@ -93,10 +86,20 @@
                         </div>  
                     </div> 
 
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label>收貨地址</label>
+                            <input class="form-control" v-model="addressInput" placeholder="輸入地址">
+                            <code>{{ addressInputInfo }}</code>
+                        </div>
+                    </div>                    
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                    <a v-on:click="CreateOrder" v-on:keydown.enter="CreateOrder" class="btn btn-danger">付款</a>
+                    <label>付款</label>
+                    <button v-on:click="CreateOrder" v-on:keydown.enter="CreateOrder">
+                        <img src="~/dist/img/LINE-Pay(h)_W119_n.png" alt="linepay" height="15" width="60">
+                    </button>
                 </div>                
             </div>
             <!-- /.card -->

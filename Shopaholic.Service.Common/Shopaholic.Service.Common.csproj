@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\Shopaholic.Util.csproj" />
     <ProjectReference Include="..\Shopaholic.Entity\Shopaholic.Entity.csproj" />
     <ProjectReference Include="..\Shopaholic.Web.Model\Shopaholic.Web.Model.csproj" />

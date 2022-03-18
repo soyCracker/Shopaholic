@@ -126,7 +126,7 @@
                 coverUrl: '@Model.ProductVM.Image',
                 coverFile: null,
                 nameInput: '@Html.Raw(@Model.ProductVM.Name)',
-                descInput: '@Html.Raw(@Model.ProductVM.Description)',
+                descInput: '@Html.Raw(@Model.ProductVM.Description.Replace("\n","/"))',
                 priceInput: @Model.ProductVM.Price,
                 stockInput: @Model.ProductVM.Stock,
                 categorySelected: @Model.ProductVM.CategoryId,

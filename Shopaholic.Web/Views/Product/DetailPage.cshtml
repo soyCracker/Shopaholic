@@ -64,8 +64,8 @@
                                     <div class="form-group">
                                         <label>購買數量</label>
                                         <!--<input class="form-control" v-model="quantity" placeholder="購買數量">-->
-                                        <select>
-                                            <option v-for="n in quantityMax" v-bind:key="n">{{ n }}</option>
+                                        <select v-model="selected">
+                                            <option v-for="n in quantityMax" v-bind:value="{ quantity:n }">{{ n }}</option>
                                         </select>
                                         <code>{{ quantityInfo }}</code>
                                     </div> 
@@ -111,7 +111,7 @@
                 stockInput: 0,
                 content: '',
                 coverVisible: false,
-                quantity: 1,
+                selected: {'quantity':1},
                 quantityInfo: '',
                 quantityMax:10,
             },
@@ -168,7 +168,7 @@
 
                         var obj = {
                             ['ProductId']: self.productId,
-                            ['Quantity']: self.quantity,
+                            ['Quantity']: self.selected.quantity,
                         };
 
                         axios.post(self.addToCartApi, obj)
@@ -195,7 +195,7 @@
 
                 AddCartCheck: function () {
                     var self = this;
-                    if(self.quantity==0 || self.quantity>self.stockInput){
+                    if(self.selected.quantity>self.stockInput){
                         //ToastUtil.ErrorAlert('商品數量錯誤');
                         self.quantityInfo = '商品數量錯誤';
                         return false;
@@ -208,7 +208,6 @@
                 Clear: function(){
                     var self = this;
                     self.quantityInfo = '';
-                    self.quantity = 0;
                 },
 
                 AddFlow: function () {

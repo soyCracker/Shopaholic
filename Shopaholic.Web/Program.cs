@@ -1,4 +1,3 @@
-using AspNetCore.Firebase.Authentication.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -8,6 +7,7 @@ using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Middlewares;
+using StackExchange.Redis;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -63,6 +63,8 @@ builder.Services
             return Task.CompletedTask;
         };        
     });
+
+ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection"));
 
 // Add services to the container.
 builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
