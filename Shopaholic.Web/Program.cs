@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection")));
 
 // Firebase Authentication
 builder.Services
@@ -64,7 +66,13 @@ builder.Services
         };        
     });
 
-ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection"));
+// ASP.NET Data Protection，儲存於redis，解決load balancer的Cookie-based Auth跨server問題
+using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+{
+    // nuget Microsoft.AspNetCore.DataProtection.StackExchangeRedis
+    builder.Services.AddDataProtection()
+        .PersistKeysToStackExchangeRedis(serviceProvider.GetRequiredService<IConnectionMultiplexer>(), "DataProtectionKeys");
+}
 
 // Add services to the container.
 builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
