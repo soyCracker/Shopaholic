@@ -11,7 +11,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Shopaholic.CMS.Common.Middlewares
+namespace Shopaholic.CMS.Common.Tools
 {
     public class ExceptionMiddleware
     {

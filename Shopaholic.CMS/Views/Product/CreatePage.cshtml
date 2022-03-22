@@ -58,7 +58,7 @@
            
                         <div class="form-group">
                             <label>描述</label>
-                            <input class="form-control" v-model="descInput" placeholder="輸入描述">
+                            <textarea id="desc-summernote"></textarea>
                         </div> 
 
                         <validation-provider rules="required" v-slot="{ errors }">
@@ -143,6 +143,10 @@
                         }
                     }
                 });
+
+                $('#desc-summernote').summernote({
+                    height:100
+                });
             },
             methods:
             {       
@@ -210,6 +214,7 @@
                     console.log($('#summernote').summernote('code'));   
                     //取得summernote content
                     self.content = $('#summernote').summernote('code');
+                    self.descInput = $('#desc-summernote').summernote('code');
 
                     //click觸發驗證
                     var isValid = await self.$refs.validObserver.validate();

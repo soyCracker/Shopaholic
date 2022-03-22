@@ -58,7 +58,7 @@
            
                         <div class="form-group">
                             <label>描述</label>
-                            <input class="form-control" v-model="descInput" placeholder="輸入描述">
+                            <textarea id="desc-summernote">@Model.ProductVM.Description</textarea>
                         </div> 
 
                         <validation-provider rules="required" v-slot="{ errors }">
@@ -126,7 +126,7 @@
                 coverUrl: '@Model.ProductVM.Image',
                 coverFile: null,
                 nameInput: '@Html.Raw(@Model.ProductVM.Name)',
-                descInput: '@Html.Raw(@Model.ProductVM.Description.Replace("\n","/"))',
+                descInput: null,
                 priceInput: @Model.ProductVM.Price,
                 stockInput: @Model.ProductVM.Stock,
                 categorySelected: @Model.ProductVM.CategoryId,
@@ -144,6 +144,10 @@
                             self.UploadEditorImage(self.uploadEditorImageApi, image[0]);
                         }
                     }
+                });
+
+                $('#desc-summernote').summernote({
+                    height:100
                 });
             },
             methods:
@@ -208,6 +212,7 @@
                     console.log($('#summernote').summernote('code'));   
                     //取得summernote content
                     self.content = $('#summernote').summernote('code');
+                    self.descInput = $('#desc-summernote').summernote('code');
 
                     //click觸發驗證
                     var isValid = await self.$refs.validObserver.validate();
