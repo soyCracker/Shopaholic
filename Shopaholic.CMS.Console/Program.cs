@@ -32,12 +32,6 @@ using (var services = new ServiceCollection()
 
     WriteTestDataClass writeTestDataClass = new WriteTestDataClass(logger);
 
-    //// 寫入測試類別
-    //writeTestDataClass.WriteCategory(conStr);
-
-    //// 寫入測試商品
-    //writeTestDataClass.WriteProduct(conStr);
-
     //// 寫入正式類別、商品
     //var writeFormalDataLogger = services.GetRequiredService<ILogger<WriteFormalDataClass>>();
     //WriteFormalDataClass writeFormalDataClass = new WriteFormalDataClass(writeFormalDataLogger);
@@ -48,14 +42,19 @@ using (var services = new ServiceCollection()
     //writeFormalDataClass.WriteDecorateProduct(conStr);
     //writeFormalDataClass.WriteDailyUseProduct(conStr);
 
-    //// 寫入測試flow
-    writeTestDataClass.WriteFlow(conStr);
+    ////// 寫入測試類別
+    //writeTestDataClass.WriteCategory(conStr);
+    ////// 寫入測試商品
+    //writeTestDataClass.WriteProduct(conStr);
+
+    ////// 寫入測試flow
+    //writeTestDataClass.WriteFlow(conStr);
 
     ////// 寫入測試會員
     //writeTestDataClass.WriteAuth(conStr);
 
-    ////// 寫入測試訂單
-    //writeTestDataClass.WriteOrder(conStr);
+    //// 寫入測試訂單
+    writeTestDataClass.WriteOrder(conStr);
 
     //// LinePay測試
     //LinePayTestClass linePayTestClass = new LinePayTestClass(services.GetRequiredService<ILogger<LinePayTestClass>>(), httpClientFactory);

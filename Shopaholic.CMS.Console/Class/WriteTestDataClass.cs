@@ -32,7 +32,7 @@ namespace Shopaholic.Base.Console.Class
             List<ProductDTO> products = new List<ProductDTO>();
             IProductService productService = new ProductService(DBClass.GetDbContext(conStr));
             int testCategoryId = DBClass.GetDbContext(conStr).Categories.SingleOrDefault(x => x.Name == "未分類").Id;
-            for (int i = 57; i <= 57; i++)
+            for (int i = 1; i <= 50; i++)
             {
                 products.Add(new ProductDTO
                 {
@@ -85,13 +85,13 @@ namespace Shopaholic.Base.Console.Class
             object orderLock = new object();
             tasks.Add(factory.StartNew<int>(() =>
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 1; i <= 3; i++)
                 {
                     IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
                     List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
                     purchaseProductList.Add(new PurchaseProductModel
                     {
-                        ProductId = 1,
+                        ProductId = i,
                         Quantity = 5,
                         CurrentPrice = 777
                     });
@@ -122,13 +122,13 @@ namespace Shopaholic.Base.Console.Class
 
             tasks.Add(factory.StartNew<int>(() =>
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 1; i <= 3; i++)
                 {
                     IPurchaseService purchaseService = new TestPurchaseService(DBClass.GetDbContext(conStr));
                     List<PurchaseProductModel> purchaseProductList = new List<PurchaseProductModel>();
                     purchaseProductList.Add(new PurchaseProductModel
                     {
-                        ProductId = 5,
+                        ProductId = i,
                         Quantity = 5,
                         CurrentPrice = 777
                     });

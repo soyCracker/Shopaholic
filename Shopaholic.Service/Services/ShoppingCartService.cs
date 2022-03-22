@@ -23,23 +23,31 @@ namespace Shopaholic.Service.Services
             using(dbContext)
             {
                 var product = dbContext.Products.SingleOrDefault(p => p.Id==productId);
-                if(product.Stock<quantity)
-                {
-                    return false;
-                }
-                else
+                if(product!=null && product.Stock>=quantity)
                 {
                     var user = dbContext.CustomerAccounts.SingleOrDefault(c => c.Email == email);
-                    product.Stock = product.Stock - quantity;
-                    dbContext.ShoppingCarts.Add(new ShoppingCart
+                    if (user!=null)
                     {
-                        AccountId = user.AccountId,
-                        ProductId = productId,
-                        Quantity = quantity
-                    });
-                    dbContext.SaveChanges();
+                        product.Stock = product.Stock - quantity;
+                        var exist = dbContext.ShoppingCarts.FirstOrDefault(x => x.AccountId==user.AccountId && x.ProductId==productId);
+                        if(exist!=null)
+                        {
+                            exist.Quantity+=quantity;
+                        }
+                        else
+                        {
+                            dbContext.ShoppingCarts.Add(new ShoppingCart
+                            {
+                                AccountId = user.AccountId,
+                                ProductId = productId,
+                                Quantity = quantity
+                            });
+                        }                       
+                        dbContext.SaveChanges();
+                        return true;
+                    }                    
                 }
-                return true;
+                return false;            
             }
         }
 
