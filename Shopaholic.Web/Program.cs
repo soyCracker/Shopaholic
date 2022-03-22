@@ -10,13 +10,15 @@ using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Middlewares;
 using StackExchange.Redis;
 using System.Net;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
@@ -34,6 +36,8 @@ builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection")));
+// 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
+builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 
 // Firebase Authentication
 builder.Services
@@ -75,9 +79,15 @@ using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider()
 }
 
 // Add services to the container.
-builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; })
-    //取消json小駝峰式命名法
-    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+builder.Services.AddMvc()
+    .AddJsonOptions(opts =>
+    {
+        //取消json小駝峰式命名法
+        opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+        //允許基本拉丁英文及中日韓文字維持原字元
+        opts.JsonSerializerOptions.Encoder =
+            JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
+    });
 
 // 設定PORT
 builder.WebHost.ConfigureKestrel(options =>

@@ -8,13 +8,21 @@ using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using System.Reflection;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddMvc()
-    //取消json小駝峰式命名法
-    .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+builder.Services.AddMvc()  
+    .AddJsonOptions(opts =>
+    {
+        //取消json小駝峰式命名法
+        opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+        //允許基本拉丁英文及中日韓文字維持原字元
+        opts.JsonSerializerOptions.Encoder =
+            JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
+    });
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -32,7 +40,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS")/*,
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV")/*,
         providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
 });
 
@@ -42,6 +50,8 @@ builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder
     builder.Configuration.GetValue<string>("Imgur:ClientSecret")));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+// 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
+builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 
 
 builder.WebHost.ConfigureKestrel(options =>

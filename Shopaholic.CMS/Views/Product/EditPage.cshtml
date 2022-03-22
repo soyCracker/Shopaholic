@@ -125,7 +125,7 @@
                 //預設圖片路徑
                 coverUrl: '@Model.ProductVM.Image',
                 coverFile: null,
-                nameInput: '@Html.Raw(@Model.ProductVM.Name)',
+                nameInput: '@Model.ProductVM.Name',
                 descInput: null,
                 priceInput: @Model.ProductVM.Price,
                 stockInput: @Model.ProductVM.Stock,
@@ -276,7 +276,9 @@
                 PostContent: function (obj, url) {
                     var self = this;
                     console.log(url + ' post');
-                    axios.post(url, obj)
+                    axios.post(url, obj, { headers:{
+                            'Content-Type': 'application/json;charset=UTF-8'
+                        }})
                         .then(function (result) {
                             if(result.data.Success)
                             {
