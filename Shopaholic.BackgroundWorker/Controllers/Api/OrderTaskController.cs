@@ -24,7 +24,7 @@ namespace Shopaholic.BackgroundWorker.Controllers.Api
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<string> CreateOrderNum([FromBody]PurchaseOrderCreateReq req)
+        public MessageModel<string> CreateOrderId([FromBody]PurchaseOrderCreateReq req)
         {
             string orderNum = "";
             orderNum = orderCreateTask.Start(req);

@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DEV"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
@@ -27,10 +27,10 @@ builder.Services.AddMvc()
     });
 
 // ³]©wPORT
-/*builder.WebHost.ConfigureKestrel(options =>
+builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(14444);
-});*/
+});
 
 var app = builder.Build();
 
