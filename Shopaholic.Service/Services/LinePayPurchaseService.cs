@@ -62,7 +62,7 @@ namespace Shopaholic.Service.Services
                 //// TODO 未來要改成獨立Server建立訂單編號
                 //string orderId = OrderBusiness.CreateOrder(dbContext, req);
                 string orderId = await OrderCreatePost(req);
-                if(string.IsNullOrEmpty(orderId))
+                if(!string.IsNullOrEmpty(orderId))
                 {
                     dbContext.ShoppingCarts.RemoveRange(carts);
                     dbContext.SaveChanges();
