@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Shopaholic.Background.Service.Servicces;
 using Shopaholic.Background.Service.Tasks;
 using Shopaholic.Entity.Models;
 using System.Text.Encodings.Web;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
 });
 
 // Add services to the container.
+builder.Services.AddHostedService<OrderHostedService>();
 builder.Services.AddSingleton<OrderCreateTask>();
 
 // Add services to the container.
