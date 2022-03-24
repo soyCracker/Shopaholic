@@ -10,7 +10,7 @@ namespace Shopaholic.Service.Interfaces
 {
     public interface IPurchaseService
     {
-        string CreateOrder(PurchaseOrderCreateReq req);
+        Task<string> CreateOrder(PurchaseOrderCreateReq req);
         Task<PurchasePayRes> Pay(PurchasePayReq req);
         bool PayConfirm(PurchaseConfirmReq req);
     }

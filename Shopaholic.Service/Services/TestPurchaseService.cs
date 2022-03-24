@@ -21,7 +21,7 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
         }
 
-        public string CreateOrder(PurchaseOrderCreateReq req)
+        public async Task<string> CreateOrder(PurchaseOrderCreateReq req)
         {
             using (dbContext)
             {

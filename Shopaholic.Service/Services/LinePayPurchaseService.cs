@@ -14,6 +14,7 @@ using Shopaholic.Web.Model.Responses;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Shopaholic.Background.Model.Responses;
 
 namespace Shopaholic.Service.Services
 {
@@ -25,6 +26,7 @@ namespace Shopaholic.Service.Services
         private readonly string channelSecret;
         private readonly string channelId;
         private readonly string linepayUrl;
+        private readonly string orderIdCreateApi;
 
         public LinePayPurchaseService(ShopaholicContext dbContext, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
@@ -34,10 +36,10 @@ namespace Shopaholic.Service.Services
             channelSecret = configuration["LinePay:ChannelSecret"];
             channelId = configuration["LinePay:ChannelId"];
             linepayUrl = configuration["LinePay:BaseUrl"];
-
+            orderIdCreateApi = configuration["OrderIdCreateApi"];
         }
 
-        public string CreateOrder(PurchaseOrderCreateReq req)
+        public async Task<string> CreateOrder(PurchaseOrderCreateReq req)
         {
             using(dbContext)
             {
@@ -58,11 +60,13 @@ namespace Shopaholic.Service.Services
                 req.ProductList = ProductList;
 
                 //// TODO 未來要改成獨立Server建立訂單編號
-                string orderId = OrderBusiness.CreateOrder(dbContext, req);
-
-                dbContext.ShoppingCarts.RemoveRange(carts);
-
-                dbContext.SaveChanges();
+                //string orderId = OrderBusiness.CreateOrder(dbContext, req);
+                string orderId = await OrderCreatePost(req);
+                if(string.IsNullOrEmpty(orderId))
+                {
+                    dbContext.ShoppingCarts.RemoveRange(carts);
+                    dbContext.SaveChanges();
+                }             
                 return orderId;
             }
         }      
@@ -205,6 +209,18 @@ namespace Shopaholic.Service.Services
                 orderHeader.IsPaid = true;
                 dbContext.SaveChanges();
                 return true;
+            }
+        }
+
+        private async Task<string> OrderCreatePost(PurchaseOrderCreateReq req)
+        {
+            using (var httpClient = httpClientFactory.CreateClient())
+            {
+                var content = new StringContent(JsonSerializer.Serialize(req), Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(orderIdCreateApi, content);
+                var result = await response.Content.ReadAsStringAsync();
+                var model = JsonSerializer.Deserialize<Background.Model.Responses.MessageModel<string>>(result);
+                return model.Data;
             }
         }
     }

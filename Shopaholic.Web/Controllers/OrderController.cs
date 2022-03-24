@@ -60,14 +60,14 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<string> CreateOrder([FromBody] PurchaseOrderCreateReq req)
+        public async Task<MessageModel<string>> CreateOrder([FromBody] PurchaseOrderCreateReq req)
         {
             var tokenInfo = HttpContext.User;
             req.Email = tokenInfo.FindFirst(ClaimTypes.Email).Value;            
-            var orderId = purchaseService.CreateOrder(req);
+            var orderId = await purchaseService.CreateOrder(req);
             return new MessageModel<string>
             {
-                Success = orderId != null ? true : false,
+                Success = string.IsNullOrEmpty(orderId) ? false : true,
                 Msg = orderId != null ? "" : "Fail",
                 Data = orderId
             };

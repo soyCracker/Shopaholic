@@ -80,7 +80,7 @@ namespace Shopaholic.Base.Console.Class
 
         public void WriteOrder(string conStr)
         {
-            List<Task<int>> tasks = new List<Task<int>>();
+            /*List<Task<int>> tasks = new List<Task<int>>();
             TaskFactory factory = new TaskFactory();
             object orderLock = new object();
             tasks.Add(factory.StartNew<int>(() =>
@@ -145,7 +145,7 @@ namespace Shopaholic.Base.Console.Class
                     };
                     lock (orderLock)
                     {
-                        string orderId = purchaseService.CreateOrder(req);
+                        Task<string> orderId = purchaseService.CreateOrder(req);
                         IPurchaseService purchaseService2 = new TestPurchaseService(DBClass.GetDbContext(conStr));
                         purchaseService2.PayConfirm(new PurchaseConfirmReq
                         {
@@ -160,7 +160,7 @@ namespace Shopaholic.Base.Console.Class
             foreach (var t in tasks)
             {
                 logger.LogDebug("Task:" + t.Result);
-            }
+            }*/
         }
     }
 }
