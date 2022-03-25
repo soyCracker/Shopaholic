@@ -73,12 +73,16 @@ namespace Shopaholic.Service.Services
             using (dbContext)
             {
                 Category category = dbContext.Categories.SingleOrDefault(x => x.Id == id && x.IsDelete == false);
-                CategoryDTO categoryDTO = new CategoryDTO
+                if(category != null)
                 {
-                    Name = category.Name,
-                    Id = category.Id
-                };
-                return categoryDTO;
+                    CategoryDTO categoryDTO = new CategoryDTO
+                    {
+                        Name = category.Name,
+                        Id = category.Id
+                    };
+                    return categoryDTO;
+                }
+                return null;
             }
         }
 
@@ -95,6 +99,24 @@ namespace Shopaholic.Service.Services
                     return true;
                 }
                 return false;
+            }
+        }
+
+        public CategoryDTO GetCategory(string name)
+        {
+            using(dbContext)
+            {
+                Category category = dbContext.Categories.SingleOrDefault(x => x.Name == name && x.IsDelete == false);
+                if(category != null)
+                {
+                    CategoryDTO categoryDTO = new CategoryDTO
+                    {
+                        Name = category.Name,
+                        Id = category.Id
+                    };
+                    return categoryDTO;
+                }
+                return null;
             }
         }
     }

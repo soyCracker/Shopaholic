@@ -13,5 +13,7 @@ namespace Shopaholic.Service.Interfaces
         bool UpdateCategory(int id, string name);
 
         bool DeleteCategory(int id);
+
+        CategoryDTO GetCategory(string name);
     }
 }

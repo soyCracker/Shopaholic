@@ -1,13 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shopaholic.Entity.Models;
+﻿using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace Shopaholic.Service.Services
 {
