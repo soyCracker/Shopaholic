@@ -1,5 +1,5 @@
 # Shopaholic Project
-購物網站Sample，包含以下3個Web app，使用ASP .NET Core(.NET 6) + Vue.js，並在AWS EC2 Ubuntu架站
+購物網站展示，包含以下3個Web app，使用ASP .NET Core(.NET 6) + Vue.js，並在AWS EC2 Ubuntu架站
 
 ## Shopaholic.CMS (後台管理介面)
 https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com:13771  
