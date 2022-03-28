@@ -97,7 +97,7 @@
                 <!-- /.card-body -->
                 <div class="card-footer">
                     <label>付款</label>
-                    <button v-on:click="CreateOrder" v-on:keydown.enter="CreateOrder">
+                    <button v-on:click="LinePayCreateOrder" v-on:keydown.enter="LinePayCreateOrder">
                         <img src="~/dist/img/LINE-Pay(h)_W119_n.png" alt="linepay" height="15" width="60">
                     </button>
                 </div>                
@@ -118,13 +118,16 @@
             el: '#FormTool',
             data:
             {
-                createOrderApi: baseurl + "/Order/api/CreateOrder",
-                payApi: baseurl + "/Order/api/Pay",
-                payConfirmApi: baseurl + "/Order/api/LinePayConfirm",
+                linePayCreateOrderApi: baseurl + "/Order/api/LinePayCreateOrder",
+                linePayApi: baseurl + "/Order/api/LinePay",
+                linePayConfirmApi: baseurl + "/Order/api/LinePayConfirm",
                 cartApi: baseurl + "/Cart/api/GetCart",
                 orderIndexPage: baseurl + "/Order/Index",
                 cartList: {},
                 totalPrice: 0,
+
+                ecPayCreateOrderApi: baseurl + "/Order/api/EcpayCreateOrder",
+                ecPayApi: baseurl + "/Order/api/EcPay",
 
                 nameInput: '',
                 addressInput: '',
@@ -171,7 +174,7 @@
                     return totalPrice;
                 },
 
-                CreateOrder: function(){
+                LinePayCreateOrder: function(){
                     var self = this;              
 
                     if(self.CheckPostData()){
@@ -184,11 +187,11 @@
                             ['Address']: self.addressInput
                         };
 
-                        axios.post(self.createOrderApi, obj)
+                        axios.post(self.linePayCreateOrderApi, obj)
                             .then(function (result) {
                                 if(result.data.Success)
                                 {
-                                    self.Pay(result.data.Data);
+                                    self.LinePay(result.data.Data);
                                 }
                                 else
                                 {
@@ -202,17 +205,17 @@
                     }                    
                 },
 
-                Pay: function(orderId){
+                LinePay: function(orderId){
                     var self = this;              
 
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {  
                         ['OrderId']: orderId,
-                        ['ConfirmUrl']: self.payConfirmApi
+                        ['ConfirmUrl']: self.linePayConfirmApi
                     };
 
-                    axios.post(self.payApi, obj)
+                    axios.post(self.linePayApi, obj)
                         .then(function (result) {
                             if(result.data.Success)
                             {
@@ -256,6 +259,65 @@
                     }
                     return true;
                 },
+
+                EcPayCreateOrder: function(){
+                    var self = this;              
+
+                    if(self.CheckPostData()){
+                        ToastUtil.InfoFire('處理中')
+
+                        var obj = {
+                            ['OrderTypeCode']: 0,  
+                            ['ReceiveMan']: self.nameInput,
+                            ['Phone']: self.phoneInput,
+                            ['Address']: self.addressInput
+                        };
+
+                        axios.post(self.ecPayCreateOrderApi, obj)
+                            .then(function (result) {
+                                if(result.data.Success)
+                                {
+                                    self.EcPay(result.data.Data);
+                                }
+                                else
+                                {
+                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg);
+                                }                           
+                            })
+                            .catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });
+                    }                    
+                },
+
+                EcPay: function(orderId){
+                    var self = this;              
+
+                    ToastUtil.InfoFire('處理中')
+
+                    var obj = {  
+                        ['OrderId']: orderId,
+                        ['ConfirmUrl']: baseurl
+                    };
+
+                    axios.post(self.ecPayApi, obj)
+                        .then(function (result) {
+                            if(result.data.Success)
+                            {
+                                ToastUtil.InfoFire('處理中...')
+                                location.href = result.data.Data.CallbackUrl;
+                            }
+                            else
+                            {
+                                ToastUtil.RedirectAlert('付款失敗:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg, self.orderIndexPage);
+                            }                           
+                        })
+                        .catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
+                }
             }
         });
 

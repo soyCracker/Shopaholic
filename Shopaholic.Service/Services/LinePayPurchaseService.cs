@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Shopaholic.Background.Model.Responses;
+using Shopaholic.Web.Common.Factory;
 
 namespace Shopaholic.Service.Services
 {
@@ -28,15 +29,15 @@ namespace Shopaholic.Service.Services
         private readonly string linepayUrl;
         private readonly string orderIdCreateApi;
 
-        public LinePayPurchaseService(ShopaholicContext dbContext, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public LinePayPurchaseService(ShopaholicContext dbContext, IHttpClientFactory httpClientFactory, IConfiguration configuration, EnvirFactory envirFactory)
         {
             this.dbContext = dbContext;
             this.httpClientFactory = httpClientFactory;
-            api = configuration["LinePay:ApiUrl"];
-            channelSecret = configuration["LinePay:ChannelSecret"];
-            channelId = configuration["LinePay:ChannelId"];
-            linepayUrl = configuration["LinePay:BaseUrl"];
-            orderIdCreateApi = configuration["OrderIdCreateApi"];
+            api = envirFactory.GetEnvir().GetLinePayApiUrl();//configuration["LinePay:ApiUrl"];
+            channelSecret = envirFactory.GetEnvir().GetLinePayChannelSecret();//configuration["LinePay:ChannelSecret"];
+            channelId = envirFactory.GetEnvir().GetLinePayChannelId();// configuration["LinePay:ChannelId"];
+            linepayUrl = envirFactory.GetEnvir().GetLinePayBaseUrl();// configuration["LinePay:BaseUrl"];
+            orderIdCreateApi = envirFactory.GetEnvir().GetOrderIdCreateApi();// configuration["OrderIdCreateApi"];
         }
 
         public async Task<string> CreateOrder(PurchaseOrderCreateReq req)

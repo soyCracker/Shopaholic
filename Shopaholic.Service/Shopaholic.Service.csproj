@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Shopaholic.Entity\Shopaholic.Entity.csproj" />
     <ProjectReference Include="..\Shopaholic.Service.Common\Shopaholic.Service.Common.csproj" />
     <ProjectReference Include="..\Shopaholic.Service.Model\Shopaholic.Service.Model.csproj" />
+    <ProjectReference Include="..\Shopaholic.Web.Common\Shopaholic.Web.Common.csproj" />
     <ProjectReference Include="..\Shopaholic.Web.Model\Shopaholic.Web.Model.csproj" />
   </ItemGroup>
 

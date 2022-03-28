@@ -12,6 +12,7 @@ namespace Shopaholic.Util.Utilities
         public static readonly string yyyyMMdd_02 = "yyyyMMdd";
         public static readonly string yyyyMMdd_03 = "yyyy-MM-dd";
         public static readonly string yyyyMMddhhmmssFormat = "yyyy-MM-dd HH:mm:ss";
+        public static readonly string yyyyMMddhhmmssFormat_02 = "yyyy\\/MM\\/dd HH:mm:ss";
 
         public static DateTime GetLocalDateTime()
         {

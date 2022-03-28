@@ -38,6 +38,18 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "myAllowSpecificOrigins",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                      });
+});
+
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("AWS")/*,

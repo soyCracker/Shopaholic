@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
+using Shopaholic.Web.Common.Factory;
 using Shopaholic.Web.Common.Middlewares;
 using StackExchange.Redis;
 using System.Net;
@@ -16,28 +17,34 @@ using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ShopaholicContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS"),
-        providerOptions => { providerOptions.EnableRetryOnFailure(); });
-});
+// 切換執行環境
+//string envirMode = "DEV";
+string envirMode = "AWS";
+EnvirFactory envirFactory = new EnvirFactory(builder.Configuration, envirMode);
 
 // IHttpClientFactory
 builder.Services.AddHttpClient();
-
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder.Configuration.GetValue<string>("Imgur:ClientID"),
-    builder.Configuration.GetValue<string>("Imgur:ClientSecret")));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
-builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
-builder.Services.AddScoped<IWebFlowService, WebFlowService>();
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection")));
+builder.Services.AddScoped<LinePayPurchaseService>();
+builder.Services.AddScoped<EcPayPurchaseService>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(envirFactory.GetEnvir().GetReddisConnStr()));
+//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection")));
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
+builder.Services.AddScoped(provider => envirFactory);
+
+builder.Services.AddDbContext<ShopaholicContext>(options =>
+{
+    options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr(),
+        /*builder.Configuration.GetConnectionString("AWS"),*/
+        providerOptions => { providerOptions.EnableRetryOnFailure(); });
+});
+
 
 // Firebase Authentication
 builder.Services

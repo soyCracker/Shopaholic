@@ -66,6 +66,7 @@ namespace Shopaholic.Web.Common.Middlewares
             // Any other Exception
             else
             {
+                //logger.LogError("HandleException() Error500:" + exception.Message);
                 context.Response.Redirect("/Error/Error500");
             }
         }
@@ -79,9 +80,12 @@ namespace Shopaholic.Web.Common.Middlewares
             if (exception is DbUpdateException)
             {
                 message = ((DbUpdateException)exception).Message;
-                logger.LogError("HandleExceptionAsync() " + message);
+                logger.LogError("ReturnApiException() DbUpdateException:" + message);
             }
-
+            else
+            {
+                logger.LogError("ReturnApiException() Other Exception:" + exception);
+            }
 
             await context.Response.WriteAsync(
                 JsonSerializer.Serialize(new MessageModel<string>()
