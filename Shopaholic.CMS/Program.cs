@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
+using Shopaholic.CMS.Common.Factory;
 using Shopaholic.CMS.Common.Tools;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
@@ -12,6 +13,11 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 切換執行環境
+//string envirMode = "DEV";
+string envirMode = "AWS";
+EnvirFactory envirFactory = new EnvirFactory(builder.Configuration, envirMode);
 
 // Add services to the container.
 builder.Services.AddMvc()  
@@ -52,14 +58,13 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWS")/*,
-        providerOptions => { providerOptions.EnableRetryOnFailure(); }*/);
+    options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr());
 });
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IStorageService>(provider => new ImgurService(builder.Configuration.GetValue<string>("Imgur:ClientID"), 
-    builder.Configuration.GetValue<string>("Imgur:ClientSecret")));
+builder.Services.AddScoped<IStorageService>(provider => new ImgurService(envirFactory.GetEnvir().GetImgurClientID(),
+    envirFactory.GetEnvir().GetImgurClientSecret()));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
