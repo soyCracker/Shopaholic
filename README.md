@@ -9,7 +9,7 @@ https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com:13771
 * 計算前台購物網站瀏覽流量
 
 ## Shopaholic.Web (前台購物網站展示)
-https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com:13971  
+https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com  
 * 用nginx作load balancer，將程式流量分配至2個Server
 * 串接Firebase Auth 來達成第三方登入(Google)，並整合Cookie-based Authentication
 * 串接Line pay支付
