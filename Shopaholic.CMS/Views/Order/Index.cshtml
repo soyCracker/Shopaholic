@@ -134,9 +134,9 @@
                 pageDisplayArray:null,
                 searchStr: '',
                 minDate:'2000-01-01',
-                maxDate: '@TimeUtil.DateTimeToFormatStr(DateTime.Now, TimeUtil.yyyyMMdd_03)',
+                maxDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
                 searchBeginDate: '2000-01-01',
-                searchEndDate: '@TimeUtil.DateTimeToFormatStr(DateTime.Now, TimeUtil.yyyyMMdd_03)',
+                searchEndDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
             },
             mounted: function()
             {

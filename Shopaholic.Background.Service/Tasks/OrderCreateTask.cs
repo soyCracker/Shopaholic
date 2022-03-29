@@ -33,7 +33,7 @@ namespace Shopaholic.Background.Service.Tasks
                 // use dbContext inside singleton
                 using (var scope = scopeFactory.CreateScope())
                 {
-                    string todayStr = TimeUtil.DateTimeToFormatStr(TimeUtil.GetLocalTodayDate(), TimeUtil.yyyyMMdd_02);
+                    string todayStr = TimeUtil.GetUtcDateTime().ToString(TimeUtil.yyyyMMdd_02);
                     string targetOrderId = todayStr + OrderNumberFormat.ORDERNUMBER_INIT_SEQ;
                     var dbContext = scope.ServiceProvider.GetRequiredService<ShopaholicContext>();
                     if (dbContext.OrderHeaders.Count()>0)

@@ -104,7 +104,7 @@ namespace Shopaholic.Service.Services
             {
                 {"MerchantID", merchantID},
                 {"MerchantTradeNo", req.OrderId},
-                {"MerchantTradeDate", TimeUtil.DateTimeToFormatStr(TimeUtil.GetUtcDateTime().UtcDateTime, TimeUtil.yyyyMMddhhmmssFormat_02)},
+                {"MerchantTradeDate", TimeUtil.GetUtcDateTime().ToString(TimeUtil.yyyyMMddhhmmssFormat_02)},
                 {"TotalAmount", totalPrice.ToString()},
                 {"ItemName", itemName},
                 {"ReturnURL", req.ConfirmUrl + payConfirmApi},

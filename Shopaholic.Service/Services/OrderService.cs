@@ -27,8 +27,8 @@ namespace Shopaholic.Service.Services
         {
             using(dbContext)
             {
-                DateTime searchBegin = string.IsNullOrEmpty(beginTime)?SqlDateTime.MinValue.Value:TimeUtil.StrToLocalDateTime(beginTime);
-                DateTime searchEnd = string.IsNullOrEmpty(endTime)?SqlDateTime.MaxValue.Value:TimeUtil.StrToLocalDateTime(endTime).AddDays(1);
+                DateTime searchBegin = string.IsNullOrEmpty(beginTime)?SqlDateTime.MinValue.Value: TimeUtil.CovertTaipeiToUtcDatetime(DateTime.Parse(beginTime));
+                DateTime searchEnd = string.IsNullOrEmpty(endTime)?SqlDateTime.MaxValue.Value: TimeUtil.CovertTaipeiToUtcDatetime(DateTime.Parse(endTime).AddDays(1));
 
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
                 var filterData = dbContext.OrderHeaders.Where(x => ( (x.OrderId.Contains(searchStr)
@@ -49,7 +49,7 @@ namespace Shopaholic.Service.Services
                         IsSent = order.IsSent,
                         Status = order.StateCode,
                         FailCode = order.FailCode,
-                        FormatCreateTime = TimeUtil.DateTimeToFormatStr(order.CreateTime, TimeUtil.yyyyMMddhhmmssFormat),
+                        FormatCreateTime = TimeUtil.CovertToTaipeiDatetime(order.CreateTime).ToString(TimeUtil.yyyyMMddhhmmssFormat),
                         StatusMsg = GetOrderStatus(order.StateCode, order.FailCode)
                     };
                     orderHeaderDTOs.Add(orderHeaderDTO);
@@ -71,8 +71,8 @@ namespace Shopaholic.Service.Services
             {
                 var user = dbContext.CustomerAccounts.SingleOrDefault(x => x.Email == email);
 
-                DateTime searchBegin = string.IsNullOrEmpty(beginTime) ? SqlDateTime.MinValue.Value : TimeUtil.StrToLocalDateTime(beginTime);
-                DateTime searchEnd = string.IsNullOrEmpty(endTime) ? SqlDateTime.MaxValue.Value : TimeUtil.StrToLocalDateTime(endTime).AddDays(1);
+                DateTime searchBegin = string.IsNullOrEmpty(beginTime) ? SqlDateTime.MinValue.Value : TimeUtil.CovertTaipeiToUtcDatetime(DateTime.Parse(beginTime));
+                DateTime searchEnd = string.IsNullOrEmpty(endTime) ? SqlDateTime.MaxValue.Value : TimeUtil.CovertTaipeiToUtcDatetime(DateTime.Parse(endTime).AddDays(1));
 
                 searchStr = string.IsNullOrEmpty(searchStr) ? "" : searchStr;
                 var filterData = dbContext.OrderHeaders.Where(x => x.UserId == user.AccountId && ((x.OrderId.Contains(searchStr)
@@ -93,7 +93,7 @@ namespace Shopaholic.Service.Services
                         IsSent = order.IsSent,
                         Status = order.StateCode,
                         FailCode = order.FailCode,
-                        FormatCreateTime = TimeUtil.DateTimeToFormatStr(order.CreateTime, TimeUtil.yyyyMMddhhmmssFormat),
+                        FormatCreateTime = TimeUtil.CovertToTaipeiDatetime(order.CreateTime).ToString(TimeUtil.yyyyMMddhhmmssFormat),
                         StatusMsg = GetOrderStatus(order.StateCode, order.FailCode),
                         OrderTypeCode = order.OrderTypeCode,
                     };
@@ -214,7 +214,7 @@ namespace Shopaholic.Service.Services
                     IsFinish = orderHeader.IsFinish,
                     IsSent = orderHeader.IsSent,
                     ShipNumber = shipment.ShipNumber,
-                    FormatCreateTime = TimeUtil.DateTimeToFormatStr(orderHeader.CreateTime, TimeUtil.yyyyMMddhhmmssFormat),
+                    FormatCreateTime = orderHeader.CreateTime.ToString(TimeUtil.yyyyMMddhhmmssFormat),
                     StatusMsg = GetOrderStatus(orderHeader.StateCode, orderHeader.FailCode),
                     ReceiveMan = shipment.ReceiveMan,
                     Phone = shipment.Phone,

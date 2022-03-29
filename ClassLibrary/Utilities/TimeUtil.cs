@@ -19,16 +19,6 @@ namespace Shopaholic.Util.Utilities
             return DateTimeOffset.UtcNow;
         }
 
-        public static string DateTimeToFormatStr(DateTime targetTime, string timeFormat)
-        {
-            return targetTime.ToString(timeFormat);
-        }
-
-        public static DateTime GetLocalTodayDate()
-        {
-            return DateTime.Today;
-        }
-
         public static DateTime StrToLocalDateTime(string timeStr)
         {
             try
@@ -42,6 +32,16 @@ namespace Shopaholic.Util.Utilities
             return DateTime.MinValue;
         }
 
+        public static DateTime CovertToTaipeiDatetime(DateTime origin)
+        {
+            TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            return TimeZoneInfo.ConvertTime(origin, zone);           
+        }
 
+        public static DateTime CovertTaipeiToUtcDatetime(DateTime origin)
+        {
+            TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            return TimeZoneInfo.ConvertTimeToUtc(origin, zone);
+        }
     }
 }
