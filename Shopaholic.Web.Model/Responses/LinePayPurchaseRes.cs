@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Model.Responses
 {
-    public class PurchasePayRes
+    public class LinePayPurchaseRes
     {
         public bool IsSuccess { get; set; }
         public string Msg { get; set; }

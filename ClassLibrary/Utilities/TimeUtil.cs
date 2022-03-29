@@ -14,9 +14,9 @@ namespace Shopaholic.Util.Utilities
         public static readonly string yyyyMMddhhmmssFormat = "yyyy-MM-dd HH:mm:ss";
         public static readonly string yyyyMMddhhmmssFormat_02 = "yyyy\\/MM\\/dd HH:mm:ss";
 
-        public static DateTime GetLocalDateTime()
+        public static DateTimeOffset GetUtcDateTime()
         {
-            return DateTime.Now;
+            return DateTimeOffset.UtcNow;
         }
 
         public static string DateTimeToFormatStr(DateTime targetTime, string timeFormat)

@@ -69,7 +69,6 @@ builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
-    //options.ListenAnyIP(12771, configure => configure.UseHttps()); // to listen for incoming https connection on port 7001
 });
 
 var app = builder.Build();

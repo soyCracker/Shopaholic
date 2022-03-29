@@ -100,6 +100,7 @@
                     <button v-on:click="LinePayCreateOrder" v-on:keydown.enter="LinePayCreateOrder">
                         <img src="~/dist/img/LINE-Pay(h)_W119_n.png" alt="linepay" height="15" width="60">
                     </button>
+                    <button v-on:click="EcPayCreateOrder" v-on:keydown.enter="EcPayCreateOrder">信用卡</button>
                 </div>                
             </div>
             <!-- /.card -->
@@ -120,7 +121,7 @@
             {
                 linePayCreateOrderApi: baseurl + "/Order/api/LinePayCreateOrder",
                 linePayApi: baseurl + "/Order/api/LinePay",
-                linePayConfirmApi: baseurl + "/Order/api/LinePayConfirm",
+                //linePayConfirmApi: baseurl + "/Order/api/LinePayConfirm",
                 cartApi: baseurl + "/Cart/api/GetCart",
                 orderIndexPage: baseurl + "/Order/Index",
                 cartList: {},
@@ -212,7 +213,7 @@
 
                     var obj = {  
                         ['OrderId']: orderId,
-                        ['ConfirmUrl']: self.linePayConfirmApi
+                        ['ConfirmUrl']: baseurl
                     };
 
                     axios.post(self.linePayApi, obj)
@@ -275,12 +276,10 @@
 
                         axios.post(self.ecPayCreateOrderApi, obj)
                             .then(function (result) {
-                                if(result.data.Success)
-                                {
-                                    self.EcPay(result.data.Data);
+                                if(result.data.Success){
+                                    location.href = baseurl + '/Order/EcPayPage?Id=' + result.data.Data + '&baseurl=' + baseurl;
                                 }
-                                else
-                                {
+                                else{
                                     ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
                                             'Msg:' + result.data.Msg);
                                 }                           
@@ -290,34 +289,6 @@
                             });
                     }                    
                 },
-
-                EcPay: function(orderId){
-                    var self = this;              
-
-                    ToastUtil.InfoFire('處理中')
-
-                    var obj = {  
-                        ['OrderId']: orderId,
-                        ['ConfirmUrl']: baseurl
-                    };
-
-                    axios.post(self.ecPayApi, obj)
-                        .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                ToastUtil.InfoFire('處理中...')
-                                location.href = result.data.Data.CallbackUrl;
-                            }
-                            else
-                            {
-                                ToastUtil.RedirectAlert('付款失敗:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg, self.orderIndexPage);
-                            }                           
-                        })
-                        .catch(function (error) {
-                            ExceptUtil.PostExceptionFuc(error);
-                        });
-                }
             }
         });
 

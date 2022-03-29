@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Service.Services
 {
-    public class TestPurchaseService : IPurchaseService
+    public class TestPurchaseService 
     {
         private readonly ShopaholicContext dbContext;
 
@@ -32,12 +32,12 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public Task<PurchasePayRes> Pay(PurchasePayReq req)
+        public Task<LinePayPurchaseRes> Pay(PurchasePayReq req)
         {
             throw new NotImplementedException();
         }
 
-        public bool PayConfirm(PurchaseConfirmReq req)
+        public bool PayConfirm(LinePayConfirmReq req)
         {
             using (dbContext)
             {

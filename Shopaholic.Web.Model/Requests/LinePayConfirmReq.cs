@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Model.Requests
 {
-    public class PurchaseConfirmReq
+    public class LinePayConfirmReq
     {
         public string SelfOrderId { get; set; }
         public string OtherSysOrderId { get; set; }

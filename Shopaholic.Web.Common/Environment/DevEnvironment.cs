@@ -29,27 +29,52 @@ namespace Shopaholic.Web.Common.Environment
 
         public string GetLinePayApiUrl()
         {
-            return configuration.GetValue<string>("LinePay:ApiUrl");
+            return configuration.GetValue<string>("LinePay:AWS:ApiUrl");
         }
 
         public string GetLinePayChannelSecret()
         {
-            return configuration.GetValue<string>("LinePay:ChannelSecret");
+            return configuration.GetValue<string>("LinePay:AWS:ChannelSecret");
         }
 
         public string GetLinePayChannelId()
         {
-            return configuration.GetValue<string>("LinePay:ChannelId");
+            return configuration.GetValue<string>("LinePay:AWS:ChannelId");
         }
 
         public string GetLinePayBaseUrl()
         {
-            return configuration.GetValue<string>("LinePay:BaseUrl");
+            return configuration.GetValue<string>("LinePay:AWS:BaseUrl");
+        }
+
+        public string GetLinePayConfirmApi()
+        {
+            return configuration.GetValue<string>("LinePay:AWS:PayConfirmApi");
         }
 
         public string GetOrderIdCreateApi()
         {
             return configuration.GetValue<string>("OrderIdCreateApi:DEV");
+        }
+
+        public string GetEcPayApi()
+        {
+            return configuration.GetValue<string>("EcPay:AWS:EcPayApi");
+        }
+
+        public string GetEcPayConfirmApi()
+        {
+            return configuration.GetValue<string>("EcPay:AWS:PayConfirmApi");
+        }
+
+        public string GetPayConfirmReturnPage()
+        {
+            return configuration.GetValue<string>("PayConfirmReturnUrl");
+        }
+
+        public string GetEcPayMerchantID()
+        {
+            return configuration.GetValue<string>("EcPay:AWS:MerchantID");
         }
     }
 }

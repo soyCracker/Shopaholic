@@ -33,7 +33,6 @@ builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<LinePayPurchaseService>();
 builder.Services.AddScoped<EcPayPurchaseService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(envirFactory.GetEnvir().GetReddisConnStr()));
-//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("RedisConnection")));
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 builder.Services.AddScoped(provider => envirFactory);
@@ -41,7 +40,6 @@ builder.Services.AddScoped(provider => envirFactory);
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
     options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr(),
-        /*builder.Configuration.GetConnectionString("AWS"),*/
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
@@ -63,7 +61,6 @@ builder.Services
         // 網站本身的Cookie-based Authentication
     }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options=>
     {
-        //options.LoginPath = new PathString(builder.Configuration.GetValue<string>("LoginUrl"));
         options.Events.OnRedirectToLogin = context =>
         {
             //讓MVC及API驗證失敗時有不同的行為
@@ -100,7 +97,7 @@ builder.Services.AddMvc()
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12970); // to listen for incoming http connection on port 5001
-    //options.ListenAnyIP(12971, configure => configure.UseHttps()); // to listen for incoming https connection on port 7001
+    //options.ListenAnyIP(80);
 });
 
 var app = builder.Build();
