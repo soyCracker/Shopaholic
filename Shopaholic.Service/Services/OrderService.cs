@@ -94,7 +94,8 @@ namespace Shopaholic.Service.Services
                         Status = order.StateCode,
                         FailCode = order.FailCode,
                         FormatCreateTime = TimeUtil.DateTimeToFormatStr(order.CreateTime, TimeUtil.yyyyMMddhhmmssFormat),
-                        StatusMsg = GetOrderStatus(order.StateCode, order.FailCode)
+                        StatusMsg = GetOrderStatus(order.StateCode, order.FailCode),
+                        OrderTypeCode = order.OrderTypeCode,
                     };
                     orderHeaderDTOs.Add(orderHeaderDTO);
                 }

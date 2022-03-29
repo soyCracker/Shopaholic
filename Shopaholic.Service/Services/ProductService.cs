@@ -50,7 +50,7 @@ namespace Shopaholic.Service.Services
                 if(product!=null)
                 {
                     product.IsDelete = true;
-                    product.UpdateTime = TimeUtil.GetLocalDateTime();
+                    product.UpdateTime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -93,7 +93,7 @@ namespace Shopaholic.Service.Services
                     origin.Content = content;
                     origin.Stock = stock;
                     origin.Image = image;
-                    origin.UpdateTime = TimeUtil.GetLocalDateTime();
+                    origin.UpdateTime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     dbContext.SaveChanges();
                     return true;
                 }

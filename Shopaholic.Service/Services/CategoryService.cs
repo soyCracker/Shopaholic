@@ -41,7 +41,7 @@ namespace Shopaholic.Service.Services
                 if (category != null)
                 {
                     category.IsDelete = true;
-                    category.UpdateTime = TimeUtil.GetLocalDateTime();
+                    category.UpdateTime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     dbContext.SaveChanges();
                     return true;
                 }
@@ -94,7 +94,7 @@ namespace Shopaholic.Service.Services
                 if (origin != null)
                 {
                     origin.Name = name;
-                    origin.UpdateTime = TimeUtil.GetLocalDateTime();
+                    origin.UpdateTime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     dbContext.SaveChanges();
                     return true;
                 }

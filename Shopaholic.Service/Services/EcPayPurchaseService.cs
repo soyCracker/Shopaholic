@@ -26,7 +26,8 @@ namespace Shopaholic.Service.Services
         private readonly string orderIdCreateApi;
         private readonly string ecpayApi;
         private readonly string payConfirmApi;
-        private readonly string clientBackApi;
+        private readonly string payConfirmReturnPage;
+        private readonly string merchantID;
 
         public EcPayPurchaseService(ILogger<EcPayPurchaseService> logger, ShopaholicContext dbContext, EnvirFactory envirFactory, 
             IHttpClientFactory httpClientFactory)
@@ -34,10 +35,11 @@ namespace Shopaholic.Service.Services
             this.dbContext = dbContext;
             this.logger = logger;
             orderIdCreateApi = envirFactory.GetEnvir().GetOrderIdCreateApi();
-            ecpayApi = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";
-            payConfirmApi = "/Order/api/EcPayConfirm";
-            clientBackApi = "/Order/Index";
+            ecpayApi = envirFactory.GetEnvir().GetEcPayApi();
+            payConfirmApi = envirFactory.GetEnvir().GetEcPayConfirmApi();
+            payConfirmReturnPage = envirFactory.GetEnvir().GetPayConfirmReturnPage();
             this.httpClientFactory = httpClientFactory;
+            merchantID = envirFactory.GetEnvir().GetEcPayMerchantID();
         }
 
         public async Task<string> CreateOrder(PurchaseOrderCreateReq req)
@@ -87,55 +89,33 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public async Task<PurchasePayRes> Pay(PurchasePayReq req)
+        public async Task<T> Pay<T>(PurchasePayReq req) where T : class
         {
-            var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==req.OrderId);
-            if (order !=null && order.StateCode==OrderStateCode.CREATE && order.StateCode==OrderFailCode.COMMON)
-            {
-                var reqBody = GetEcPayReqBody(order.OrderId, req.ConfirmUrl);
-                var payRes = await EcPayPost(reqBody);
-            }
-            return new PurchasePayRes
-            {
-                IsSuccess = false
-            };
-        }
-
-        public async Task<string> EcPayPost(Dictionary<string, string> reqBody)
-        {
-            using (var httpClient = httpClientFactory.CreateClient())
-            {
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var formData = new FormUrlEncodedContent(reqBody);
-                var response = await httpClient.PostAsync(ecpayApi, formData);
-                var result = await response.Content.ReadAsStringAsync();
-                return result;
-            }
-        }
-
-        public Dictionary<string, string> GetEcPayReqBody(string orderId, string clientBackURL)
-        {
-            List<OrderDetail> orderDetails = dbContext.OrderDetails.Where(x => x.OrderId == orderId).ToList();
+            List<OrderDetail> orderDetails = dbContext.OrderDetails.Where(x => x.OrderId == req.OrderId).ToList();
             int totalPrice = 0;
             string itemName = "";
             foreach (var detail in orderDetails)
             {
                 var product = dbContext.Products.SingleOrDefault(x => x.Id==detail.ProductId);
                 totalPrice+=detail.Quantity*detail.CurrentPrice;
-                itemName+=product.Name + " x" + detail.Quantity + "#"; 
+                itemName+=product.Name + " x" + detail.Quantity + "#";
             }
             var ecpayReq = new Dictionary<string, string>
             {
-                {"MerchantID", "2000132"},
-                {"MerchantTradeNo", orderId},
-                {"MerchantTradeDate", TimeUtil.DateTimeToFormatStr(TimeUtil.GetLocalDateTime(), TimeUtil.yyyyMMddhhmmssFormat_02)},
+                {"MerchantID", merchantID},
+                {"MerchantTradeNo", req.OrderId},
+                {"MerchantTradeDate", TimeUtil.DateTimeToFormatStr(TimeUtil.GetUtcDateTime().UtcDateTime, TimeUtil.yyyyMMddhhmmssFormat_02)},
                 {"TotalAmount", totalPrice.ToString()},
                 {"ItemName", itemName},
-                {"ReturnURL", clientBackURL + payConfirmApi},
-                //{"ClientBackURL", clientBackURL + clientBackApi},
+                {"ReturnURL", req.ConfirmUrl + payConfirmApi},
+                {"PaymentType", "aio"},
+                {"TradeDesc", "Shopaholic 商城購物"},
+                {"ChoosePayment", "Credit"},
+                {"ClientBackURL", req.ConfirmUrl + payConfirmReturnPage},
             };
             ecpayReq["CheckMacValue"] = GetCheckMacValue(ecpayReq);
-            return ecpayReq;
+            logger.LogInformation("EcPayPurchaseService Pay() ReturnURL:" + ecpayReq["ReturnURL"]);
+            return ecpayReq as T;
         }
 
         private string GetCheckMacValue(Dictionary<string, string> order)
@@ -172,9 +152,24 @@ namespace Shopaholic.Service.Services
             }            
         }
 
-        public bool PayConfirm(PurchaseConfirmReq req)
+        public bool PayConfirm<T>(T req)
         {
-            return true;
+            logger.LogError("EcPayPurchaseService PayConfirm()");
+            EcPayConfirmReq ecPayConfirmReq = req as EcPayConfirmReq;
+            using(dbContext)
+            {
+                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==ecPayConfirmReq.MerchantTradeNo);
+                if(order != null)
+                {
+                    order.StateCode = OrderStateCode.PAID;
+                    order.IsPaid = true;
+                    dbContext.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
         }
+
+        
     }
 }

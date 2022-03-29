@@ -92,8 +92,11 @@
                             <div class="row mb-2">
                                 <div class="col-sm-4">
                                     <div v-if="(item.Status==0 && item.FailCode==0)">
-                                        <a class="btn btn-info"  v-on:click="Pay(item.OrderId)">
-                                            立即付款
+                                        <a v-if="item.OrderTypeCode == 2" class="btn btn-info" v-on:click="LinePay(item.OrderId)">
+                                            LinePay付款
+                                        </a>
+                                        <a v-else-if="item.OrderTypeCode == 1" class="btn btn-info" v-on:click="EcPay(item.OrderId)">
+                                            信用卡付款
                                         </a>
                                     </div>                                 
                                 </div>
@@ -143,8 +146,7 @@
             {
                 orderSearchApi: baseurl + "/Order/api/Search",
                 orderApplyReturnApi: baseurl + "/Order/api/ApplyReturn/",
-                payApi: baseurl + "/Order/api/LinePay",
-                payConfirmApi: baseurl + "/Order/api/LinePayConfirm",
+                linePayApi: baseurl + "/Order/api/LinePay",
                 totalPages: 1,
                 pageSize: 20,
                 currentPage: 1,
@@ -229,17 +231,17 @@
                     self.RefreshUI(1);
                 },       
                 
-                Pay: function(orderId){
+                LinePay: function(orderId){
                     var self = this;              
 
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {  
                         ['OrderId']: orderId,
-                        ['ConfirmUrl']: self.payConfirmApi
+                        ['ConfirmUrl']: baseurl
                     };
 
-                    axios.post(self.payApi, obj)
+                    axios.post(self.linePayApi, obj)
                         .then(function (result) {
                             if(result.data.Success)
                             {
@@ -255,6 +257,11 @@
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
+                },
+
+                EcPay: function(orderId){
+                    var self = this;              
+                    location.href = baseurl + '/Order/EcPayPage?Id=' + orderId + '&baseurl=' + baseurl;
                 },
             }
         });

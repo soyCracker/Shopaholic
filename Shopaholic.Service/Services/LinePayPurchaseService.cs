@@ -28,16 +28,18 @@ namespace Shopaholic.Service.Services
         private readonly string channelId;
         private readonly string linepayUrl;
         private readonly string orderIdCreateApi;
+        private readonly string linePayConfirmApi;
 
         public LinePayPurchaseService(ShopaholicContext dbContext, IHttpClientFactory httpClientFactory, IConfiguration configuration, EnvirFactory envirFactory)
         {
             this.dbContext = dbContext;
             this.httpClientFactory = httpClientFactory;
-            api = envirFactory.GetEnvir().GetLinePayApiUrl();//configuration["LinePay:ApiUrl"];
-            channelSecret = envirFactory.GetEnvir().GetLinePayChannelSecret();//configuration["LinePay:ChannelSecret"];
-            channelId = envirFactory.GetEnvir().GetLinePayChannelId();// configuration["LinePay:ChannelId"];
-            linepayUrl = envirFactory.GetEnvir().GetLinePayBaseUrl();// configuration["LinePay:BaseUrl"];
-            orderIdCreateApi = envirFactory.GetEnvir().GetOrderIdCreateApi();// configuration["OrderIdCreateApi"];
+            api = envirFactory.GetEnvir().GetLinePayApiUrl();
+            channelSecret = envirFactory.GetEnvir().GetLinePayChannelSecret();
+            channelId = envirFactory.GetEnvir().GetLinePayChannelId();
+            linepayUrl = envirFactory.GetEnvir().GetLinePayBaseUrl();
+            orderIdCreateApi = envirFactory.GetEnvir().GetOrderIdCreateApi();
+            linePayConfirmApi = envirFactory.GetEnvir().GetLinePayConfirmApi();
         }
 
         public async Task<string> CreateOrder(PurchaseOrderCreateReq req)
@@ -59,9 +61,6 @@ namespace Shopaholic.Service.Services
                     });
                 }
                 req.ProductList = ProductList;
-
-                //// TODO 未來要改成獨立Server建立訂單編號
-                //string orderId = OrderBusiness.CreateOrder(dbContext, req);
                 string orderId = await OrderCreatePost(req);
                 if(!string.IsNullOrEmpty(orderId))
                 {
@@ -72,7 +71,7 @@ namespace Shopaholic.Service.Services
             }
         }      
 
-        public async Task<PurchasePayRes> Pay(PurchasePayReq req)
+        public async Task<T> Pay<T>(PurchasePayReq req) where T : class
         {
             using (dbContext)
             {
@@ -80,7 +79,7 @@ namespace Shopaholic.Service.Services
                 if(order.StateCode==OrderStateCode.CREATE && order.StateCode==OrderFailCode.COMMON)
                 {
                     string linepayOrderId = Guid.NewGuid().ToString();
-                    var reqBody = JsonSerializer.Serialize(GetLinePayReqBody(order.OrderId, linepayOrderId, req.ConfirmUrl));
+                    var reqBody = JsonSerializer.Serialize(GetLinePayReqBody(order.OrderId, linepayOrderId, req.ConfirmUrl + linePayConfirmApi));
                     var linepayRes = await LinePayPost(reqBody);
 
                     if(linepayRes.returnCode == "0000")
@@ -90,18 +89,18 @@ namespace Shopaholic.Service.Services
                         dbContext.SaveChanges();
                     }         
 
-                    PurchasePayRes purchasePayRes = new PurchasePayRes
+                    LinePayPurchaseRes purchasePayRes = new LinePayPurchaseRes
                     {
                         IsSuccess = (linepayRes.returnCode == "0000"),
                         Msg = linepayRes.returnMessage,
                         CallbackUrl = (linepayRes.returnCode == "0000")? linepayRes.info.paymentUrl.web :"",
                     };
-                    return purchasePayRes;
+                    return purchasePayRes as T;
                 }
-                return new PurchasePayRes
+                return new LinePayPurchaseRes
                 {
                     IsSuccess = false
-                };
+                } as T;
             }                           
         }
 
@@ -200,16 +199,24 @@ namespace Shopaholic.Service.Services
 
         }
 
-        public bool PayConfirm(PurchaseConfirmReq req)
+        public bool PayConfirm<T>(T req)
         {
             using(dbContext)
             {
-                var linepayOrder = dbContext.LinePayOrders.SingleOrDefault(x => x.LinePayOrderId==req.OtherSysOrderId);
-                var orderHeader = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==linepayOrder.OrderId);
-                orderHeader.StateCode = OrderStateCode.PAID;
-                orderHeader.IsPaid = true;
-                dbContext.SaveChanges();
-                return true;
+                LinePayConfirmReq purchaseConfirmReq =  req as LinePayConfirmReq;
+                var linepayOrder = dbContext.LinePayOrders.SingleOrDefault(x => x.LinePayOrderId==purchaseConfirmReq.OtherSysOrderId);
+                if(linepayOrder!=null)
+                {
+                    var orderHeader = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==linepayOrder.OrderId);
+                    if(orderHeader!=null)
+                    {
+                        orderHeader.StateCode = OrderStateCode.PAID;
+                        orderHeader.IsPaid = true;
+                        dbContext.SaveChanges();
+                        return true;
+                    }                  
+                }
+                return false;
             }
         }
 

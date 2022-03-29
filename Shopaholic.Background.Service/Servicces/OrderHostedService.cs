@@ -50,12 +50,12 @@ namespace Shopaholic.Background.Service.Servicces
             try
             {
                 logger.LogInformation("OrderHostedService RunOrderShipSimulateTask() orderShipSimulateTask_lasttime:" + orderShipSimulateTask_lasttime);
-                if (TimeUtil.GetLocalDateTime().AddHours(-8)>orderShipSimulateTask_lasttime)
+                if (TimeUtil.GetUtcDateTime().AddHours(-8)>orderShipSimulateTask_lasttime)
                 {
                     logger.LogInformation("OrderHostedService RunOrderShipSimulateTask() Start()");
                     OrderShipSimulateTask orderShipSimulateTask = new OrderShipSimulateTask(scopeFactory);
                     orderShipSimulateTask.Start();
-                    orderShipSimulateTask_lasttime = TimeUtil.GetLocalDateTime();
+                    orderShipSimulateTask_lasttime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     logger.LogInformation("OrderHostedService RunOrderShipSimulateTask() Finish");
                 }                
             }
@@ -70,12 +70,12 @@ namespace Shopaholic.Background.Service.Servicces
             try
             {
                 logger.LogInformation("OrderHostedService RunOrderOverdueTask() orderOverdueTask_lasttime:" + orderOverdueTask_lasttime);
-                if (TimeUtil.GetLocalDateTime().AddHours(-8)>orderOverdueTask_lasttime)
+                if (TimeUtil.GetUtcDateTime().AddHours(-8)>orderOverdueTask_lasttime)
                 {
                     logger.LogInformation("OrderHostedService RunOrderOverdueTask() Start()");
                     OrderOverdueTask task = new OrderOverdueTask(scopeFactory);
                     task.Start();
-                    orderOverdueTask_lasttime = TimeUtil.GetLocalDateTime();
+                    orderOverdueTask_lasttime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     logger.LogInformation("OrderHostedService RunOrderOverdueTask() Finish");
                 }
             }

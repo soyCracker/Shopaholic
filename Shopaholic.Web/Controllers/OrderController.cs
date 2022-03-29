@@ -38,6 +38,18 @@ namespace Shopaholic.Web.Controllers
             return View();
         }
 
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> EcPayPage(string Id, string baseurl)
+        {
+            PurchasePayReq req = new PurchasePayReq
+            {
+                OrderId = Id,
+                ConfirmUrl = baseurl
+            };
+            Dictionary<string, string> res = await ecPayPurchaseService.Pay<Dictionary<string, string>>(req);
+            return View(res);
+        }
+
         /// <summary>
         /// 搜索商品
         /// </summary>
@@ -82,10 +94,10 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public async Task<MessageModel<PurchasePayRes>> LinePay([FromBody] PurchasePayReq req)
+        public async Task<MessageModel<LinePayPurchaseRes>> LinePay([FromBody] PurchasePayReq req)
         {
-            var res = await linePayPurchaseService.Pay(req);
-            return new MessageModel<PurchasePayRes>
+            LinePayPurchaseRes res = await linePayPurchaseService.Pay<LinePayPurchaseRes>(req);
+            return new MessageModel<LinePayPurchaseRes>
             {
                 Success = res.IsSuccess,
                 Msg = res.Msg,
@@ -100,7 +112,7 @@ namespace Shopaholic.Web.Controllers
         [HttpGet]
         public IActionResult LinePayConfirm([FromQuery] string orderId, [FromQuery]string transactionId)
         {
-            PurchaseConfirmReq req = new PurchaseConfirmReq
+            LinePayConfirmReq req = new LinePayConfirmReq
             {
                 OtherSysOrderId = orderId,
                 TransactionId = transactionId
@@ -128,7 +140,7 @@ namespace Shopaholic.Web.Controllers
         }
 
         /// <summary>
-        /// 建立訂單
+        /// EcPay建立訂單
         /// </summary>
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
@@ -147,32 +159,19 @@ namespace Shopaholic.Web.Controllers
         }
 
         /// <summary>
-        /// 付款
+        /// EcPay付款確認
         /// </summary>
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public async Task<MessageModel<PurchasePayRes>> EcPay([FromBody] PurchasePayReq req)
+        [Consumes("application/x-www-form-urlencoded")]
+        public IActionResult EcPayConfirm([FromForm] EcPayConfirmReq req)
         {
-            var res = await ecPayPurchaseService.Pay(req);
-            return new MessageModel<PurchasePayRes>
+            bool res = ecPayPurchaseService.PayConfirm(req);
+            if(res)
             {
-                Success = res.IsSuccess,
-                Msg = res.Msg,
-                Data = res
-            };
-        }
-
-        /// <summary>
-        /// LinePay付款確認
-        /// </summary>
-        [Route("[controller]/api/[action]")]
-        [HttpGet]
-        public IActionResult EcPayConfirm()
-        {
-            var res = ecPayPurchaseService.PayConfirm(null);
-
-            return Ok("1|OK");
+                return Ok("1|OK");
+            }
+            return Ok("0|Error");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Shopaholic.Background.Service.Tasks
             using (var scope = scopeFactory.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ShopaholicContext>();
-                DateTime now = TimeUtil.GetLocalDateTime();
+                DateTime now = TimeUtil.GetUtcDateTime().UtcDateTime;
                 var prepareShip = dbContext.OrderHeaders.Where(x => x.StateCode==OrderStateCode.CREATE && x.FailCode == OrderFailCode.COMMON &&
                     x.UpdateTime<now.AddDays(-5) && x.IsDelete!=true && x.IsCancel!=true && x.IsFinish!=true);
                 foreach (var order in prepareShip)

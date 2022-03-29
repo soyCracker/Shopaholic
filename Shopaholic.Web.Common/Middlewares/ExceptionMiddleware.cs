@@ -36,10 +36,11 @@ namespace Shopaholic.Web.Common.Middlewares
                     
                 }
                 else
-                {
+                {                   
                     // 404 NotFound
                     if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotFound)
                     {
+                        logger.LogInformation("ExceptionMiddleware 404 req path:" + httpContext.Request.Path.Value);
                         httpContext.Response.Redirect("/Error/Error404");
                     }
                     else if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
@@ -66,7 +67,7 @@ namespace Shopaholic.Web.Common.Middlewares
             // Any other Exception
             else
             {
-                //logger.LogError("HandleException() Error500:" + exception.Message);
+                logger.LogError("HandleException() Error500:" + exception);
                 context.Response.Redirect("/Error/Error500");
             }
         }

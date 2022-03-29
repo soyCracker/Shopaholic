@@ -20,6 +20,16 @@ namespace Shopaholic.Web.Common.Interface
 
         string GetLinePayBaseUrl();
 
+        string GetLinePayConfirmApi();
+
         string GetOrderIdCreateApi();
+
+        string GetEcPayApi();
+
+        string GetEcPayConfirmApi();
+
+        string GetPayConfirmReturnPage();
+
+        string GetEcPayMerchantID();
     }
 }
