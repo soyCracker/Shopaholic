@@ -82,8 +82,9 @@
                     
                     <div class="form-group">
                         <label>內容</label>
-                        <div v-html="content"></div> 
+                        <div v-html="content" class="v-html-width"></div> 
                     </div> 
+                    
 
                 </div>               
             </div>
@@ -224,3 +225,10 @@
 
     </script>
 }
+
+<style>
+    /* 頁數按鈕點選 */
+    .v-html-width img{
+        max-width: 100%;
+    }
+</style>

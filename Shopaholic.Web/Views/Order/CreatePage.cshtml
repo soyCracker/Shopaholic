@@ -278,11 +278,15 @@
                         axios.post(self.ecPayCreateOrderApi, obj)
                             .then(function (result) {
                                 if(result.data.Success){
-                                    location.href = baseurl + '/Order/EcPayPage?Id=' + result.data.Data + '&baseurl=' + baseurl;
+                                    //location.href = baseurl + '/Order/EcPayPage?Id=' + result.data.Data + '&baseurl=' + baseurl;
+                                    ToastUtil.RedirectAlert('信用卡測試環境只能使用以下資訊請紀錄，\n卡號:4311-9522-2222-2222\n安全碼:222\n有效月/年:12/99'
+                                        , baseurl + '/Order/EcPayPage?Id=' + result.data.Data + '&baseurl=' + baseurl);
                                 }
                                 else{
-                                    ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                            'Msg:' + result.data.Msg);
+                                    /*ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
+                                            'Msg:' + result.data.Msg);*/
+                                    ToastUtil.RedirectAlert('付款失敗:' + result.data.Success + '\n' +
+                                        'Msg:' + result.data.Msg, self.orderIndexPage);
                                 }                           
                             })
                             .catch(function (error) {
