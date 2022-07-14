@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
@@ -20,7 +19,7 @@ string envirMode = "AWS";
 EnvirFactory envirFactory = new EnvirFactory(builder.Configuration, envirMode);
 
 // Add services to the container.
-builder.Services.AddMvc()  
+builder.Services.AddMvc()
     .AddJsonOptions(opts =>
     {
         //取消json小駝峰式命名法
@@ -32,9 +31,9 @@ builder.Services.AddMvc()
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "API Document", 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API Document",
         Version = "v1",
         Description = "API Document For Shopaholic.CMS"
     });
@@ -68,8 +67,7 @@ builder.Services.AddScoped<IStorageService>(provider => new ImgurService(envirFa
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
-builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
-
+builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 
 builder.WebHost.ConfigureKestrel(options =>
 {

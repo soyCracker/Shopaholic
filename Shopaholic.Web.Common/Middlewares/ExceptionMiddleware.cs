@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Shopaholic.Web.Model.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Shopaholic.Service.Model.Moels;
 using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Shopaholic.Web.Common.Middlewares
 {

@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Services;
 
 namespace Shopaholic.DI.Configuration.DI
 {
@@ -12,11 +11,10 @@ namespace Shopaholic.DI.Configuration.DI
         {
             if(service!=null)
             {
-                /*service.AddScoped<IProductService, ProductService>();
+                service.AddScoped<IProductService, ProductService>();
                 service.AddScoped<ICategoryService, CategoryService>();
-
                 service.AddScoped<IWebFlowService, WebFlowService>();
-                service.AddScoped<IOrderService, OrderService>();*/
+                service.AddScoped<IOrderService, OrderService>();
             }
         }
     }
