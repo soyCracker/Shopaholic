@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
-using Shopaholic.CMS.Model.Response;
 using Shopaholic.CMS.Model.ViewModels;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;

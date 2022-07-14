@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shopaholic.Background.Model.Responses
+namespace Shopaholic.Service.Model.Moels
 {
     public class MessageModel<T>
     {
