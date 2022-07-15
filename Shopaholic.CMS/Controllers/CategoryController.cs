@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.ViewModels;
+using Shopaholic.Service.Common.Filters;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 
@@ -17,6 +18,7 @@ namespace Shopaholic.CMS.Controllers
             this.categoryService = categoryService;
         }
 
+        [SwaggerIgnore]
         public IActionResult Index()
         {
             List<CategoryDTO> resList = categoryService.GetCategoryList();
@@ -33,11 +35,13 @@ namespace Shopaholic.CMS.Controllers
             return View(categoryVMList);
         }
 
+        [SwaggerIgnore]
         public IActionResult CreatePage()
         {           
             return View();
         }
 
+        [SwaggerIgnore]
         public IActionResult EditPage(CategoryVM vm)
         {
             return View(vm);

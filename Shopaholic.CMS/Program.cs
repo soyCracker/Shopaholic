@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
 using Shopaholic.CMS.Common.Tools;
 using Shopaholic.Entity.Models;
+using Shopaholic.Service.Common.Filters;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using System.Reflection;
@@ -55,10 +56,10 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 
 // set port
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
-});
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//    options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
+//});
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -71,6 +72,7 @@ builder.Services.AddSwaggerGen(c =>
     });
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    c.DocumentFilter<SwaggerIgnoreFilter>();
 });
 
 var app = builder.Build();
@@ -93,7 +95,7 @@ app.UseSwaggerUI(c =>
     // 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
     // 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopaholic.CMS api v1");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = string.Empty;//"swagger";
 });
 
 app.UseRouting();

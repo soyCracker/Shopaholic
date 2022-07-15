@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.ViewModels;
+using Shopaholic.Service.Common.Filters;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 
@@ -17,11 +18,13 @@ namespace Shopaholic.CMS.Controllers
             this.orderService = orderService;
         }
 
+        [SwaggerIgnore]
         public IActionResult Index()
         {
             return View();
         }
 
+        [SwaggerIgnore]
         [Route("[controller]/[action]/{orderId}")]
         public IActionResult EditPage(string orderId)
         {
