@@ -205,7 +205,7 @@ namespace Shopaholic.CMS.Controllers
         }
 
         /// <summary>
-        /// 上傳商品內容編輯區內圖片
+        /// 上傳商品封面圖片
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
 using Shopaholic.CMS.Common.Tools;
@@ -9,6 +8,7 @@ using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using System.Reflection;
 using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,20 +29,6 @@ builder.Services.AddMvc()
             JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
     });
 
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "API Document",
-        Version = "v1",
-        Description = "API Document For Shopaholic.CMS"
-    });
-    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-    var fileName = typeof(Program).GetTypeInfo().Assembly.GetName().Name + ".xml";
-    c.IncludeXmlComments(Path.Combine(basePath, fileName));
-    c.EnableAnnotations();
-});
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "myAllowSpecificOrigins",
@@ -59,7 +45,6 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
     options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr());
 });
-
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStorageService>(provider => new ImgurService(envirFactory.GetEnvir().GetImgurClientID(),
@@ -69,9 +54,23 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 
+// set port
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
+});
+
+// Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API Document",
+        Version = "v1",
+        Description = "API Document For Shopaholic.CMS"
+    });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();
@@ -91,12 +90,9 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint(
-        // url: 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
-        // name: 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
-        url: "/swagger/v1/swagger.json",
-        name: "Shopaholic.CMS api v1"
-    );
+    // 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
+    // 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopaholic.CMS api v1");
     c.RoutePrefix = "swagger";
 });
 

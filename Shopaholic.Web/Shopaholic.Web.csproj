@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.3" />
-    <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
   </ItemGroup>
 
   <ItemGroup>
