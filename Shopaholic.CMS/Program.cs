@@ -4,12 +4,10 @@ using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
 using Shopaholic.CMS.Common.Tools;
 using Shopaholic.Entity.Models;
-using Shopaholic.Service.Common.Filters;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using System.Reflection;
 using System.Text.Encodings.Web;
-using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +27,19 @@ builder.Services.AddMvc()
         opts.JsonSerializerOptions.Encoder =
             JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
     });
+
+// Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API Document",
+        Version = "v1",
+        Description = "API Document For Shopaholic.CMS"
+    });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 builder.Services.AddCors(options =>
 {
@@ -61,19 +72,8 @@ builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeR
 //    options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
 //});
 
-// Swagger
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "API Document",
-        Version = "v1",
-        Description = "API Document For Shopaholic.CMS"
-    });
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-    c.DocumentFilter<SwaggerIgnoreFilter>();
-});
+
+
 
 var app = builder.Build();
 
@@ -95,7 +95,7 @@ app.UseSwaggerUI(c =>
     // 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
     // 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopaholic.CMS api v1");
-    c.RoutePrefix = string.Empty;//"swagger";
+    c.RoutePrefix = "swagger";
 });
 
 app.UseRouting();

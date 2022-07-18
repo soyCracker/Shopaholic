@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
 using Shopaholic.CMS.Model.ViewModels;
-using Shopaholic.Service.Common.Filters;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 
@@ -14,7 +13,7 @@ namespace Shopaholic.CMS.Controllers
         private readonly IStorageService storageService;
         private readonly ICategoryService categoryService;
 
-        public ProductController(ILogger<ProductController> logger, IProductService productService, 
+        public ProductController(ILogger<ProductController> logger, IProductService productService,
             IStorageService storageService, ICategoryService categoryService)
         {
             this.Logger = logger;
@@ -23,18 +22,18 @@ namespace Shopaholic.CMS.Controllers
             this.categoryService = categoryService;
         }
 
-        [SwaggerIgnore]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
             return View();
         }
 
-        [SwaggerIgnore]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult CreatePage()
         {
             List<CategoryDTO> categoryList = categoryService.GetCategoryList();
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
-            foreach(var item in categoryList)
+            foreach (var item in categoryList)
             {
                 CategoryVM categoryVM = new CategoryVM
                 {
@@ -46,7 +45,7 @@ namespace Shopaholic.CMS.Controllers
             return View(categoryVMList);
         }
 
-        [SwaggerIgnore]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult EditPage(int id)
         {
             ProductWithAllCategoryDTO dataDTO = productService.GetProductWithAllCategory(id);
@@ -62,7 +61,7 @@ namespace Shopaholic.CMS.Controllers
                 CategoryId = dataDTO.ProductDTOItem.CategoryId
             };
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
-            foreach(var categoryDTO in dataDTO.CategoryDTOList)
+            foreach (var categoryDTO in dataDTO.CategoryDTOList)
             {
                 CategoryVM categoryVM = new CategoryVM
                 {
@@ -97,7 +96,7 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<ProductAddRequest> Add([FromBody]ProductAddRequest req)
+        public MessageModel<ProductAddRequest> Add([FromBody] ProductAddRequest req)
         {
             if (ModelState.IsValid)
             {
@@ -123,8 +122,8 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<ProductDeleteRequest> Delete([FromBody]ProductDeleteRequest req)
-        {          
+        public MessageModel<ProductDeleteRequest> Delete([FromBody] ProductDeleteRequest req)
+        {
             bool res = productService.DeleteProduct(req.Id);
             return new MessageModel<ProductDeleteRequest>
             {
@@ -139,7 +138,7 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<ProductDTO> Get([FromBody]ProductGetRequest req)
+        public MessageModel<ProductDTO> Get([FromBody] ProductGetRequest req)
         {
             ProductDTO productDTO = productService.GetProduct(req.Id);
             return new MessageModel<ProductDTO>
@@ -155,7 +154,7 @@ namespace Shopaholic.CMS.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public MessageModel<ProductUpdateRequest> Update([FromBody]ProductUpdateRequest req)
+        public MessageModel<ProductUpdateRequest> Update([FromBody] ProductUpdateRequest req)
         {
             if (ModelState.IsValid)
             {

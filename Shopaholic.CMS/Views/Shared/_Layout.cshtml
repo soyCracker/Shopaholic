@@ -216,10 +216,6 @@
 
     <script>
         var baseurl = window.location.origin;
-
-        @{           
-            //@:baseurl='@Url.Content("~")';
-        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
