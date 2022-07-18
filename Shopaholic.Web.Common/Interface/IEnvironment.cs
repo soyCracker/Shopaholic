@@ -31,5 +31,11 @@ namespace Shopaholic.Web.Common.Interface
         string GetPayConfirmReturnPage();
 
         string GetEcPayMerchantID();
+
+        string GetFirebaseID();
+
+        string GetFirebaseUrl();
+
+        string GetLoginUrl();
     }
 }

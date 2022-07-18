@@ -13,9 +13,7 @@ using System.Text.Unicode;
 var builder = WebApplication.CreateBuilder(args);
 
 // 切換執行環境
-//string envirMode = "DEV";
-string envirMode = "AWS";
-EnvirFactory envirFactory = new EnvirFactory(builder.Configuration, envirMode);
+EnvirFactory factory = new EnvirFactory();
 
 // Add services to the container.
 builder.Services.AddMvc()
@@ -55,22 +53,23 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr());
+    options.UseSqlServer(factory.GetEnvir().GetDbConnStr());
 });
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IStorageService>(provider => new ImgurService(envirFactory.GetEnvir().GetImgurClientID(),
-    envirFactory.GetEnvir().GetImgurClientSecret()));
+builder.Services.AddScoped<IStorageService>(provider => new ImgurService(factory.GetEnvir().GetImgurClientID(),
+    factory.GetEnvir().GetImgurClientSecret()));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
-
+//加入EnvirFactory DI
+builder.Services.AddSingleton(provider => factory);
 // set port
-//builder.WebHost.ConfigureKestrel(options =>
-//{
-//    options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
-//});
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
+});
 
 
 
