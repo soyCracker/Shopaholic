@@ -7,9 +7,11 @@
 
 <form action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post" id="payment">
     @foreach (var key in @Model.Keys.ToList())
-        {
-            @(key) <input type="text" type="hidden" name="@key" value="@Model[key]" /><br />
-        }
+    {
+        @(key) <input type="text" type="hidden" name="@key" value="@Model[key]" />
+
+        <br />
+    }
     <!--<input type="hidden" value="@Model["MerchantID"]" />
     <input type="hidden" value="@Model["MerchantTradeNo"]" />
     <input type="hidden" value="@Model["MerchantTradeDate"]" />
@@ -19,11 +21,11 @@
     <input type="hidden" value="@Model["ItemName"]" />
     <input type="hidden" value="@Model["ReturnURL"]" />
     <input type="hidden" value="@Model["ChoosePayment"]" />
-    <input type="hidden" value="@Model["CheckMacValue"]" />  -->   
+    <input type="hidden" value="@Model["CheckMacValue"]" />  -->
 </form>
 
 @section Scripts{
-     <script>
-         document.getElementById('payment').submit();
-     </script>
+    <script>
+        document.getElementById('payment').submit();
+    </script>
 }

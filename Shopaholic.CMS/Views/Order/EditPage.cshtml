@@ -13,12 +13,11 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">訂單詳細資料</h1>
-                </div><!-- /.col -->                
+                </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
@@ -27,13 +26,13 @@
                     訂單進度
                     <span class="float-right"><b>{{ progressNum }}</b>%</span>
                     <div class="progress progress-sm">
-                    <div class="progress-bar bg-warning" v-bind:style="'width: ' + progressNum + '%'"></div>
+                        <div class="progress-bar bg-warning" v-bind:style="'width: ' + progressNum + '%'"></div>
                     </div>
                 </div>
                 <!-- /.progress-group -->
-            </div>                       
+            </div>
         </div>
-        
+
         <div class="card-body">
             <div class="row mb-2">
                 <div class="col-sm-4">
@@ -87,7 +86,7 @@
                             </th>
                             <th style="width: 20%">
                                 狀態訊息
-                            </th> 
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,22 +95,22 @@
                                 {{ orderAllData.Status }}
                             </td>
                             <td>
-                                {{ orderAllData.FailCode }}                        
-                            </td>  
-                            <td>
-                                {{ orderAllData.IsFinish }}                        
+                                {{ orderAllData.FailCode }}
                             </td>
                             <td>
-                                {{ orderAllData.IsSent }}                         
-                            </td>  
-                            <td>
-                                {{ orderAllData.StatusMsg }}                       
+                                {{ orderAllData.IsFinish }}
                             </td>
-                        </tr>                        
+                            <td>
+                                {{ orderAllData.IsSent }}
+                            </td>
+                            <td>
+                                {{ orderAllData.StatusMsg }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="row mb-2">
                 <table class="table table-striped projects">
                     <thead>
@@ -133,12 +132,12 @@
                                 {{ item.ProductId }}
                             </td>
                             <td>
-                                {{ item.ProductName }}                        
-                            </td>  
-                            <td>
-                                {{ item.Quantity }}                        
+                                {{ item.ProductName }}
                             </td>
-                        </tr>                        
+                            <td>
+                                {{ item.Quantity }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -147,13 +146,13 @@
 
         <div class="card-tools">
             <div class="row mb-2">
-                <div class="form-group col-sm-4 text-center">  
+                <div class="form-group col-sm-4 text-center">
                     <a v-if="pickupAble" v-on:click="PickupConfirm" class="btn btn-primary">撿貨確認</a>
                 </div>
-                <div class="form-group col-sm-4 text-center">                    
+                <div class="form-group col-sm-4 text-center">
                     <a v-if="returnAble" v-on:click="ReturnConfirm" class="btn btn-info">退貨確認</a>
                 </div>
-                <div class="form-group col-sm-4 text-center">                   
+                <div class="form-group col-sm-4 text-center">
                     <a v-if="finishAble" v-on:click="ManualFinish" class="btn btn-danger">手動完成</a>
                 </div>
             </div>
@@ -183,8 +182,7 @@
                 returnAble: false,
                 finishAble: false,
             },
-            mounted: function()
-            {
+            mounted: function () {
                 var self = this;
                 self.RefreshUI();
             },
@@ -192,7 +190,7 @@
             {
                 RefreshUI: function () {
                     var self = this;
-                                  
+
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
@@ -201,28 +199,26 @@
 
                     axios.post(self.getOrderDataApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.orderAllData = result.data.Data;   
+                            if (result.data.Success) {
+                                self.orderAllData = result.data.Data;
                                 self.SetProcessNum(self.orderAllData);
                                 self.PickupBtnAble(self.orderAllData);
                                 self.ReturnBtnAble(self.orderAllData);
                                 self.FinishBtnAble(self.orderAllData);
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                },   
-                
-                PickupConfirm: function(){
+                },
+
+                PickupConfirm: function () {
                     var self = this;
-                                  
+
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
@@ -231,24 +227,22 @@
 
                     axios.post(self.pickupConfirmApi, obj)
                         .then(function (result) {
-                            if(result.data.Data)
-                            {
-                                self.RefreshUI();           
+                            if (result.data.Data) {
+                                self.RefreshUI();
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ReturnConfirm: function(){
+                ReturnConfirm: function () {
                     var self = this;
-                                  
+
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
@@ -257,24 +251,22 @@
 
                     axios.post(self.returnConfirmApi, obj)
                         .then(function (result) {
-                            if(result.data.Data)
-                            {
-                                self.RefreshUI();           
+                            if (result.data.Data) {
+                                self.RefreshUI();
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ManualFinish: function(){
+                ManualFinish: function () {
                     var self = this;
-                                  
+
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
@@ -283,69 +275,67 @@
 
                     axios.post(self.manualFinishApi, obj)
                         .then(function (result) {
-                            if(result.data.Data)
-                            {
-                                self.RefreshUI();           
+                            if (result.data.Data) {
+                                self.RefreshUI();
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                SetProcessNum: function(orderAllData){
+                SetProcessNum: function (orderAllData) {
                     var self = this;
-                    if(orderAllData.IsFinish){
+                    if (orderAllData.IsFinish) {
                         self.progressNum = 100;
                     }
-                    else if(orderAllData.Status == 0){
+                    else if (orderAllData.Status == 0) {
                         self.progressNum = 0;
                     }
-                    else if(orderAllData.Status == 1){
+                    else if (orderAllData.Status == 1) {
                         self.progressNum = 20;
                     }
-                    else if(orderAllData.Status == 2){
+                    else if (orderAllData.Status == 2) {
                         self.progressNum = 40;
                     }
-                    else if(orderAllData.Status == 3){
+                    else if (orderAllData.Status == 3) {
                         self.progressNum = 60;
                     }
-                    else if(orderAllData.Status == 4){
+                    else if (orderAllData.Status == 4) {
                         self.progressNum = 80;
-                    }                   
+                    }
                 },
 
-                PickupBtnAble: function(orderAllData){
+                PickupBtnAble: function (orderAllData) {
                     var self = this;
-                    if(orderAllData.Status==1 && orderAllData.FailCode==0){
+                    if (orderAllData.Status == 1 && orderAllData.FailCode == 0) {
                         self.pickupAble = true;
                     }
-                    else{
+                    else {
                         self.pickupAble = false;
                     }
                 },
 
-                ReturnBtnAble: function(orderAllData){
+                ReturnBtnAble: function (orderAllData) {
                     var self = this;
-                    if(orderAllData.Status==4 && orderAllData.FailCode==1){
+                    if (orderAllData.Status == 4 && orderAllData.FailCode == 1) {
                         self.returnAble = true;
                     }
-                    else{
+                    else {
                         self.returnAble = false;
                     }
                 },
 
-                FinishBtnAble: function(orderAllData){
+                FinishBtnAble: function (orderAllData) {
                     var self = this;
-                    if(!orderAllData.IsFinish){
+                    if (!orderAllData.IsFinish) {
                         self.finishAble = true;
                     }
-                    else{
+                    else {
                         self.finishAble = false;
                     }
                 }

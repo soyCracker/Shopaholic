@@ -10,54 +10,53 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">購物網站管理介面</h1>
-            </div><!-- /.col -->           
+            </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
- 
+
 
 <div id="FlowChartApp" class="card-body p-0">
     <bar-chart />
 </div>
 
 @section Scripts{
-<script>
+    <script>
 
-    var FlowChartApp = new Vue({
-        el: '#FlowChartApp',        
-        components:{
-            'bar-chart' :{
-                extends: VueChartJs.Bar,
-                data: () => ({    
-                    // Net Core list to Javascript array
-                    flowOriginList: JSON.parse('@Html.Raw(Json.Serialize(@Model))'),
-                    dateArray: new Array(),
-                    flowCountArray: new Array()
-                }),
-                mounted () {
-                    let self = this;
+        var FlowChartApp = new Vue({
+            el: '#FlowChartApp',
+            components: {
+                'bar-chart': {
+                    extends: VueChartJs.Bar,
+                    data: () => ({
+                        // Net Core list to Javascript array
+                        flowOriginList: JSON.parse('@Html.Raw(Json.Serialize(@Model))'),
+                        dateArray: new Array(),
+                        flowCountArray: new Array()
+                    }),
+                    mounted() {
+                        let self = this;
 
-                    for(let i=0;i<self.flowOriginList.length;i++)
-                    {
-                        self.dateArray.push(self.flowOriginList[i].FlowDate);
-                        self.flowCountArray.push(self.flowOriginList[i].Count);
+                        for (let i = 0; i < self.flowOriginList.length; i++) {
+                            self.dateArray.push(self.flowOriginList[i].FlowDate);
+                            self.flowCountArray.push(self.flowOriginList[i].Count);
+                        }
+
+                        self.renderChart({
+                            labels: self.dateArray,
+                            datasets: [
+                                {
+                                    label: '瀏覽量',
+                                    backgroundColor: '#81DAF5',
+                                    data: self.flowCountArray
+                                }]
+                        }, { responsive: true, maintainAspectRatio: false })
                     }
-
-                    self.renderChart({
-                        labels: self.dateArray,
-                        datasets: [
-                        {
-                            label: '瀏覽量',
-                            backgroundColor: '#81DAF5',
-                            data: self.flowCountArray
-                        }]
-                    }, {responsive: true, maintainAspectRatio: false})
                 }
             }
-        }
-    });
+        });
 
-</script>
+    </script>
 
 }

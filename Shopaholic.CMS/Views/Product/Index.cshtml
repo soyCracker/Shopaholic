@@ -12,43 +12,42 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">商品列表</h1>
-                </div><!-- /.col -->                
+                </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <div class="row mb-2">                                           
+                    <div class="row mb-2">
                         <div class="form-group col-sm-8">
                             <input class="form-control" placeholder="搜索" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
                         </div>
                         <div class="input-group-append">
-                            <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
-                              <i class="fas fa-search"></i>
+                            <button class="btn btn-navbar" v-on:click="RefreshUI(1)">
+                                <i class="fas fa-search"></i>
                             </button>
-                            <button class="btn btn-navbar"  data-widget="navbar-search" v-on:click="ClearFilter()">
-                              <i class="fas fa-times"></i>
+                            <button class="btn btn-navbar" data-widget="navbar-search" v-on:click="ClearFilter()">
+                                <i class="fas fa-times"></i>
                             </button>
                         </div>
-                    </div>                    
+                    </div>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="float-sm-right">
                         <a asp-controller="Product" asp-action="CreatePage" class="btn btn-primary btn-sm">
                             <i class="fas fa-folder">
                             </i>
-                            新增           
+                            新增
                         </a>
                     </ol>
                 </div>
-            </div>                       
+            </div>
         </div>
-        
+
         <div id="TableTool" class="card-body p-0">
             <table class="table table-striped projects">
                 <thead>
@@ -67,7 +66,7 @@
                         </th>
                         <th style="width: 10%">
                             庫存
-                        </th> 
+                        </th>
                         <th style="width: 40%">
                         </th>
                     </tr>
@@ -78,18 +77,18 @@
                             {{ item.Id }}
                         </td>
                         <td>
-                            {{ item.Name }}           
-                        </td>  
-                        <td>
-                            {{ item.CategoryName }}                        
+                            {{ item.Name }}
                         </td>
                         <td>
-                            {{ item.Price }}                         
-                        </td>  
-                        <td>
-                            {{ item.Stock }}                       
+                            {{ item.CategoryName }}
                         </td>
-                        <td class="project-actions text-right">        
+                        <td>
+                            {{ item.Price }}
+                        </td>
+                        <td>
+                            {{ item.Stock }}
+                        </td>
+                        <td class="project-actions text-right">
                             <a class="btn btn-info btn-sm" v-bind:href="editPageUrl+item.Id">
                                 <i class="fas fa-pencil-alt">
                                 </i>
@@ -101,7 +100,7 @@
                                 刪除
                             </a>
                         </td>
-                    </tr>                        
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -141,12 +140,11 @@
                 productList: {},
                 categoryName: '',
                 pageMaxDisplay: 5,
-                pageDisplayArray:[],
+                pageDisplayArray: [],
                 searchStr: ''
             },
-            mounted: function()
-            {
-                var self = this;  
+            mounted: function () {
+                var self = this;
                 self.RefreshUI(1);
                 console.log(baseurl);
             },
@@ -154,7 +152,7 @@
             {
                 RefreshUI: function (page) {
                     var self = this;
-                    self.currentPage = page;               
+                    self.currentPage = page;
 
                     ToastUtil.InfoFire('處理中')
 
@@ -166,32 +164,30 @@
 
                     axios.post(self.productSearchApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 self.productList = result.data.Data.ProductDTOs;
                                 self.totalPages = result.data.Data.TotalPages;
-                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ClearFilter: function(){
+                ClearFilter: function () {
                     var self = this;
                     self.searchStr = '';
                     self.RefreshUI(1);
-                },                      
+                },
 
                 DeleteProduct: function (id) {
                     var self = this;
-                    if(confirm("確定刪除?")) {
+                    if (confirm("確定刪除?")) {
 
                         ToastUtil.InfoFire('處理中')
 
@@ -200,15 +196,14 @@
                         };
 
                         axios.post(self.deleteApi, obj)
-                        .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.RefreshUI(self.currentPage);
-                            }                         
-                        })
-                        .catch(function (error) {                                    
-                            ExceptUtil.PostExceptionFuc(error);
-                        });
+                            .then(function (result) {
+                                if (result.data.Success) {
+                                    self.RefreshUI(self.currentPage);
+                                }
+                            })
+                            .catch(function (error) {
+                                ExceptUtil.PostExceptionFuc(error);
+                            });
                     }
                 }
             }
@@ -216,9 +211,9 @@
     </script>
 }
 
-<style>
-    /* 頁數按鈕點選 */
-    .page-num-clicked {
-        background-color: #dee2e6;
-    }
-</style>
+    <style>
+        /* 頁數按鈕點選 */
+        .page-num-clicked {
+            background-color: #dee2e6;
+        }
+    </style>

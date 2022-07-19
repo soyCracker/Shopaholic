@@ -10,7 +10,7 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css"> 
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
@@ -27,142 +27,141 @@
     <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
-    
+
     <!-- My css -->
     <link rel="stylesheet" href="~/css/site.css">
 </head>
-<body>   
+<body>
     <div class="wrapper">
 
-      <!-- Preloader -->
-      <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__shake" src="~/dist/img/Shopaholic-logo.png" alt="AdminLTELogo" height="60" width="60">
-      </div>
-
-      <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-          </li>
-          <li class="nav-item d-none d-sm-inline-block">
-            <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
-          </li>
-          <li class="nav-item d-sm-inline-block">
-            <a class="nav-link" href="https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com">前台</a> 
-          </li>
-        </ul>
-
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-          <!-- Navbar Search -->
-          <!--
-          <li class="nav-item">
-            <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-              <i class="fas fa-search"></i>
-            </a>           
-            <div class="navbar-search-block">
-              <form class="form-inline">
-                <div class="input-group input-group-sm">
-                  <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                  <div class="input-group-append">
-                    <button class="btn btn-navbar" type="submit">
-                      <i class="fas fa-search"></i>
-                    </button>
-                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                      <i class="fas fa-times"></i>
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>           
-          </li>
-          -->
-        </ul>
-      </nav>
-      <!-- /.navbar -->
-
-      <!-- Main Sidebar Container -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <!-- Brand Logo -->
-        <a asp-controller="Home" asp-action="Index" class="brand-link">
-          <img src="~/dist/img/Shopaholic-logo.png" alt="Shopaholic-logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-          <span class="brand-text font-weight-light">Shopaholic.CMS</span>
-        </a>
-
-        <!-- Sidebar -->
-        <div class="sidebar">
-          <!-- Sidebar user panel (optional) -->
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-              <img src="~/dist/img/me.png" class="img-circle elevation-2" alt="User Image">
-            </div>
-            <div class="info">
-              <a href="#" class="d-block">User Yu</a> <!--TODO-->
-            </div>
-          </div>
-
-          <!-- Sidebar Menu -->
-          <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-              <!-- Add icons to the links using the .nav-icon class
-                   with font-awesome or any other icon font library -->
-              
-              <li class="nav-item">
-                <a asp-controller="Category" asp-action="Index" class="nav-link">
-                  <i class="nav-icon fas fa-th"></i>
-                  <p>
-                    類別                   
-                  </p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a asp-controller="Product" asp-action="Index" class="nav-link">
-                  <i class="nav-icon far fa-plus-square"></i>
-                  <p>
-                    商品                   
-                  </p>
-                </a>
-              </li> 
-              
-              <li class="nav-item">
-                <a asp-controller="Order" asp-action="Index" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    訂單                   
-                  </p>
-                </a>
-              </li>
-                           
-            </ul>
-          </nav>
-          <!-- /.sidebar-menu -->
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="~/dist/img/Shopaholic-logo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
-        <!-- /.sidebar -->
-      </aside>
 
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-              
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item d-sm-inline-block">
+                    <a class="nav-link" href="https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com">前台</a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Navbar Search -->
+                <!--
+                <li class="nav-item">
+                  <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+                    <i class="fas fa-search"></i>
+                  </a>
+                  <div class="navbar-search-block">
+                    <form class="form-inline">
+                      <div class="input-group input-group-sm">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                          <button class="btn btn-navbar" type="submit">
+                            <i class="fas fa-search"></i>
+                          </button>
+                          <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </li>
+                -->
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a asp-controller="Home" asp-action="Index" class="brand-link">
+                <img src="~/dist/img/Shopaholic-logo.png" alt="Shopaholic-logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">Shopaholic.CMS</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="~/dist/img/me.png" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">User Yu</a> <!--TODO-->
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+                             with font-awesome or any other icon font library -->
+
+                        <li class="nav-item">
+                            <a asp-controller="Category" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p>
+                                    類別
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Product" asp-action="Index" class="nav-link">
+                                <i class="nav-icon far fa-plus-square"></i>
+                                <p>
+                                    商品
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Order" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-copy"></i>
+                                <p>
+                                    訂單
+                                </p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+
             @RenderBody()
 
-      </div>
-      <!-- /.content-wrapper -->
+        </div>
+        <!-- /.content-wrapper -->
 
-      <footer class="main-footer">
-        <strong>Copyright &copy; 2014-2021 Shopaholic</strong>
-        All rights reserved.
-      </footer>
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2014-2021 Shopaholic</strong>
+            All rights reserved.
+        </footer>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
 
-</div>
+    </div>
 
     <!-- jQuery -->
     <script src="~/plugins/jquery/jquery.min.js"></script>
@@ -170,10 +169,10 @@
     <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
-      $.widget.bridge('uibutton', $.ui.button)
+        $.widget.bridge('uibutton', $.ui.button)
     </script>
     <!-- Bootstrap 4 -->
-    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script> 
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Sparkline -->
     <script src="~/plugins/sparklines/sparkline.js"></script>
     <!-- JQVMap -->
@@ -191,10 +190,9 @@
     <!-- overlayScrollbars -->
     <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="~/dist/js/adminlte.js"></script>   
+    <script src="~/dist/js/adminlte.js"></script>
 
     <!--          My js            -->
-   
     <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- Vue.js Ajax(axios) -->
@@ -202,7 +200,7 @@
     <!-- vue-easy-lightbox -->
     <script src="https://unpkg.com/vue-easy-lightbox@vue2/dist/vue-easy-lightbox.umd.min.js"></script>
     <!-- 表單驗證 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.1/dist/sweetalert2.all.min.js"></script>
     <script src="~/js/ToastUtil.js"></script>
@@ -211,8 +209,8 @@
     <script src="~/js/vue-chartjs.min.js"></script>
     <!-- 雜 -->
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/ExceptUtil.js" ></script>
-    <script src="~/js/PageUtil.js" ></script>
+    <script src="~/js/ExceptUtil.js"></script>
+    <script src="~/js/PageUtil.js"></script>
 
     <script>
         var baseurl = window.location.origin;

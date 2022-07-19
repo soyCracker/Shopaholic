@@ -11,7 +11,7 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">編輯商品</h1>
-            </div><!-- /.col -->           
+            </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
@@ -22,44 +22,44 @@
         <div class="col-md-12">
             <!-- general form elements -->
             <div class="card card-outline card-info">
-                
+
                 <!-- /.card-header -->
                 <!-- form start -->
-                
+
                 <div class="card-body">
-                    
+
                     <div class="form-group">
                         <label>商品封面</label>
                         <div v-on:click="ShowCoverImg">
-                            <img v-bind:src="coverUrl"  height="200">
+                            <img v-bind:src="coverUrl" height="200">
                         </div>
                         <vue-easy-lightbox v-bind:visible="coverVisible" v-bind:imgs="coverUrl" v-on:hide="CoverHandleHide"></vue-easy-lightbox>
-                    </div>  
+                    </div>
 
                     <div class="form-group">
-                        <div  class="custom-file">
+                        <div class="custom-file">
                             @{
-                                //自訂按鈕觸發input file的click
+            //自訂按鈕觸發input file的click
                             }
                             <input ref="coverInput" v-on:change="SetCoverUrl" type="file" accept=".jpg, .png" v-show="false" />
                             <button type="button" class="btn btn-success" v-on:click="UploadCoverBtn">上傳商品封面</button>
                         </div>
-                        
+
                     </div>
 
-                    <validation-observer ref="validObserver" v-slot="{ valid }" >
+                    <validation-observer ref="validObserver" v-slot="{ valid }">
                         <validation-provider rules="required" v-slot="{ errors }">
                             <div class="form-group">
                                 <label>名稱</label>
                                 <input class="form-control" v-model="nameInput" placeholder="輸入名稱">
                                 <span>{{ errors[0] }}</span>
-                            </div> 
+                            </div>
                         </validation-provider>
-           
+
                         <div class="form-group">
                             <label>描述</label>
                             <textarea id="desc-summernote">@Model.ProductVM.Description</textarea>
-                        </div> 
+                        </div>
 
                         <validation-provider rules="required" v-slot="{ errors }">
                             <div class="form-group">
@@ -68,51 +68,51 @@
                                 <span>{{ errors[0] }}</span>
                             </div>
                         </validation-provider>
-                     
+
                         <validation-provider rules="required" v-slot="{ errors }">
                             <div class="form-group">
                                 <label>庫存</label>
                                 <input class="form-control" v-model="stockInput" placeholder="輸入庫存">
                                 <span>{{ errors[0] }}</span>
-                            </div> 
-                        </validation-provider>                    
+                            </div>
+                        </validation-provider>
                     </validation-observer>
 
                     <div class="form-group">
                         <label>類別</label>
                         <select class="form-control" v-model="categorySelected">
                             @{
-                                foreach(var CategoryVM in @Model.CategoryListVM)
+                                foreach (var CategoryVM in @Model.CategoryListVM)
                                 {
                                     <option v-bind:value="@CategoryVM.Id">@CategoryVM.Name</option>
                                 }
                             }
                         </select>
-                    </div> 
-                    
+                    </div>
+
                     <div class="form-group">
                         <label>內容</label>
                         <textarea id="summernote">@Model.ProductVM.Content</textarea>
-                    </div> 
+                    </div>
 
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
                     <a v-on:click="SubmitBtn" v-on:keydown.enter="SubmitBtn" class="btn btn-primary">Submit</a>
-                </div>                
+                </div>
             </div>
             <!-- /.card -->
-        </div>       
+        </div>
     </div><!-- /.container-fluid -->
 </section>
 
 
 @section Scripts{
-    <script>  
+    <script>
 
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
         Vue.component('validation-observer', VeeValidate.ValidationObserver);
-                
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -132,14 +132,14 @@
                 categorySelected: @Model.ProductVM.CategoryId,
                 content: null,
                 id: @Model.ProductVM.Id
-            },
-            mounted: function(){
+                    },
+            mounted: function () {
                 var self = this;
-                console.log('== mounted ==');              
+                console.log('== mounted ==');
                 $('#summernote').summernote({
-                    height:300,
-                    callbacks:{
-                        onImageUpload: function(image) {
+                    height: 300,
+                    callbacks: {
+                        onImageUpload: function (image) {
                             console.log('summernote onImageUpload');
                             self.UploadEditorImage(self.uploadEditorImageApi, image[0]);
                         }
@@ -147,28 +147,28 @@
                 });
 
                 $('#desc-summernote').summernote({
-                    height:100
+                    height: 100
                 });
             },
             methods:
-            {       
-                ShowCoverImg: function() {
+            {
+                ShowCoverImg: function () {
                     var self = this;
                     self.coverVisible = true;
                 },
 
-                CoverHandleHide: function() {
+                CoverHandleHide: function () {
                     var self = this;
                     self.coverVisible = false;
                 },
-                
+
                 //自訂按鈕觸發input file的click
-                UploadCoverBtn: function(){
+                UploadCoverBtn: function () {
                     var self = this;
                     self.$refs.coverInput.click();
                 },
 
-                SetCoverUrl: function() {
+                SetCoverUrl: function () {
                     var self = this;
                     //get input file
                     self.coverFile = self.$refs.coverInput.files[0];
@@ -176,85 +176,83 @@
                     //get input file url
                     //假上傳，還未上傳到server
                     var reader = new FileReader();
-                    reader.onload = (e) => {                        
+                    reader.onload = (e) => {
                         self.coverUrl = e.target.result;
                         //console.log(self.coverUrl);
                     }
                     reader.readAsDataURL(self.coverFile);
                 },
 
-                UploadEditorImage: function(url, obj){
+                UploadEditorImage: function (url, obj) {
                     var self = this;
                     let formData = new FormData();
                     formData.append('file', obj); //file為api之參數名稱
                     axios.post(url, formData, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     })
-                        .then(function (result) {  
-                            if(result.data.Success){
-                                $('#summernote').summernote('insertImage', result.data.Data);                               
-                            } 
-                            else{
+                        .then(function (result) {
+                            if (result.data.Success) {
+                                $('#summernote').summernote('insertImage', result.data.Data);
+                            }
+                            else {
                                 ToastUtil.ErrorAlert('照片上傳失敗')
-                            }                            
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                },               
+                },
 
                 SubmitBtn: async function () {
                     var self = this;
 
-                    console.log(self.categorySelected)                   
-                    console.log($('#summernote').summernote('code'));   
+                    console.log(self.categorySelected)
+                    console.log($('#summernote').summernote('code'));
                     //取得summernote content
                     self.content = $('#summernote').summernote('code');
                     self.descInput = $('#desc-summernote').summernote('code');
 
                     //click觸發驗證
                     var isValid = await self.$refs.validObserver.validate();
-                    if(isValid) {
+                    if (isValid) {
                         ToastUtil.InfoFire('處理中')
-                        if(self.coverFile!=null) {
+                        if (self.coverFile != null) {
                             self.UploadCoverImage(self.uploadCoverImageApi, self.coverFile);
                         }
-                        else{
+                        else {
                             self.PostContent(self.GetPostObj(), self.upadteApi);
-                        }                                              
+                        }
                     }
-                    else{
+                    else {
                         ToastUtil.ErrorAlert('validate error')
                         console.log('validate error');
                     }
                 },
 
-                UploadCoverImage: function(url, obj){
+                UploadCoverImage: function (url, obj) {
                     var self = this;
                     let formData = new FormData();
                     formData.append('file', obj); //file為api之參數名稱
                     axios.post(url, formData, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     })
-                        .then(function (result) {  
-                            if(result.data.Success)
-                            {
+                        .then(function (result) {
+                            if (result.data.Success) {
                                 self.coverUrl = result.data.Data;
                                 self.PostContent(self.GetPostObj(), self.upadteApi);
-                            } 
-                            else
-                            {
+                            }
+                            else {
                                 ToastUtil.ErrorAlert('照片上傳失敗');
-                            }                            
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                },   
+                },
 
                 GetPostObj: function () {
                     var self = this;
@@ -276,19 +274,19 @@
                 PostContent: function (obj, url) {
                     var self = this;
                     console.log(url + ' post');
-                    axios.post(url, obj, { headers:{
+                    axios.post(url, obj, {
+                        headers: {
                             'Content-Type': 'application/json;charset=UTF-8'
-                        }})
+                        }
+                    })
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 location.href = '@Url.Action("Index")';
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);

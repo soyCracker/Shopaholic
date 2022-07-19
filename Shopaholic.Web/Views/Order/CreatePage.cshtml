@@ -8,7 +8,7 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">結帳</h1>
-            </div><!-- /.col -->           
+            </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
@@ -19,13 +19,13 @@
 <section class="content">
     <div id="FormTool" class="row">
         <div class="col-md-10">
-            <div class="card">      
+            <div class="card">
                 <div class="card-body p-0">
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
                                 <th style="width: 20%">
-                            
+
                                 </th>
                                 <th style="width: 40%">
                                     商品名稱
@@ -41,50 +41,50 @@
                         <tbody>
                             <tr v-for="(item) in cartList" v-bind:key="item.Id">
                                 <td>
-                                    <img v-bind:src="item.ProductImage"  height="100">                           
+                                    <img v-bind:src="item.ProductImage" height="100">
                                 </td>
                                 <td>
-                                    {{ item.ProductName }}                                                   
-                                </td>  
+                                    {{ item.ProductName }}
+                                </td>
                                 <td>
-                                    {{ item.Quantity }}                         
-                                </td> 
+                                    {{ item.Quantity }}
+                                </td>
                                 <td>
-                                    {{ item.Price*item.Quantity }}                         
-                                </td>  
-                            </tr>                        
+                                    {{ item.Price*item.Quantity }}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="card-footer">
-                    <label>總金額</label><div>{{ totalPrice }}</div> 
-                </div>  
+                    <label>總金額</label><div>{{ totalPrice }}</div>
+                </div>
             </div>
         </div>
 
         <div class="col-md-10">
             <!-- general form elements -->
             <div class="card card-outline card-info">
-                
+
                 <!-- /.card-header -->
                 <!-- form start -->
-                
-                <div class="card-body">                                     
+
+                <div class="card-body">
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>收貨人</label>
                             <input class="form-control" v-model="nameInput" placeholder="輸入姓名">
                             <code>{{ nameInputInfo }}</code>
-                        </div> 
-                    </div> 
-                              
+                        </div>
+                    </div>
+
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>連絡電話</label>
                             <input class="form-control" v-model="phoneInput" placeholder="輸入電話">
                             <code>{{ phoneInputInfo }}</code>
-                        </div>  
-                    </div> 
+                        </div>
+                    </div>
 
                     <div class="col-md-10">
                         <div class="form-group">
@@ -92,7 +92,7 @@
                             <input class="form-control" v-model="addressInput" placeholder="輸入地址">
                             <code>{{ addressInputInfo }}</code>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
@@ -101,21 +101,22 @@
                         <img src="~/dist/img/LINE-Pay(h)_W119_n.png" alt="linepay" height="15" width="60">
                     </button>
                     <button v-on:click="EcPayCreateOrder" v-on:keydown.enter="EcPayCreateOrder">
-                        <i class="fa-solid fa-credit-card">信用卡</i></button>
-                </div>                
+                        <i class="fa-solid fa-credit-card">信用卡</i>
+                    </button>
+                </div>
             </div>
             <!-- /.card -->
-        </div>       
+        </div>
     </div><!-- /.container-fluid -->
 </section>
 
 
 @section Scripts{
-    <script>  
+    <script>
 
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
         Vue.component('validation-observer', VeeValidate.ValidationObserver);
-                
+
         var FormTool = new Vue({
             el: '#FormTool',
             data:
@@ -135,55 +136,53 @@
                 addressInput: '',
                 phoneInput: '',
 
-                nameInputInfo:'',
-                addressInputInfo:'',
-                phoneInputInfo:'',
+                nameInputInfo: '',
+                addressInputInfo: '',
+                phoneInputInfo: '',
             },
-            mounted: function(){
-                var self = this;  
+            mounted: function () {
+                var self = this;
                 self.GetCartList();
             },
             methods:
-            {       
+            {
                 GetCartList: function () {
-                    var self = this;              
+                    var self = this;
 
                     ToastUtil.InfoFire('處理中')
 
                     axios.post(self.cartApi)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.cartList = result.data.Data;     
+                            if (result.data.Success) {
+                                self.cartList = result.data.Data;
                                 self.totalPrice = self.ComputeTotalPrice(self.cartList);
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ComputeTotalPrice: function(cartList){
+                ComputeTotalPrice: function (cartList) {
                     let totalPrice = 0;
-                    cartList.forEach(function(item) {
-                        totalPrice += item.Price*item.Quantity;
+                    cartList.forEach(function (item) {
+                        totalPrice += item.Price * item.Quantity;
                     });
                     return totalPrice;
                 },
 
-                LinePayCreateOrder: function(){
-                    var self = this;              
+                LinePayCreateOrder: function () {
+                    var self = this;
 
-                    if(self.CheckPostData()){
+                    if (self.CheckPostData()) {
                         ToastUtil.InfoFire('處理中')
 
                         var obj = {
-                            ['OrderTypeCode']: 0,  
+                            ['OrderTypeCode']: 0,
                             ['ReceiveMan']: self.nameInput,
                             ['Phone']: self.phoneInput,
                             ['Address']: self.addressInput
@@ -191,85 +190,77 @@
 
                         axios.post(self.linePayCreateOrderApi, obj)
                             .then(function (result) {
-                                if(result.data.Success)
-                                {
+                                if (result.data.Success) {
                                     self.LinePay(result.data.Data);
                                 }
-                                else
-                                {
+                                else {
                                     ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                            'Msg:' + result.data.Msg);
-                                }                           
+                                        'Msg:' + result.data.Msg);
+                                }
                             })
                             .catch(function (error) {
                                 ExceptUtil.PostExceptionFuc(error);
                             });
-                    }                    
+                    }
                 },
 
-                LinePay: function(orderId){
-                    var self = this;              
+                LinePay: function (orderId) {
+                    var self = this;
 
                     ToastUtil.InfoFire('處理中')
 
-                    var obj = {  
+                    var obj = {
                         ['OrderId']: orderId,
                         ['ConfirmUrl']: baseurl
                     };
 
                     axios.post(self.linePayApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 ToastUtil.InfoFire('處理中...')
                                 location.href = result.data.Data.CallbackUrl;
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.RedirectAlert('付款失敗:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg, self.orderIndexPage);
-                            }                           
+                                    'Msg:' + result.data.Msg, self.orderIndexPage);
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                CheckPostData: function(){
+                CheckPostData: function () {
                     var self = this;
                     self.nameInputInfo = '';
                     self.addressInputInfo = '';
                     self.phoneInputInfo = '';
-                    if(!self.nameInput)
-                    {
+                    if (!self.nameInput) {
                         self.nameInputInfo = '請輸入收貨人';
                         return false;
-                    }                    
-                    else if(!self.addressInput)
-                    {
+                    }
+                    else if (!self.addressInput) {
                         self.addressInputInfo = '請輸入地址';
                         return false;
-                    }                   
-                    else if(!ValiUtil.IsPhone(self.phoneInput))
-                    {
+                    }
+                    else if (!ValiUtil.IsPhone(self.phoneInput)) {
                         self.phoneInputInfo = '請輸入手機號碼';
                         return false;
                     }
-                    else if(self.cartList.length==0)
-                    {
+                    else if (self.cartList.length == 0) {
                         return false;
                     }
                     return true;
                 },
 
-                EcPayCreateOrder: function(){
-                    var self = this;              
+                EcPayCreateOrder: function () {
+                    var self = this;
 
-                    if(self.CheckPostData()){
+                    if (self.CheckPostData()) {
                         ToastUtil.InfoFire('處理中')
 
                         var obj = {
-                            ['OrderTypeCode']: 0,  
+                            ['OrderTypeCode']: 0,
                             ['ReceiveMan']: self.nameInput,
                             ['Phone']: self.phoneInput,
                             ['Address']: self.addressInput
@@ -277,22 +268,22 @@
 
                         axios.post(self.ecPayCreateOrderApi, obj)
                             .then(function (result) {
-                                if(result.data.Success){
+                                if (result.data.Success) {
                                     //location.href = baseurl + '/Order/EcPayPage?Id=' + result.data.Data + '&baseurl=' + baseurl;
                                     ToastUtil.RedirectAlert('信用卡測試環境只能使用以下資訊請紀錄，\n卡號:4311-9522-2222-2222\n安全碼:222\n有效月/年:12/99'
                                         , baseurl + '/Order/EcPayPage?Id=' + result.data.Data + '&baseurl=' + baseurl);
                                 }
-                                else{
+                                else {
                                     /*ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
                                             'Msg:' + result.data.Msg);*/
                                     ToastUtil.RedirectAlert('付款失敗:' + result.data.Success + '\n' +
                                         'Msg:' + result.data.Msg, self.orderIndexPage);
-                                }                           
+                                }
                             })
                             .catch(function (error) {
                                 ExceptUtil.PostExceptionFuc(error);
                             });
-                    }                    
+                    }
                 },
             }
         });

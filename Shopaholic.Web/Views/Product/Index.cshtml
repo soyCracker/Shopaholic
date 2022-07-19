@@ -15,40 +15,39 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">商品列表</h1>
-                </div><!-- /.col -->                
+                </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <div class="row mb-2">                                           
+                    <div class="row mb-2">
                         <div class="form-group col-sm-8">
                             <input class="form-control" placeholder="搜索" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
                         </div>
                         <div class="input-group-append">
-                            <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
-                              <i class="fas fa-search"></i>
+                            <button class="btn btn-navbar" v-on:click="RefreshUI(1)">
+                                <i class="fas fa-search"></i>
                             </button>
-                            <button class="btn btn-navbar"  data-widget="navbar-search" v-on:click="ClearFilter()">
-                              <i class="fas fa-times"></i>
+                            <button class="btn btn-navbar" data-widget="navbar-search" v-on:click="ClearFilter()">
+                                <i class="fas fa-times"></i>
                             </button>
                         </div>
-                    </div>                    
+                    </div>
                 </div><!-- /.col -->
-            </div>                       
+            </div>
         </div>
-        
+
         <div id="TableTool" class="card-body p-0">
             <table class="table table-striped projects">
                 <thead>
                     <tr>
                         <th style="width: 30%">
-                            
+
                         </th>
                         <th style="width: 50%">
                             商品名稱
@@ -57,26 +56,25 @@
                             價格
                         </th>
                         <th style="width: 10%">
-                        </th> 
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item) in productList" v-bind:key="item.id">
                         <td>
-                            <img v-bind:src="item.Image"  height="200">                           
+                            <img v-bind:src="item.Image" height="200">
                         </td>
                         <td>
                             <a v-bind:href="'/Product/DetailPage/'+item.Id">
-                                {{ item.Name }} 
-                            </a>                                                   
-                        </td>  
-                        <td>
-                            {{ item.Price }}                         
-                        </td>  
-                        <td>
-                                                  
+                                {{ item.Name }}
+                            </a>
                         </td>
-                    </tr>                        
+                        <td>
+                            {{ item.Price }}
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -114,24 +112,23 @@
                 productList: {},
                 categoryId: '@Model.CategoryId',
                 pageMaxDisplay: 5,
-                pageDisplayArray:[],
+                pageDisplayArray: [],
                 searchStr: '@Html.Raw(@Model.SearchStr)'
             },
-            mounted: function()
-            {
-                var self = this;  
+            mounted: function () {
+                var self = this;
                 self.RefreshUI(1);
             },
             methods:
             {
                 RefreshUI: function (page) {
                     var self = this;
-                    self.currentPage = page;               
+                    self.currentPage = page;
 
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
-                        ['CategoryId']: self.categoryId==''?null:self.categoryId,
+                        ['CategoryId']: self.categoryId == '' ? null : self.categoryId,
                         ['Page']: page,
                         ['PageSize']: self.pageSize,
                         ['SearchStr']: self.searchStr
@@ -139,35 +136,33 @@
 
                     axios.post(self.productSearchApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 self.productList = result.data.Data.ProductDTOs;
                                 self.totalPages = result.data.Data.TotalPages;
-                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ClearFilter: function(){
+                ClearFilter: function () {
                     var self = this;
                     self.searchStr = '';
                     self.RefreshUI(1);
-                }                    
+                }
             }
         });
     </script>
 }
 
-<style>
-    .page-num-clicked{
-        background-color: #dee2e6;
-    }
-</style>
+    <style>
+        .page-num-clicked {
+            background-color: #dee2e6;
+        }
+    </style>

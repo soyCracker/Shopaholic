@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
-using Shopaholic.Web.Model.Responses;
 using Shopaholic.Web.Model.ViewModels;
-using System;
-using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers
 {
@@ -14,16 +10,11 @@ namespace Shopaholic.Web.Controllers
     {
         private readonly ILogger Logger;
         private readonly IProductService productService;
-        private readonly ICartService cartService;
-        private readonly IWebFlowService flowService;
 
-        public ProductController(ILogger<ProductController> logger, IProductService productService,
-            ICartService cartService, IWebFlowService flowService)
+        public ProductController(ILogger<ProductController> logger, IProductService productService)
         {
             this.Logger = logger;
             this.productService = productService;
-            this.cartService = cartService;
-            this.flowService = flowService;
         }
 
         public IActionResult Index(ProductSearchVM vm)
@@ -66,38 +57,6 @@ namespace Shopaholic.Web.Controllers
             {
                 Success = res != null ? true : false,
                 Msg = res != null ? "搜索商品" : "Fail",
-                Data = res
-            };
-        }
-
-        /// <summary>
-        /// 取得商品瀏覽TOP5
-        /// </summary>
-        [Route("[controller]/api/[action]")]
-        [HttpPost]
-        public MessageModel<List<ProductTopDTO>> GetFlowTopFive()
-        {
-            List<ProductTopDTO> res = productService.GetProductByMonthFlowTop();
-            return new MessageModel<List<ProductTopDTO>>
-            {
-                Success = res != null ? true : false,
-                Msg = res != null ? "取得商品瀏覽TOP5" : "Fail",
-                Data = res
-            };
-        }
-
-        /// <summary>
-        /// 取得商品購買TOP5
-        /// </summary>
-        [Route("[controller]/api/[action]")]
-        [HttpPost]
-        public MessageModel<List<ProductTopDTO>> GetOrderTopFive()
-        {
-            List<ProductTopDTO> res = productService.GetProductByMonthOrderTop();
-            return new MessageModel<List<ProductTopDTO>>
-            {
-                Success = res != null ? true : false,
-                Msg = res != null ? "取得商品購買TOP5" : "Fail",
                 Data = res
             };
         }

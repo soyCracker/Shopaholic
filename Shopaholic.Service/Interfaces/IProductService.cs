@@ -22,9 +22,5 @@ namespace Shopaholic.Service.Interfaces
         ProductSearchResDTO Search(int? categoryId, string searchStr, int page, int pageSize);
 
         ProductWithAllCategoryDTO GetProductWithAllCategory(int id);
-
-        List<ProductTopDTO> GetProductByMonthFlowTop();
-
-        List<ProductTopDTO> GetProductByMonthOrderTop();
     }
 }
