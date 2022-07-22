@@ -31,5 +31,10 @@ namespace Shopaholic.CMS.Common.Environment
         {
             return configuration.GetValue<string>("Imgur:ClientSecret");
         }
+
+        public string GetReddisConnStr()
+        {
+            return configuration.GetValue<string>("RedisConnection");
+        }
     }
 }

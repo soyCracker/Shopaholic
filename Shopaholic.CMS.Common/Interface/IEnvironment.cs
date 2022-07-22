@@ -13,5 +13,7 @@ namespace Shopaholic.CMS.Common.Interface
         string GetImgurClientID();
 
         string GetImgurClientSecret();
+
+        string GetReddisConnStr();
     }
 }

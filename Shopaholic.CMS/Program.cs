@@ -6,6 +6,7 @@ using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -59,6 +60,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStorageService>(provider => new ImgurService(factory.GetEnvir().GetImgurClientID(),
     factory.GetEnvir().GetImgurClientSecret()));
+//redis singleton DI
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
