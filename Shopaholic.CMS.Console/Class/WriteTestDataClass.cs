@@ -52,23 +52,23 @@ namespace Shopaholic.Base.Console.Class
 
         public void WriteFlow(string conStr)
         {
-            List<FlowDTO> flowDtoList = new List<FlowDTO>();
-            IWebFlowService webFlowService = new WebFlowService(DBClass.GetDbContext(conStr));
-            for (DateTime date = DateTime.Now.Date.AddDays(-29); date <= DateTime.Now.Date; date = date.AddDays(1))
-            {
-                int rndMax = Random.Shared.Next(0, 5);
-                for (int r = 0; r<rndMax; r++)
-                {
-                    flowDtoList.Add(new FlowDTO
-                    {
-                        Ip = "127.0.0.1",
-                        Enter = "/Product/DetailPage/" + rndMax,
-                        CreateTime = date
-                    });
-                    logger.LogDebug("Write " + r.ToString().PadLeft(2, '0') + " " + date + " Success");
-                }
-            }
-            webFlowService.AddFlowRange(flowDtoList);
+            //List<FlowDTO> flowDtoList = new List<FlowDTO>();
+            //IWebFlowService webFlowService = new WebFlowService(DBClass.GetDbContext(conStr));
+            //for (DateTime date = DateTime.Now.Date.AddDays(-29); date <= DateTime.Now.Date; date = date.AddDays(1))
+            //{
+            //    int rndMax = Random.Shared.Next(0, 5);
+            //    for (int r = 0; r<rndMax; r++)
+            //    {
+            //        flowDtoList.Add(new FlowDTO
+            //        {
+            //            Ip = "127.0.0.1",
+            //            Enter = "/Product/DetailPage/" + rndMax,
+            //            CreateTime = date
+            //        });
+            //        logger.LogDebug("Write " + r.ToString().PadLeft(2, '0') + " " + date + " Success");
+            //    }
+            //}
+            //webFlowService.AddFlowRange(flowDtoList);
         }
 
         public void WriteAuth(string conStr)

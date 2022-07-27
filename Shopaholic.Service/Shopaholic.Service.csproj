@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Imgur.API" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.12" />
-    <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
   </ItemGroup>
 
   <ItemGroup>
