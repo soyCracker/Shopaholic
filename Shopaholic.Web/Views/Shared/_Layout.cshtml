@@ -26,8 +26,8 @@
     <!-- Daterange picker -->
     <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
-    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">   
-    
+    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
+
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
     <!-- TODO: Add SDKs for Firebase products that you want to use
@@ -53,7 +53,7 @@
         firebase.analytics();
     </script>
 </head>
-<body>   
+<body>
     <div class="wrapper">
 
         <!-- Preloader -->
@@ -72,7 +72,7 @@
                     <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item d-sm-inline-block">
-                    <a class="nav-link" href="https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com:13771/">管理後台</a> 
+                    <a class="nav-link" href="https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com:13771/">管理後台</a>
                 </li>
                 <!--<li class="nav-item d-none d-sm-inline-block">
                     <a asp-controller="Home" asp-action="Privacy" class="nav-link">TestAuth</a>
@@ -83,56 +83,55 @@
             <ul class="navbar-nav ml-auto">
                 <!-- Navbar Search -->
                 <li class="nav-item">
-                <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                    <i class="fas fa-search"></i>
-                </a>
-                <div class="navbar-search-block">
-                    <form class="form-inline">
-                    <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search" v-model="layoutSearchStr">
-                        <div class="input-group-append">
-                        <button class="btn btn-navbar" v-on:click.prevent="LayoutSearchBtn">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        </div>
+                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <div class="navbar-search-block">
+                        <form class="form-inline">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search" v-model="layoutSearchStr">
+                                <div class="input-group-append">
+                                    <button class="btn btn-navbar" v-on:click.prevent="LayoutSearchBtn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    </form>
-                </div>
                 </li>
-               
+
                 <li class="nav-item" v-if="!isLogin">
                     <a asp-controller="Home" asp-action="LoginPage" class="nav-link">
-                        <i class="fa-brands fa-google">登入</i>       
+                        <i class="fa-brands fa-google">登入</i>
                     </a>
                 </li>
-                <li class="nav-item dropdown">                      
+                <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" v-if="isLogin">
                         <i class="fa-solid fa-user-astronaut">會員資料</i>
                         <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">                     
+                    <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
                         <a asp-controller="Cart" asp-action="Index" class="dropdown-item text-center">
                             <i class="fa-solid fa-cart-arrow-down">
                                 <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
                                 購物車
-                            </i>          
+                            </i>
                         </a>
                         <a asp-controller="Order" asp-action="Index" class="dropdown-item text-center">
-                            <i class="fa-regular fa-file-lines">訂單</i>          
+                            <i class="fa-regular fa-file-lines">訂單</i>
                         </a>
                         <a class="dropdown-item text-center" v-on:click="Logout">
-                            <i class="fa-solid fa-right-from-bracket">登出</i>          
-                        </a>  
+                            <i class="fa-solid fa-right-from-bracket">登出</i>
+                        </a>
                     </div>
-                </li>               
+                </li>
             </ul>
         </nav>
-      <!-- /.navbar -->
-
-      <!-- Main Sidebar Container -->
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-light-primary elevation-4">
             <!-- Brand Logo -->
             <a asp-controller="Home" asp-action="Index" class="brand-link">
@@ -147,42 +146,42 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-                            with font-awesome or any other icon font library -->          
-                   
+                            with font-awesome or any other icon font library -->
+
                         <li class="nav-item" v-for="(item) in categoryList" v-bind:key=item.Id>
                             <a class="nav-link" v-bind:href="'/Product/Index/?CategoryId='+item.Id">
                                 <i class="fa-solid fa-circle-dot"></i>
                                 <p>
-                                {{ item.Name }}                  
+                                    {{ item.Name }}
                                 </p>
                             </a>
                         </li>
-                                     
+
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
-        <!-- /.sidebar -->
+            <!-- /.sidebar -->
         </aside>
 
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-              
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+
             @RenderBody()
 
-      </div>
-      <!-- /.content-wrapper -->
+        </div>
+        <!-- /.content-wrapper -->
 
-      <footer class="main-footer">
-        <strong>Copyright &copy; 2014-2021 Shopaholic</strong>
-        All rights reserved.
-      </footer>
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2014-2021 Shopaholic</strong>
+            All rights reserved.
+        </footer>
 
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
-      <!-- /.control-sidebar -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
 
     </div>
 
@@ -192,10 +191,10 @@
     <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
-      $.widget.bridge('uibutton', $.ui.button)
+        $.widget.bridge('uibutton', $.ui.button)
     </script>
     <!-- Bootstrap 4 -->
-    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script> 
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Sparkline -->
     <script src="~/plugins/sparklines/sparkline.js"></script>
     <!-- JQVMap -->
@@ -213,10 +212,9 @@
     <!-- overlayScrollbars -->
     <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="~/dist/js/adminlte.js"></script>   
+    <script src="~/dist/js/adminlte.js"></script>
 
     <!--          My js            -->
-   
     <!-- Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- Vue.js Ajax(axios) -->
@@ -224,7 +222,7 @@
     <!-- vue-easy-lightbox -->
     <script src="https://unpkg.com/vue-easy-lightbox@vue2/dist/vue-easy-lightbox.umd.min.js"></script>
     <!-- 表單驗證 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.1/dist/sweetalert2.all.min.js"></script>
     <script src="~/js/ToastUtil.js"></script>
@@ -232,17 +230,17 @@
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>-->
     <!-- Font Awesome   -->
-    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>  
+    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>
 
     <!-- 雜 -->
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/ExceptUtil.js" ></script>
-    <script src="~/js/PageUtil.js" ></script>
-    <script src="~/js/ValiUtil.js" ></script>
-    
+    <script src="~/js/ExceptUtil.js"></script>
+    <script src="~/js/PageUtil.js"></script>
+    <script src="~/js/ValiUtil.js"></script>
+
 
     <script>
-        var baseurl = window.location.origin;        
+        var baseurl = window.location.origin;
         var provider = new firebase.auth.GoogleAuthProvider();
 
         // 登入狀態變換
@@ -253,11 +251,10 @@
                 // LayoutTopBarTool.ChkLoginState();
                 LayoutTopBarTool.GetCartCount();
             }
-            else
-            {
+            else {
                 LayoutTopBarTool.isLogin = false;
             }
-        }); 
+        });
 
         var LayoutApp = new Vue({
             el: '#LayoutApp',
@@ -266,34 +263,31 @@
                 getCategoryListApi: baseurl + "/Home/api/GetCategoryList",
                 categoryList: {},
             },
-            mounted: function()
-            {
-                var self = this;  
+            mounted: function () {
+                var self = this;
                 self.InitUI();
             },
             methods:
             {
                 InitUI: function () {
-                    var self = this;              
+                    var self = this;
 
                     //ToastUtil.InfoFire('處理中')
 
                     axios.post(self.getCategoryListApi)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                self.categoryList = result.data.Data;                  
+                            if (result.data.Success) {
+                                self.categoryList = result.data.Data;
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                }                   
+                }
             }
         });
 
@@ -301,36 +295,33 @@
             el: '#LayoutTopBarTool',
             data:
             {
-                isLogin: false, 
+                isLogin: false,
                 logoutApi: baseurl + '/Auth/api/Logout',
                 chkLoginStateApi: baseurl + '/Auth/api/ChkExist',
                 getCartCountApi: baseurl + '/Cart/api/Count',
                 cartCount: 0,
                 layoutSearchStr: '',
             },
-            mounted: function(){
-                var self = this;               
+            mounted: function () {
+                var self = this;
             },
             methods:
             {
                 Logout: async function () {
                     var self = this;
                     ToastUtil.InfoFire('登出中...');
-                    firebase.auth().signOut().then(async function ()
-                    {     
-                        // Sign-out successful. 
+                    firebase.auth().signOut().then(async function () {
+                        // Sign-out successful.
                         await axios.post(self.logoutApi)
                             .then(function (result) {
-                                if(result.data.Data)
-                                {
-                                    console.log('Logout')   
-                                    self.isLogin = false;                                    
+                                if (result.data.Data) {
+                                    console.log('Logout')
+                                    self.isLogin = false;
                                 }
-                                else
-                                {
+                                else {
                                     ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                            'Msg:' + result.data.Msg)
-                                }                           
+                                        'Msg:' + result.data.Msg)
+                                }
                             })
                             .catch(function (error) {
                                 ExceptUtil.PostExceptionFuc(error);
@@ -344,45 +335,41 @@
                 ChkLoginState: async function () {
                     var self = this;
                     await axios.post(self.chkLoginStateApi)
-                            .then(function (result) {
-                                if(!result.data.Data)
-                                {
-                                    firebase.auth().signOut().then(async function ()
-                                    {}).catch(function (error) {});                                   
-                                }                          
-                            }).catch(function (error) {
-                                ExceptUtil.PostExceptionFuc(error);
-                            });                   
+                        .then(function (result) {
+                            if (!result.data.Data) {
+                                firebase.auth().signOut().then(async function () { }).catch(function (error) { });
+                            }
+                        }).catch(function (error) {
+                            ExceptUtil.PostExceptionFuc(error);
+                        });
                 },
 
-                GetCartCount: function(){
+                GetCartCount: function () {
                     var self = this;
                     var cart = localStorage.getItem('Cart');
-                    if(cart)
-                    {
+                    if (cart) {
                         self.cartCount = 1;
                     }
-                    else{
+                    else {
                         self.cartCount = 0;
                     }
                 },
 
-                PutCart: function(){
+                PutCart: function () {
                     var self = this;
                     localStorage.setItem('Cart', true);
                     self.GetCartCount();
                 },
 
-                ClearCart: function(){
+                ClearCart: function () {
                     var self = this;
                     localStorage.removeItem('Cart');
                     self.GetCartCount();
                 },
 
-                LayoutSearchBtn: function(){
+                LayoutSearchBtn: function () {
                     var self = this;
-                    if(self.layoutSearchStr)
-                    {
+                    if (self.layoutSearchStr) {
                         location.href = baseurl + '/Product/Index/?SearchStr=' + self.layoutSearchStr;
                     }
                 }

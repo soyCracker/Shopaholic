@@ -24,42 +24,42 @@ namespace Shopaholic.Web.Common.Environment
 
         public string GetLinePayApiUrl()
         {
-            return configuration.GetValue<string>("LinePay:AWS:ApiUrl");
+            return configuration.GetValue<string>("LinePay:PRD:ApiUrl");
         }
 
         public string GetLinePayChannelSecret()
         {
-            return configuration.GetValue<string>("LinePay:AWS:ChannelSecret");
+            return configuration.GetValue<string>("LinePay:PRD:ChannelSecret");
         }
 
         public string GetLinePayChannelId()
         {
-            return configuration.GetValue<string>("LinePay:AWS:ChannelId");
+            return configuration.GetValue<string>("LinePay:PRD:ChannelId");
         }
 
         public string GetLinePayBaseUrl()
         {
-            return configuration.GetValue<string>("LinePay:AWS:BaseUrl");
+            return configuration.GetValue<string>("LinePay:PRD:BaseUrl");
         }
 
         public string GetLinePayConfirmApi()
         {
-            return configuration.GetValue<string>("LinePay:AWS:PayConfirmApi");
+            return configuration.GetValue<string>("LinePay:PRD:PayConfirmApi");
         }
 
         public string GetOrderIdCreateApi()
         {
-            return configuration.GetValue<string>("OrderIdCreateApi:AWS");
+            return configuration.GetValue<string>("OrderIdCreateApi:PRD");
         }
 
         public string GetEcPayApi()
         {
-            return configuration.GetValue<string>("EcPay:AWS:EcPayApi");
+            return configuration.GetValue<string>("EcPay:PRD:EcPayApi");
         }
 
         public string GetEcPayConfirmApi()
         {
-            return configuration.GetValue<string>("EcPay:AWS:PayConfirmApi");
+            return configuration.GetValue<string>("EcPay:PRD:PayConfirmApi");
         }
 
         public string GetPayConfirmReturnPage()
@@ -69,7 +69,22 @@ namespace Shopaholic.Web.Common.Environment
 
         public string GetEcPayMerchantID()
         {
-            return configuration.GetValue<string>("EcPay:AWS:MerchantID");
+            return configuration.GetValue<string>("EcPay:PRD:MerchantID");
+        }
+
+        public string GetFirebaseID()
+        {
+            return configuration.GetValue<string>("Firebase:PRD:Id");
+        }
+
+        public string GetFirebaseUrl()
+        {
+            return configuration.GetValue<string>("Firebase:PRD:Url");
+        }
+
+        public string GetLoginUrl()
+        {
+            return configuration.GetValue<string>("LoginUrl");
         }
     }
 }

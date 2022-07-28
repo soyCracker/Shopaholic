@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.CMS.Model.Requests;
-using Shopaholic.CMS.Model.Response;
 using Shopaholic.CMS.Model.ViewModels;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
@@ -18,11 +17,13 @@ namespace Shopaholic.CMS.Controllers
             this.orderService = orderService;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
             return View();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("[controller]/[action]/{orderId}")]
         public IActionResult EditPage(string orderId)
         {
@@ -76,7 +77,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<bool>
             {
                 Success = res,
-                Msg = res? "撿貨確認" : "Fail",
+                Msg = res ? "撿貨確認" : "Fail",
                 Data = res
             };
         }
@@ -92,7 +93,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<bool>
             {
                 Success = res,
-                Msg = res? "退貨確認" : "Fail",
+                Msg = res ? "退貨確認" : "Fail",
                 Data = res
             };
         }
@@ -108,7 +109,7 @@ namespace Shopaholic.CMS.Controllers
             return new MessageModel<bool>
             {
                 Success = res,
-                Msg = res? "訂單手動確認" : "Fail",
+                Msg = res ? "訂單手動確認" : "Fail",
                 Data = res
             };
         }

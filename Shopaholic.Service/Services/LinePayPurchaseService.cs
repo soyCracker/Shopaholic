@@ -1,21 +1,14 @@
-﻿using Shopaholic.Util.Utilities;
-using Shopaholic.Entity.Models;
-using Shopaholic.Service.Common.Business;
+﻿using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Web.Model.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Shopaholic.Service.Common.Constants;
 using System.Text.Json;
 using Shopaholic.Web.Model.Responses;
 using System.Security.Cryptography;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Shopaholic.Background.Model.Responses;
 using Shopaholic.Web.Common.Factory;
+using Shopaholic.Service.Model.Moels;
 
 namespace Shopaholic.Service.Services
 {
@@ -227,7 +220,7 @@ namespace Shopaholic.Service.Services
                 var content = new StringContent(JsonSerializer.Serialize(req), Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync(orderIdCreateApi, content);
                 var result = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<Background.Model.Responses.MessageModel<string>>(result);
+                var model = JsonSerializer.Deserialize<MessageModel<string>>(result);
                 return model.Data;
             }
         }

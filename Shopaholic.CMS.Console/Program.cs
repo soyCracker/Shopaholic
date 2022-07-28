@@ -55,8 +55,4 @@ using (var services = new ServiceCollection()
 
     //// 寫入測試訂單
     writeTestDataClass.WriteOrder(conStr);
-
-    //// LinePay測試
-    //LinePayTestClass linePayTestClass = new LinePayTestClass(services.GetRequiredService<ILogger<LinePayTestClass>>(), httpClientFactory);
-    //await linePayTestClass.LinePayPost();
 }

@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Imgur.API" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\Shopaholic.Util.csproj" />
-    <ProjectReference Include="..\Shopaholic.Background.Model\Shopaholic.Background.Model.csproj" />
     <ProjectReference Include="..\Shopaholic.Entity\Shopaholic.Entity.csproj" />
     <ProjectReference Include="..\Shopaholic.Service.Common\Shopaholic.Service.Common.csproj" />
     <ProjectReference Include="..\Shopaholic.Service.Model\Shopaholic.Service.Model.csproj" />

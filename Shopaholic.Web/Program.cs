@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
+using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Factory;
-using Shopaholic.Web.Common.Middlewares;
 using StackExchange.Redis;
 using System.Net;
 using System.Text.Encodings.Web;
@@ -17,12 +17,10 @@ using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 切換執行環境
-//string envirMode = "DEV";
-string envirMode = "AWS";
-EnvirFactory envirFactory = new EnvirFactory(builder.Configuration, envirMode);
+//決定執行環境
+EnvirFactory factory = new EnvirFactory();
 
-// IHttpClientFactory
+//IHttpClientFactory
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -32,34 +30,34 @@ builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<LinePayPurchaseService>();
 builder.Services.AddScoped<EcPayPurchaseService>();
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(envirFactory.GetEnvir().GetReddisConnStr()));
-// 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
-builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
-builder.Services.AddScoped(provider => envirFactory);
-
+//redis singleton DI
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
+//自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
+builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
+//加入EnvirFactory DI
+builder.Services.AddSingleton(provider => factory);
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr(),
+    options.UseSqlServer(factory.GetEnvir().GetDbConnStr(),
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
-
 
 // Firebase Authentication
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://securetoken.google.com/shopaholic-39229";
+        options.Authority = factory.GetEnvir().GetFirebaseUrl();
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = "https://securetoken.google.com/shopaholic-39229",
+            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
             ValidateAudience = true,
-            ValidAudience = "shopaholic-39229",
+            ValidAudience = factory.GetEnvir().GetFirebaseID(),
             ValidateLifetime = true
         };
         // 網站本身的Cookie-based Authentication
-    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options=>
+    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.Events.OnRedirectToLogin = context =>
         {
@@ -69,9 +67,9 @@ builder.Services
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return Task.CompletedTask;
             }
-            context.Response.Redirect(new PathString(builder.Configuration.GetValue<string>("LoginUrl")));
+            context.Response.Redirect(new PathString(factory.GetEnvir().GetLoginUrl()));
             return Task.CompletedTask;
-        };        
+        };
     });
 
 // ASP.NET Data Protection，儲存於redis，解決load balancer的Cookie-based Auth跨server問題
@@ -99,6 +97,9 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(12970); // to listen for incoming http connection on port 5001
     //options.ListenAnyIP(80);
 });
+
+
+
 
 var app = builder.Build();
 

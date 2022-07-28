@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Shopaholic.Background.Model.Responses;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Background.Service.Interfaces;
 using Shopaholic.Background.Service.Tasks;
+using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
 
 namespace Shopaholic.BackgroundWorker.Controllers.Api

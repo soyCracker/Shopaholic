@@ -14,6 +14,10 @@ namespace Shopaholic.Service.Interfaces
         void AddFlow(string ip, string enter, string userId);
 
         void AddFlowRange(List<FlowDTO> flowDtoList);
-        
+
+        List<ProductTopDTO> GetProductByMonthFlowTop();
+
+        List<ProductTopDTO> GetProductByMonthOrderTop();
+
     }
 }

@@ -13,30 +13,29 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">訂單列表</h1>
-                </div><!-- /.col -->                
+                </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <div class="row mb-2">                                           
+                    <div class="row mb-2">
                         <div class="form-group col-sm-5">
                             <div class="form-group">
-                                <div class="input-group-append">                              
+                                <div class="input-group-append">
                                     <input class="form-control" placeholder="搜索訂單編號" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
-                                    <button class="btn btn-navbar" v-on:click="RefreshUI(1)" >
+                                    <button class="btn btn-navbar" v-on:click="RefreshUI(1)">
                                         <i class="fas fa-search"></i>
                                     </button>
-                                    <button class="btn btn-navbar"  data-widget="navbar-search" v-on:click="ClearFilter()">
+                                    <button class="btn btn-navbar" data-widget="navbar-search" v-on:click="ClearFilter()">
                                         <i class="fas fa-times"></i>
                                     </button>
-                                </div> 
-                            </div>                            
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label>開始日期</label>
                                 <input type="date" v-model="searchBeginDate" v-bind:min="minDate" v-bind:max="searchEndDate">
@@ -44,13 +43,13 @@
                             <div class="form-group">
                                 <label>結束日期</label>
                                 <input type="date" v-model="searchEndDate" v-bind:min="searchBeginDate" v-bind:max="maxDate">
-                            </div>                   
-                        </div>                        
-                    </div>                    
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>                       
+            </div>
         </div>
-        
+
         <div id="TableTool" class="card-body p-0">
             <table class="table table-striped projects">
                 <thead>
@@ -66,10 +65,10 @@
                         </th>
                         <th style="width: 15%">
                             建立日期
-                        </th> 
+                        </th>
                         <th style="width: 40%">
-                            
-                        </th> 
+
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,15 +77,15 @@
                             {{ item.OrderId }}
                         </td>
                         <td>
-                            <div v-if=item.IsSent>已出貨</div>       
-                            <div v-else>未出貨</div>  
-                        </td>  
-                        <td>
-                            <div v-if=item.IsFinish>已完成</div>       
-                            <div v-else>{{ item.StatusMsg }}</div>                        
+                            <div v-if=item.IsSent>已出貨</div>
+                            <div v-else>未出貨</div>
                         </td>
                         <td>
-                            {{ item.FormatCreateTime }}                       
+                            <div v-if=item.IsFinish>已完成</div>
+                            <div v-else>{{ item.StatusMsg }}</div>
+                        </td>
+                        <td>
+                            {{ item.FormatCreateTime }}
                         </td>
                         <td>
                             <div class="row mb-2">
@@ -98,20 +97,20 @@
                                         <a v-else-if="item.OrderTypeCode == 1" class="btn btn-info" v-on:click="EcPay(item.OrderId)">
                                             信用卡付款
                                         </a>
-                                    </div>                                 
+                                    </div>
                                 </div>
-                               
+
                                 <div class="col-sm-4">
                                     <div v-if="(item.FailCode==1 || item.FailCode==5)">已申請退貨</div>
                                     <div v-else>
-                                        <a class="btn btn-danger"  v-on:click="ApplyReturn(item.OrderId)">
+                                        <a class="btn btn-danger" v-on:click="ApplyReturn(item.OrderId)">
                                             申請退貨/取消
                                         </a>
-                                    </div>  
+                                    </div>
                                 </div>
-                            </div>                          
+                            </div>
                         </td>
-                    </tr>                        
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -152,23 +151,22 @@
                 currentPage: 1,
                 orderList: {},
                 pageMaxDisplay: 5,
-                pageDisplayArray:null,
+                pageDisplayArray: null,
                 searchStr: '',
-                minDate:'2000-01-01',
+                minDate: '2000-01-01',
                 maxDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
                 searchBeginDate: '2000-01-01',
                 searchEndDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
             },
-            mounted: function()
-            {
-                var self = this;  
+            mounted: function () {
+                var self = this;
                 self.RefreshUI(1);
             },
             methods:
             {
                 RefreshUI: function (page) {
                     var self = this;
-                    self.currentPage = page;               
+                    self.currentPage = page;
 
                     ToastUtil.InfoFire('處理中')
 
@@ -182,85 +180,79 @@
 
                     axios.post(self.orderSearchApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 self.orderList = result.data.Data.OrderHeaderDTOs;
                                 self.totalPages = result.data.Data.TotalPages;
-                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);                   
+                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ApplyReturn: function(orderId){
+                ApplyReturn: function (orderId) {
                     var self = this;
                     ToastUtil.InfoFire('處理中')
 
                     var obj = {
-                        ['OrderId']: orderId,                       
+                        ['OrderId']: orderId,
                     };
 
                     axios.post(self.orderApplyReturnApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
-                                ToastUtil.InfoFire('已申請退貨');   
+                            if (result.data.Success) {
+                                ToastUtil.InfoFire('已申請退貨');
                                 self.RefreshUI(1);
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg)
-                            }                           
+                                    'Msg:' + result.data.Msg)
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                ClearFilter: function(){
+                ClearFilter: function () {
                     var self = this;
                     self.searchStr = '';
                     self.RefreshUI(1);
-                },       
-                
-                LinePay: function(orderId){
-                    var self = this;              
+                },
+
+                LinePay: function (orderId) {
+                    var self = this;
 
                     ToastUtil.InfoFire('處理中')
 
-                    var obj = {  
+                    var obj = {
                         ['OrderId']: orderId,
                         ['ConfirmUrl']: baseurl
                     };
 
                     axios.post(self.linePayApi, obj)
                         .then(function (result) {
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 ToastUtil.InfoFire('處理中...')
                                 location.href = result.data.Data.CallbackUrl;
                             }
-                            else
-                            {
+                            else {
                                 ToastUtil.ErrorAlert('付款失敗:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg);
-                            }                           
+                                    'Msg:' + result.data.Msg);
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 },
 
-                EcPay: function(orderId){
-                    var self = this;              
+                EcPay: function (orderId) {
+                    var self = this;
                     location.href = baseurl + '/Order/EcPayPage?Id=' + orderId + '&baseurl=' + baseurl;
                 },
             }
@@ -268,8 +260,8 @@
     </script>
 }
 
-<style>
-    .page-num-clicked{
-        background-color: #dee2e6;
-    }
-</style>
+    <style>
+        .page-num-clicked {
+            background-color: #dee2e6;
+        }
+    </style>

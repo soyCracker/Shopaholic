@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Shopaholic.CMS.Common.Environment;
 using Shopaholic.CMS.Common.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shopaholic.Service.Common.Exceptions;
 
 namespace Shopaholic.CMS.Common.Factory
 {
@@ -13,14 +9,41 @@ namespace Shopaholic.CMS.Common.Factory
     {
         private readonly IEnvironment envir;
 
-        public EnvirFactory(IConfiguration configuration, string mode)
+        public EnvirFactory()
         {
-            envir = SetEnvir(configuration, mode);
+            envir = SetEnvir(GetConfig());
         }
 
-        private IEnvironment SetEnvir(IConfiguration configuration, string mode)
+        private IConfiguration GetConfig()
         {
-            switch (mode)
+            string configPath = "";
+            //windows 專案資料夾外，ex:GitRepo:/shopaholic.json
+            string[] winPath = { "..", "..", "shopaholic.json" };
+            string[] linuxPath = { "..", "shopaholic.json" };
+            if (File.Exists(Path.Combine(winPath)))
+            {
+                configPath = Path.Combine(winPath);
+            }
+            //ubuntu 部署資料夾外
+            else if (File.Exists(Path.Combine(linuxPath)))
+            {
+                configPath = Path.Combine(linuxPath);
+            }
+            else
+            {
+                throw new ShopaholicConfigNotFoundException();
+            }
+
+            var builder = new ConfigurationBuilder()
+                  .SetBasePath(Directory.GetCurrentDirectory())
+                  .AddJsonFile(Path.GetFullPath(configPath));
+            var shopaholicConfig = builder.Build();
+            return shopaholicConfig;
+        }
+
+        private IEnvironment SetEnvir(IConfiguration configuration)
+        {
+            switch (configuration.GetValue<string>("EnvirMode"))
             {
                 case "AWS":
                     return new AwsEnvironment(configuration);

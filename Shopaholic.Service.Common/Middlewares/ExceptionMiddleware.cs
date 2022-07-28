@@ -1,17 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Shopaholic.CMS.Model.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Shopaholic.Service.Model.Moels;
 using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Shopaholic.CMS.Common.Tools
+namespace Shopaholic.Service.Common.Middlewares
 {
     public class ExceptionMiddleware
     {
@@ -30,10 +25,19 @@ namespace Shopaholic.CMS.Common.Tools
             {
                 await next(httpContext);
 
-                // 404 NotFound
-                if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                bool isApi = Regex.IsMatch(httpContext.Request.Path.Value, "/api/", RegexOptions.IgnoreCase);
+                if (!isApi)
                 {
-                    httpContext.Response.Redirect("/Error/Error404");
+                    // 404 NotFound
+                    if (httpContext.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                    {
+                        logger.LogInformation("ExceptionMiddleware 404 req path:" + httpContext.Request.Path.Value);
+                        httpContext.Response.Redirect("/Error/Error404");
+                    }
+                    else if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                    {
+                        httpContext.Response.Redirect("/Error/Error401");
+                    }
                 }
             }
             catch (Exception ex)
@@ -47,15 +51,16 @@ namespace Shopaholic.CMS.Common.Tools
             bool isApi = Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase);
 
             // API Exception
-            if(isApi)
+            if (isApi)
             {
                 await ReturnApiException(context, exception);
             }
             // Any other Exception
             else
             {
+                logger.LogError("HandleException() Error500:" + exception);
                 context.Response.Redirect("/Error/Error500");
-            }            
+            }
         }
 
         private async Task ReturnApiException(HttpContext context, Exception exception)
@@ -67,9 +72,12 @@ namespace Shopaholic.CMS.Common.Tools
             if (exception is DbUpdateException)
             {
                 message = ((DbUpdateException)exception).Message;
-                logger.LogError("HandleExceptionAsync() " + message);
+                logger.LogError("ReturnApiException() DbUpdateException:" + message);
             }
-
+            else
+            {
+                logger.LogError("ReturnApiException() Other Exception:" + exception);
+            }
 
             await context.Response.WriteAsync(
                 JsonSerializer.Serialize(new MessageModel<string>()

@@ -16,79 +16,77 @@
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item"> 
-                      <a asp-controller="Category" asp-action="CreatePage" class="btn btn-primary btn-sm">
-                         <i class="fas fa-folder">
-                         </i>
-                         新增           
-                      </a>
-                  </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Category" asp-action="CreatePage" class="btn btn-primary btn-sm">
+                            <i class="fas fa-folder">
+                            </i>
+                            新增
+                        </a>
+                    </li>
                 </ol>
-              </div>
+            </div>
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content-header -->
-
 <!-- Default box -->
 <div class="card">
-<div class="card-header">
-    <h3 class="card-title">類別</h3>    
-</div>
-<div id="TableTool" class="card-body p-0">
-    <table class="table table-striped projects">
-        <thead>
-            <tr>
-                <th style="width: 20%">
-                    #
-                </th>
-                <th style="width: 40%">
-                    類別名稱
-                </th>               
-                <th style="width: 40%">
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                foreach(var categoryVM in Model)
-                {
-                    <tr>
-                        <td>
-                            @categoryVM.Id
-                        </td>
-                        <td>
-                            <a>
-                                @categoryVM.Name
-                            </a>                            
-                        </td>                                                
-                        <td class="project-actions text-right">                            
-                            <a class="btn btn-info btn-sm" href="@Url.Action("EditPage", new { Id = @categoryVM.Id, Name = @categoryVM.Name})">
-                                <i class="fas fa-pencil-alt">
-                                </i>
-                                修改
-                            </a>
-                            <a class="btn btn-danger btn-sm" v-on:click="DeleteCategory(@categoryVM.Id)">
-                                <i class="fas fa-trash">
-                                </i>
-                                刪除
-                            </a>
-                        </td>
-                    </tr>
+    <div class="card-header">
+        <h3 class="card-title">類別</h3>
+    </div>
+    <div id="TableTool" class="card-body p-0">
+        <table class="table table-striped projects">
+            <thead>
+                <tr>
+                    <th style="width: 20%">
+                        #
+                    </th>
+                    <th style="width: 40%">
+                        類別名稱
+                    </th>
+                    <th style="width: 40%">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var categoryVM in Model)
+                    {
+                        <tr>
+                            <td>
+                                @categoryVM.Id
+                            </td>
+                            <td>
+                                <a>
+                                    @categoryVM.Name
+                                </a>
+                            </td>
+                            <td class="project-actions text-right">
+                                <a class="btn btn-info btn-sm" href="@Url.Action("EditPage", new { Id = @categoryVM.Id, Name = @categoryVM.Name})">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    修改
+                                </a>
+                                <a class="btn btn-danger btn-sm" v-on:click="DeleteCategory(@categoryVM.Id)">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    刪除
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 }
-            }
-                        
-        </tbody>
-    </table>
-</div>
-<!-- /.card-body -->
+
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
 </div>
 <!-- /.card -->
-
 @section Scripts{
 
     <script>
-      
+
         var TableTool = new Vue({
             el: '#TableTool',
             data:
@@ -100,7 +98,7 @@
             {
                 DeleteCategory: function (id) {
                     var self = this;
-                    if(confirm("確定刪除?")) {
+                    if (confirm("確定刪除?")) {
                         var obj = {
                             ['Id']: id
                         };
@@ -119,12 +117,11 @@
                             console.log('Msg:' + result.data.Msg);
                             console.log('Data:');
                             console.log(result.data.data);
-                            if(result.data.Success)
-                            {
+                            if (result.data.Success) {
                                 location.href = '@Url.Action("Index")';
-                            }                         
+                            }
                         })
-                        .catch(function (error) {                                    
+                        .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
                 }

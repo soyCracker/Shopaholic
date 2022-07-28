@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shopaholic.CMS.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
-using System.Diagnostics;
 
 namespace Shopaholic.CMS.Controllers
 {
@@ -17,12 +15,14 @@ namespace Shopaholic.CMS.Controllers
             this.webFlowService = webFlowService;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
             List<FlowCountDTO> flows = webFlowService.GetMonthFlow();
             return View(flows);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Privacy()
         {
             return View();

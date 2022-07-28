@@ -8,7 +8,7 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">新增類別</h1>
-            </div><!-- /.col -->           
+            </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
@@ -23,31 +23,31 @@
                     <h3 class="card-title">新增類別</h3>
                 </div>
                 <!-- /.card-header -->
-                <!-- form start -->                
+                <!-- form start -->
                 <div class="card-body">
-                    <validation-observer ref="validObserver" v-slot="{ valid }" >
+                    <validation-observer ref="validObserver" v-slot="{ valid }">
                         <validation-provider rules="required" v-slot="{ errors }">
                             <div class="form-group">
-                                <label >類別名稱</label>
+                                <label>類別名稱</label>
                                 <input class="form-control" placeholder="輸入類別" v-model="categoryName" v-on:keydown.enter="SubmitBtn">
                                 <span>{{ errors[0] }}</span>
-                            </div>   
+                            </div>
                             <a v-on:click="SubmitBtn" class="btn btn-primary">Submit</a>
                         </validation-provider>
-                    </validation-observer>                                   
+                    </validation-observer>
                 </div>
-                <!-- /.card-body -->                                  
+                <!-- /.card-body -->
             </div>
             <!-- /.card -->
         </div>
-    <!-- /.row -->
+        <!-- /.row -->
     </div><!-- /.container-fluid -->
 </section>
 
 @section Scripts{
 
     <script>
-        
+
         Vue.component('validation-provider', VeeValidate.ValidationProvider);
         Vue.component('validation-observer', VeeValidate.ValidationObserver);
 
@@ -57,19 +57,19 @@
             {
                 categoryName: '',
                 createApi: baseurl + "/Category/api/Add",
-            },            
+            },
             methods:
-            {                             
+            {
                 SubmitBtn: async function () {
                     var self = this;
                     console.log('submitBtn click');
                     //click觸發驗證
                     var isValid = await self.$refs.validObserver.validate();
-                    if(isValid){
+                    if (isValid) {
                         ToastUtil.InfoFire('處理中')
                         self.PostContent(self.GetPostObj(), self.createApi);
                     }
-                    else{
+                    else {
                         ToastUtil.ErrorAlert('validate error')
                         console.log('validate error');
                     }
@@ -94,18 +94,18 @@
                             console.log('Msg:' + result.data.msg);
                             console.log('Data:');
                             console.log(result.data.data);
-                            if(result.data.Success){
+                            if (result.data.Success) {
                                 location.href = '@Url.Action("Index")';
                             }
-                            else{
+                            else {
                                 ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                        'Msg:' + result.data.Msg);
-                            }                           
+                                    'Msg:' + result.data.Msg);
+                            }
                         })
                         .catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                }             
+                }
             }
         });
     </script>

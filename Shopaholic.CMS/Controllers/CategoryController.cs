@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Shopaholic.CMS.Model.Requests;
-using Shopaholic.CMS.Model.Response;
 using Shopaholic.CMS.Model.ViewModels;
-using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 
@@ -20,11 +17,12 @@ namespace Shopaholic.CMS.Controllers
             this.categoryService = categoryService;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
             List<CategoryDTO> resList = categoryService.GetCategoryList();
             List<CategoryVM> categoryVMList = new List<CategoryVM>();
-            foreach(var item in resList)
+            foreach (var item in resList)
             {
                 CategoryVM categoryVM = new CategoryVM
                 {
@@ -36,11 +34,13 @@ namespace Shopaholic.CMS.Controllers
             return View(categoryVMList);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult CreatePage()
-        {           
+        {
             return View();
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult EditPage(CategoryVM vm)
         {
             return View(vm);
@@ -84,7 +84,7 @@ namespace Shopaholic.CMS.Controllers
                 Success = res,
                 Msg = res ? "Success" : "Fail",
                 Data = req
-            };        
+            };
         }
 
         /// <summary>

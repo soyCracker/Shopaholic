@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
-using Shopaholic.CMS.Common.Tools;
 using Shopaholic.Entity.Models;
+using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
+using StackExchange.Redis;
+using System.Data;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -15,12 +17,10 @@ using System.Text.Unicode;
 var builder = WebApplication.CreateBuilder(args);
 
 // 切換執行環境
-//string envirMode = "DEV";
-string envirMode = "AWS";
-EnvirFactory envirFactory = new EnvirFactory(builder.Configuration, envirMode);
+EnvirFactory factory = new EnvirFactory();
 
 // Add services to the container.
-builder.Services.AddMvc()  
+builder.Services.AddMvc()
     .AddJsonOptions(opts =>
     {
         //取消json小駝峰式命名法
@@ -30,18 +30,17 @@ builder.Services.AddMvc()
             JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
     });
 
+// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "API Document", 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API Document",
         Version = "v1",
         Description = "API Document For Shopaholic.CMS"
     });
-    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-    var fileName = typeof(Program).GetTypeInfo().Assembly.GetName().Name + ".xml";
-    c.IncludeXmlComments(Path.Combine(basePath, fileName));
-    c.EnableAnnotations();
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddCors(options =>
@@ -58,23 +57,36 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
-    options.UseSqlServer(envirFactory.GetEnvir().GetDbConnStr());
+    options.UseSqlServer(factory.GetEnvir().GetDbConnStr());
 });
-
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IStorageService>(provider => new ImgurService(envirFactory.GetEnvir().GetImgurClientID(),
-    envirFactory.GetEnvir().GetImgurClientSecret()));
+builder.Services.AddScoped<IStorageService>(provider => new ImgurService(factory.GetEnvir().GetImgurClientID(),
+    factory.GetEnvir().GetImgurClientSecret()));
+//redis singleton DI
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
-builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
+builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
+//加入EnvirFactory DI
+builder.Services.AddSingleton(provider => factory);
+//給dapper用的
+builder.Services.AddScoped<IDbConnection, SqlConnection>(serviceProvider => {
+    SqlConnection conn = new SqlConnection();
+    //指派連線字串
+    conn.ConnectionString = factory.GetEnvir().GetDbConnStr();
+    return conn;
+});
 
-
+// set port
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
 });
+
+
+
 
 var app = builder.Build();
 
@@ -93,12 +105,9 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint(
-        // url: 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
-        // name: 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
-        url: "/swagger/v1/swagger.json",
-        name: "Shopaholic.CMS api v1"
-    );
+    // 需配合 SwaggerDoc 的 name。 "/swagger/{SwaggerDoc name}/swagger.json"
+    // 用於 Swagger UI 右上角選擇不同版本的 SwaggerDocument 顯示名稱使用。
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopaholic.CMS api v1");
     c.RoutePrefix = "swagger";
 });
 

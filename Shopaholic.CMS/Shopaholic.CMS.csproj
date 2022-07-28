@@ -11,11 +11,13 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="appsettings-sample.json" />
+  </ItemGroup>
+
   
   <ItemGroup>
-    <PackageReference Include="HtmlSanitizer" Version="7.1.488" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,5 +26,7 @@
     <ProjectReference Include="..\Shopaholic.CMS.Model\Shopaholic.CMS.Model.csproj" />
     <ProjectReference Include="..\Shopaholic.Service\Shopaholic.Service.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

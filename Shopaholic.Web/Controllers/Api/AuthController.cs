@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
+using Shopaholic.Service.Model.Moels;
 using Shopaholic.Web.Model.Requests;
-using Shopaholic.Web.Model.Responses;
 using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers.Api
 {
-    
+
     public class AuthController : Controller
     {
         private readonly ILogger Logger;

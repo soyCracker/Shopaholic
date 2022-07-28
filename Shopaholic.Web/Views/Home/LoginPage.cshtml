@@ -4,7 +4,7 @@
 
 <div class="text-center">
     <h1 class="headline text-info">Login...</h1>
-    <h3><i class="fas fa-exclamation-triangle text-info"></i>即將跳轉</h3> 
+    <h3><i class="fas fa-exclamation-triangle text-info"></i>即將跳轉</h3>
     <p>成功登入將跳轉回首頁</p>
 </div>
 
@@ -28,20 +28,20 @@
                     ['PhotoURL']: user.photoURL,
                     ['IsAnonymous']: user.isAnonymous,
                 };
-                   
+
                 LoginPost(window.location.origin + "/Auth/api/Login", userData, idToken);
             }).catch(function (error) {
                 // Handle error
                 ToastUtil.ErrorAlert('登入失敗');
             });
         }
-        else{
+        else {
             FirebaseLogin();
         }
     });
 
-    function FirebaseLog(user){
-        console.log("user:"+user);
+    function FirebaseLog(user) {
+        console.log("user:" + user);
         console.log("Uid:" + user.uid);
         console.log("DisplayName:" + user.displayName);
         console.log("Email:" + user.email);
@@ -50,7 +50,7 @@
         console.log("IsAnonymous:" + user.isAnonymous);
     }
 
-    function FirebaseLogin(){
+    function FirebaseLogin() {
         provider.setCustomParameters({
             prompt: 'select_account'
         });
@@ -61,7 +61,7 @@
                 var token = result.credential.accessToken;
             }
             // The signed-in user info.
-            var user = result.user;           
+            var user = result.user;
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
@@ -76,27 +76,26 @@
     async function LoginPost(url, data, accessToken) {
 
         const myHeader = {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + accessToken
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
         };
 
         await axios.post(url, data, {
-                headers: myHeader
-            })
+            headers: myHeader
+        })
             .then(res => {
                 ToastUtil.InfoFire('登入中...');
-                if(res.data.Data)
-                {
-                    if(sessionStorage.getItem('LoginReturnUrl')){
+                if (res.data.Data) {
+                    if (sessionStorage.getItem('LoginReturnUrl')) {
                         location.href = sessionStorage.getItem('LoginReturnUrl');
                     }
-                    else{
+                    else {
                         location.href = window.location.origin;
-                    }                   
+                    }
                 }
             })
-            .catch(err => { 
-                console.log(err) 
+            .catch(err => {
+                console.log(err)
                 ToastUtil.ErrorAlert('登入失敗')
             })
     }
