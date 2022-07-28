@@ -12,8 +12,6 @@
     <title>Vue3 測試頁面</title>
 </head>
 <body>
-    <script src="https://unpkg.com/vue@3"></script>
-
     <div id="CommentApp" class="input-wrap row Comment">
         <label class="input-title col-lg-2 col-form-label">Test Input</label>
         <div class="col-lg-8">
@@ -26,17 +24,18 @@
         <button v-on:click="AddOne">test</button>
     </div>
 
-    <script>
+    <script src="~/bundle.js"></script>
+    <!--<script>
         const { createApp } = Vue
 
         let app = createApp({
-            data(){
+            data() {
                 return {
                     message: 5
                 };
             },
-            methods:{
-                AddOne(){
+            methods: {
+                AddOne() {
                     let self = this;
                     console.log("what!");
                     self.message++;
@@ -52,7 +51,7 @@
                 };
             }
         }).mount('#CommentApp')
-    </script>
+    </script>-->
 </body>
 </html>
 
