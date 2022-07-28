@@ -18,14 +18,16 @@ namespace Shopaholic.CMS.Common.Factory
         {
             string configPath = "";
             //windows 專案資料夾外，ex:GitRepo:/shopaholic.json
-            if (File.Exists(@"..\..\shopaholic.json"))
+            string[] winPath = { "..", "..", "shopaholic.json" };
+            string[] linuxPath = { "..", "shopaholic.json" };
+            if (File.Exists(Path.Combine(winPath)))
             {
-                configPath = @"..\..\shopaholic.json";
+                configPath = Path.Combine(winPath);
             }
             //ubuntu 部署資料夾外
-            else if (File.Exists(@"..\shopaholic.json"))
+            else if (File.Exists(Path.Combine(linuxPath)))
             {
-                configPath = @"..\shopaholic.json";
+                configPath = Path.Combine(linuxPath);
             }
             else
             {

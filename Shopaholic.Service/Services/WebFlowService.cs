@@ -1,7 +1,10 @@
-﻿using Shopaholic.Entity.Models;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using StackExchange.Redis;
+using System.Data;
 using System.Text.Json;
 
 namespace Shopaholic.Service.Services
@@ -12,11 +15,13 @@ namespace Shopaholic.Service.Services
         private readonly IDatabase redis;
         private readonly string productFlowTopRedisKey = "ProductFlowTop";
         private readonly string productOrderTopRedisKey = "ProductOrderTop";
+        private readonly IDbConnection conn;
 
-        public WebFlowService(ShopaholicContext dbContext, IConnectionMultiplexer connectionMultiplexer)
+        public WebFlowService(ShopaholicContext dbContext, IConnectionMultiplexer connectionMultiplexer, IDbConnection conn)
         {
             this.dbContext = dbContext;
             redis = connectionMultiplexer.GetDatabase();
+            this.conn = conn;
         }
 
         public void AddFlow(string ip, string enter, string email)
@@ -57,7 +62,7 @@ namespace Shopaholic.Service.Services
         }
 
         public List<FlowCountDTO> GetMonthFlow()
-        {
+        {        
             using (dbContext)
             {
                 int flowRange = -29;
@@ -67,20 +72,16 @@ namespace Shopaholic.Service.Services
                     monthDate.Add(DateTime.Now.Date.AddDays(i));
                 }
 
-                var flowInRange = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) && x.CreateTime < DateTime.Now.Date.AddDays(1))
-                    .Select(f => new
-                    {
-                        FlowId = f.Id,
-                        FlowDate = f.CreateTime.Date
-                    });
+                var flowInRange = dbContext.WebFlows.Where(x => x.CreateTime >= DateTime.Now.Date.AddDays(flowRange) &&
+                        x.CreateTime < DateTime.Now.Date.AddDays(1));
 
                 var flowPaddingDate = from m in monthDate
-                                      join w in flowInRange on m.Date equals w.FlowDate into sub
+                                      join w in flowInRange on m.Date equals w.CreateTime.Date into sub
                                       from w in sub.DefaultIfEmpty()
                                       select new
                                       {
                                           FlowDate = m.Date,
-                                          HasValue = w != null ? w.FlowId : 0
+                                          HasValue = w != null ? w.Id : 0
                                       };
 
                 var flowCountByDate = flowPaddingDate
@@ -89,7 +90,7 @@ namespace Shopaholic.Service.Services
                     {
                         Count = s.Where(e => e.HasValue != 0).Count(),
                         CreateTime = s.Key
-                    }).OrderBy(o => o.CreateTime.Date).ToList();
+                    }).OrderBy(o => o.CreateTime.Date);
 
                 List<FlowCountDTO> flowList = new List<FlowCountDTO>();
                 foreach (var item in flowCountByDate)

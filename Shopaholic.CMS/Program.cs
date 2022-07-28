@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
 using Shopaholic.Entity.Models;
@@ -7,6 +9,7 @@ using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using StackExchange.Redis;
+using System.Data;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -68,6 +71,14 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 //加入EnvirFactory DI
 builder.Services.AddSingleton(provider => factory);
+//給dapper用的
+builder.Services.AddScoped<IDbConnection, SqlConnection>(serviceProvider => {
+    SqlConnection conn = new SqlConnection();
+    //指派連線字串
+    conn.ConnectionString = factory.GetEnvir().GetDbConnStr();
+    return conn;
+});
+
 // set port
 builder.WebHost.ConfigureKestrel(options =>
 {
