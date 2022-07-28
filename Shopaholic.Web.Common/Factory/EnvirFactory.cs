@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Common.Exceptions;
 using Shopaholic.Web.Common.Environment;
-using Shopaholic.Web.Common.Interface;
 
 namespace Shopaholic.Web.Common.Factory
 {

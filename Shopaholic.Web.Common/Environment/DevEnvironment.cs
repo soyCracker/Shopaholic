@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Shopaholic.Web.Common.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shopaholic.Service.Common.Environment;
 
 namespace Shopaholic.Web.Common.Environment
 {
@@ -90,6 +85,16 @@ namespace Shopaholic.Web.Common.Environment
         public string GetLoginUrl()
         {
             return configuration.GetValue<string>("LoginUrl");
+        }
+
+        public string GetImgurClientID()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetImgurClientSecret()
+        {
+            throw new NotImplementedException();
         }
     }
 }

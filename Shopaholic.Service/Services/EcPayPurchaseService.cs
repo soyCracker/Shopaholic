@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Constants;
+using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Util.Utilities;
-using Shopaholic.Web.Common.Factory;
 using Shopaholic.Web.Model.Requests;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,17 +24,19 @@ namespace Shopaholic.Service.Services
         private readonly string payConfirmReturnPage;
         private readonly string merchantID;
 
-        public EcPayPurchaseService(ILogger<EcPayPurchaseService> logger, ShopaholicContext dbContext, EnvirFactory envirFactory, 
-            IHttpClientFactory httpClientFactory)
+        public PurchaseType PType { get; } = PurchaseType.EcPay;
+
+        public EcPayPurchaseService(ILogger<EcPayPurchaseService> logger, ShopaholicContext dbContext, IHttpClientFactory httpClientFactory,
+            IEnvironment envir)
         {
             this.dbContext = dbContext;
             this.logger = logger;
-            orderIdCreateApi = envirFactory.GetEnvir().GetOrderIdCreateApi();
-            ecpayApi = envirFactory.GetEnvir().GetEcPayApi();
-            payConfirmApi = envirFactory.GetEnvir().GetEcPayConfirmApi();
-            payConfirmReturnPage = envirFactory.GetEnvir().GetPayConfirmReturnPage();
             this.httpClientFactory = httpClientFactory;
-            merchantID = envirFactory.GetEnvir().GetEcPayMerchantID();
+            orderIdCreateApi = envir.GetOrderIdCreateApi();
+            ecpayApi = envir.GetEcPayApi();
+            payConfirmApi = envir.GetEcPayConfirmApi();
+            payConfirmReturnPage = envir.GetPayConfirmReturnPage();
+            merchantID = envir.GetEcPayMerchantID();
         }
 
         public async Task<string> CreateOrder(PurchaseOrderCreateReq req)
@@ -42,15 +44,15 @@ namespace Shopaholic.Service.Services
             using (dbContext)
             {
                 req.OrderTypeCode = OrderTypeCode.CREDIT_CARD;
-                var customer = dbContext.CustomerAccounts.SingleOrDefault(x => x.Email==req.Email);
-                if(customer!=null)
+                var customer = dbContext.CustomerAccounts.SingleOrDefault(x => x.Email == req.Email);
+                if (customer != null)
                 {
                     req.UserId = customer.AccountId;
-                    var carts = dbContext.ShoppingCarts.Where(x => x.AccountId==req.UserId).ToList();
+                    var carts = dbContext.ShoppingCarts.Where(x => x.AccountId == req.UserId).ToList();
                     List<PurchaseProductModel> ProductList = new List<PurchaseProductModel>();
                     foreach (var cart in carts)
                     {
-                        var product = dbContext.Products.SingleOrDefault(p => p.Id==cart.ProductId);
+                        var product = dbContext.Products.SingleOrDefault(p => p.Id == cart.ProductId);
                         ProductList.Add(new PurchaseProductModel
                         {
                             ProductId = cart.ProductId,
@@ -91,9 +93,9 @@ namespace Shopaholic.Service.Services
             string itemName = "";
             foreach (var detail in orderDetails)
             {
-                var product = dbContext.Products.SingleOrDefault(x => x.Id==detail.ProductId);
-                totalPrice+=detail.Quantity*detail.CurrentPrice;
-                itemName+=product.Name + " x" + detail.Quantity + "#";
+                var product = dbContext.Products.SingleOrDefault(x => x.Id == detail.ProductId);
+                totalPrice += detail.Quantity * detail.CurrentPrice;
+                itemName += product.Name + " x" + detail.Quantity + "#";
             }
             var ecpayReq = new Dictionary<string, string>
             {
@@ -144,17 +146,17 @@ namespace Shopaholic.Service.Services
                     result.Append(hash[i].ToString("X2"));
                 }
                 return result.ToString();
-            }            
+            }
         }
 
         public bool PayConfirm<T>(T req)
         {
             logger.LogError("EcPayPurchaseService PayConfirm()");
             EcPayConfirmReq ecPayConfirmReq = req as EcPayConfirmReq;
-            using(dbContext)
+            using (dbContext)
             {
-                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId==ecPayConfirmReq.MerchantTradeNo);
-                if(order != null)
+                var order = dbContext.OrderHeaders.SingleOrDefault(x => x.OrderId == ecPayConfirmReq.MerchantTradeNo);
+                if (order != null)
                 {
                     order.StateCode = OrderStateCode.PAID;
                     order.IsPaid = true;
@@ -165,6 +167,6 @@ namespace Shopaholic.Service.Services
             return false;
         }
 
-        
+
     }
 }

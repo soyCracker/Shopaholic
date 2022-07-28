@@ -13,17 +13,17 @@ namespace Shopaholic.Web.Controllers
     public class OrderController : Controller
     {
         private readonly ILogger Logger;
-        private readonly LinePayPurchaseService linePayPurchaseService;
-        private readonly EcPayPurchaseService ecPayPurchaseService;
+        private readonly IPurchaseService linePayPurchaseService;
+        private readonly IPurchaseService ecPayPurchaseService;
         private readonly IOrderService orderService;
 
         public OrderController(ILogger<ProductController> logger, LinePayPurchaseService linePayPurchaseService,
-            IOrderService orderService, EcPayPurchaseService ecPayPurchaseService)
+            IOrderService orderService, EcPayPurchaseService ecPayPurchaseService, IEnumerable<IPurchaseService> purchaseServices)
         {
             this.Logger = logger;
-            this.linePayPurchaseService = linePayPurchaseService;
+            this.linePayPurchaseService = purchaseServices.Single(x => x.PType == PurchaseType.LinePay);           
+            this.ecPayPurchaseService = purchaseServices.Single(x => x.PType == PurchaseType.EcPay);
             this.orderService = orderService;
-            this.ecPayPurchaseService = ecPayPurchaseService;
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]

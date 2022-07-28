@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Shopaholic.Web.Common.Interface
+﻿namespace Shopaholic.Service.Common.Environment
 {
     public interface IEnvironment
     {
@@ -37,5 +31,9 @@ namespace Shopaholic.Web.Common.Interface
         string GetFirebaseUrl();
 
         string GetLoginUrl();
+
+        string GetImgurClientID();
+
+        string GetImgurClientSecret();
     }
 }

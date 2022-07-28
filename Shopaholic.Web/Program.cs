@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
+using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
@@ -28,14 +29,14 @@ builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
-builder.Services.AddScoped<LinePayPurchaseService>();
-builder.Services.AddScoped<EcPayPurchaseService>();
+builder.Services.AddScoped<IPopularService, PopularService>();
+builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
+builder.Services.AddScoped<IPurchaseService, EcPayPurchaseService>();
+builder.Services.AddSingleton(provider => factory.GetEnvir());
 //redis singleton DI
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
 //自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
-//加入EnvirFactory DI
-builder.Services.AddSingleton(provider => factory);
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
     options.UseSqlServer(factory.GetEnvir().GetDbConnStr(),

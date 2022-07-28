@@ -11,13 +11,13 @@ namespace Shopaholic.Web.Controllers
     {
         private readonly ILogger<HomeController> logger;
         private readonly ICategoryService categoryService;
-        private readonly IWebFlowService flowService;
+        private readonly IPopularService popularService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IWebFlowService flowService)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService)
         {
             logger = logger;
             this.categoryService = categoryService;
-            this.flowService = flowService;
+            this.popularService = popularService;
         }
 
         public IActionResult Index()
@@ -71,7 +71,7 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<List<ProductTopDTO>> GetFlowTopFive()
         {
-            List<ProductTopDTO> res = flowService.GetProductByMonthFlowTop();
+            List<ProductTopDTO> res = popularService.GetProductByMonthFlowTop();
             return new MessageModel<List<ProductTopDTO>>
             {
                 Success = res != null ? true : false,
@@ -87,7 +87,7 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<List<ProductTopDTO>> GetOrderTopFive()
         {
-            List<ProductTopDTO> res = flowService.GetProductByMonthOrderTop();
+            List<ProductTopDTO> res = popularService.GetProductByMonthOrderTop();
             return new MessageModel<List<ProductTopDTO>>
             {
                 Success = res != null ? true : false,
