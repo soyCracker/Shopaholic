@@ -13353,7 +13353,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 [class*="sidebar-light-"] {
-  background-color: #84cccd;
+  background-color: #bbded4;
 }
 
 [class*="sidebar-light-"] .user-panel a:hover {

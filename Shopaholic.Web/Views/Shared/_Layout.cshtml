@@ -104,6 +104,11 @@
                 </li>
 
                 <li class="nav-item" v-if="!isLogin">
+                    <a asp-controller="Home" asp-action="MsLogin" class="nav-link">
+                        <i class="fa-brands fa-windows">登入</i>
+                    </a>
+                </li>
+                <li class="nav-item" v-if="!isLogin">
                     <a asp-controller="Home" asp-action="LoginPage" class="nav-link">
                         <i class="fa-brands fa-google">登入</i>
                     </a>
