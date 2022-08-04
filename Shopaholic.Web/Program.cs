@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
-using Shopaholic.Service.Common.Environment;
-using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Factory;
@@ -44,28 +40,13 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
-// Firebase Authentication
 builder.Services
-    .AddAuthentication() //JwtBearerDefaults.AuthenticationScheme
-    .AddJwtBearer("Firebase", option =>
+    .AddAuthentication(options =>
     {
-        option.Authority = factory.GetEnvir().GetFirebaseUrl();
-        option.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
-            ValidateAudience = true,
-            ValidAudience = factory.GetEnvir().GetFirebaseID(),
-            ValidateLifetime = true
-        };
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = "Microsoft";
     })
-    .AddMicrosoftAccount(option =>
-    {
-        option.ClientId = factory.GetEnvir().GetMsClientId();
-        option.ClientSecret = factory.GetEnvir().GetMsClientSecret();
-        option.CallbackPath = "/home/signin-microsoft";
-    })
-    // 網站本身的Cookie-based Authentication
+    //網站本身的Cookie - based Authentication
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.Events.OnRedirectToLogin = context =>
@@ -82,14 +63,25 @@ builder.Services
         options.ExpireTimeSpan = TimeSpan.FromDays(1);
         //登入後過期時間內没有進行操作就會過期;false有操作還是會過期
         options.SlidingExpiration = true;
+    })
+    .AddJwtBearer("Firebase", option =>
+    {
+        option.Authority = factory.GetEnvir().GetFirebaseUrl();
+        option.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
+            ValidateAudience = true,
+            ValidAudience = factory.GetEnvir().GetFirebaseID(),
+            ValidateLifetime = true
+        };
+    })
+    .AddMicrosoftAccount("Microsoft", option =>
+    {
+        option.ClientId = factory.GetEnvir().GetMsClientId();
+        option.ClientSecret = factory.GetEnvir().GetMsClientSecret();
+        option.CallbackPath = "/auth/signin-microsoft";
     });
-//builder.Services.AddAuthorization(option =>
-//{
-//    option.DefaultPolicy = new AuthorizationPolicyBuilder()
-//            .RequireAuthenticatedUser()
-//            .AddAuthenticationSchemes("Firebase", "Microsoft")
-//            .Build();
-//});
 
 
 // ASP.NET Data Protection，儲存於redis，解決load balancer的Cookie-based Auth跨server問題
@@ -118,9 +110,6 @@ builder.WebHost.ConfigureKestrel(options =>
     //options.ListenAnyIP(80);
 });
 
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -130,12 +119,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// 取得IP
+// 搭配proxy server和load balancer，header轉送
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor |

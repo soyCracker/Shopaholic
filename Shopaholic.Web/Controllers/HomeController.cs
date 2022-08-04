@@ -97,17 +97,9 @@ namespace Shopaholic.Web.Controllers
             };
         }
 
-        public IActionResult MsLogin()
+        public async void MsLogin()
         {
-            return Challenge("Microsoft");
-            //return Challenge(new AuthenticationProperties { RedirectUri = "https://tw.yahoo.com" }, "MS");
-        }
-
-        [Route("[controller]/signin-microsoft")]
-        public IActionResult MsSignInSuccess()
-        {
-            return RedirectToAction("https://yahoo.com.tw");
-            //return Ok(new { Value = true, ErrorCode = 0, Res = "Good Auth" });
+            await HttpContext.ChallengeAsync("Microsoft");
         }
     }
 }
