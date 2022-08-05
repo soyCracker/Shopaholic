@@ -95,9 +95,6 @@
             {
                 GetProductFlowTop: function () {
                     var self = this;
-
-                    ToastUtil.InfoFire('處理中')
-
                     axios.post(self.getProductFlowTopApi)
                         .then(function (result) {
                             if (result.data.Success) {
@@ -108,9 +105,6 @@
 
                 GetProductOrderTop: function () {
                     var self = this;
-
-                    ToastUtil.InfoFire('處理中')
-
                     axios.post(self.getProductOrderTopApi)
                         .then(function (result) {
                             if (result.data.Success) {
