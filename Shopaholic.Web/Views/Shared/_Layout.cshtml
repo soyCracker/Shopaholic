@@ -137,7 +137,7 @@
             <a asp-controller="Home" asp-action="Index" class="brand-link">
                 <!--<i class="fa-brands fa-shopify"></i>-->
                 <img src="~/dist/img/Shopaholic-logo.png" alt="Shopaholic-logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Shopaholic.Web</span>
+                <span class="brand-text font-weight-bold">Shopaholic.Web</span>
             </a>
 
             <!-- Sidebar -->
@@ -147,15 +147,27 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                             with font-awesome or any other icon font library -->
-
-                        <li class="nav-item" v-for="(item) in categoryList" v-bind:key=item.Id>
-                            <a class="nav-link" v-bind:href="'/Product/Index/?CategoryId='+item.Id">
-                                <i class="fa-solid fa-circle-dot"></i>
-                                <p>
-                                    {{ item.Name }}
-                                </p>
-                            </a>
-                        </li>
+                        <div v-if="categoryList">
+                            <li class="nav-item" v-for="(item) in categoryList" v-bind:key=item.Id>
+                                <a class="nav-link" v-bind:href="'/Product/Index/?CategoryId='+item.Id">
+                                    <i class="fa-brands fa-envira"></i>
+                                    <p class="font-weight-bold">
+                                        {{ item.Name }}
+                                    </p>
+                                </a>
+                            </li>
+                        </div>
+                        <div v-else>
+                            <div class="spinner-grow text-secondary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <div class="spinner-grow text-secondary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <div class="spinner-grow text-secondary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
 
                     </ul>
                 </nav>
@@ -261,7 +273,7 @@
             data:
             {
                 getCategoryListApi: baseurl + "/Home/api/GetCategoryList",
-                categoryList: {},
+                categoryList: null,
             },
             mounted: function () {
                 var self = this;
@@ -271,8 +283,6 @@
             {
                 InitUI: function () {
                     var self = this;
-
-                    //ToastUtil.InfoFire('處理中')
 
                     axios.post(self.getCategoryListApi)
                         .then(function (result) {
