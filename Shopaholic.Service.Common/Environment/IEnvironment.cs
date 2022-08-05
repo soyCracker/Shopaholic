@@ -21,5 +21,7 @@
         string GetImgurClientSecret();
         string FrontWebUrl();
         string CMSWebUrl();
+        string GetMsClientId();
+        string GetMsClientSecret();
     }
 }

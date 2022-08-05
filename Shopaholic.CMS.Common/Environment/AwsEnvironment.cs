@@ -92,6 +92,16 @@ namespace Shopaholic.CMS.Common.Environment
             throw new NotImplementedException();
         }
 
+        public string GetMsClientId()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetMsClientSecret()
+        {
+            throw new NotImplementedException();
+        }
+
         public string GetOrderIdCreateApi()
         {
             throw new NotImplementedException();

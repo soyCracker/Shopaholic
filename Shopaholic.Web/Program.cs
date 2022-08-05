@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+ï»¿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
-using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using Shopaholic.Web.Common.Factory;
@@ -17,7 +15,7 @@ using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//¨M©w°õ¦æÀô¹Ò
+//æ±ºå®šåŸ·è¡Œç’°å¢ƒ
 EnvirFactory factory = new EnvirFactory();
 
 //IHttpClientFactory
@@ -34,7 +32,7 @@ builder.Services.AddScoped<IPurchaseService, EcPayPurchaseService>();
 builder.Services.AddSingleton(provider => factory.GetEnvir());
 //redis singleton DI
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
-//¦Û­q HtmlEcoder ±N°ò¥»©Ô¤B¦r¤¸»P¤¤¤éÁú¦r¤¸¯Ç¤J¤¹³\½d³ò¤£°µÂà½X
+//è‡ªè¨‚ HtmlEcoder å°‡åŸºæœ¬æ‹‰ä¸å­—å…ƒèˆ‡ä¸­æ—¥éŸ“å­—å…ƒç´å…¥å…è¨±ç¯„åœä¸åšè½‰ç¢¼
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
 builder.Services.AddDbContext<ShopaholicContext>(options =>
 {
@@ -42,26 +40,18 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
-// Firebase Authentication
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddAuthentication(options =>
     {
-        options.Authority = factory.GetEnvir().GetFirebaseUrl();
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
-            ValidateAudience = true,
-            ValidAudience = factory.GetEnvir().GetFirebaseID(),
-            ValidateLifetime = true
-        };
-        // ºô¯¸¥»¨­ªºCookie-based Authentication
-    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = "Microsoft";
+    })
+    //ç¶²ç«™æœ¬èº«çš„Cookie - based Authentication
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.Events.OnRedirectToLogin = context =>
         {
-            //ÅıMVC¤ÎAPIÅçÃÒ¥¢±Ñ®É¦³¤£¦Pªº¦æ¬°
+            //è®“MVCåŠAPIé©—è­‰å¤±æ•—æ™‚æœ‰ä¸åŒçš„è¡Œç‚º
             if (Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
@@ -70,9 +60,31 @@ builder.Services
             context.Response.Redirect(new PathString(factory.GetEnvir().GetLoginUrl()));
             return Task.CompletedTask;
         };
+        options.ExpireTimeSpan = TimeSpan.FromDays(1);
+        //ç™»å…¥å¾ŒéæœŸæ™‚é–“å…§æ²¡æœ‰é€²è¡Œæ“ä½œå°±æœƒéæœŸ;falseæœ‰æ“ä½œé‚„æ˜¯æœƒéæœŸ
+        options.SlidingExpiration = true;
+    })
+    .AddJwtBearer("Firebase", option =>
+    {
+        option.Authority = factory.GetEnvir().GetFirebaseUrl();
+        option.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
+            ValidateAudience = true,
+            ValidAudience = factory.GetEnvir().GetFirebaseID(),
+            ValidateLifetime = true
+        };
+    })
+    .AddMicrosoftAccount("Microsoft", option =>
+    {
+        option.ClientId = factory.GetEnvir().GetMsClientId();
+        option.ClientSecret = factory.GetEnvir().GetMsClientSecret();
+        option.CallbackPath = "/auth/signin-microsoft";
     });
 
-// ASP.NET Data Protection¡AÀx¦s©óredis¡A¸Ñ¨Mload balancerªºCookie-based Auth¸óserver°İÃD
+
+// ASP.NET Data Protectionï¼Œå„²å­˜æ–¼redisï¼Œè§£æ±ºload balancerçš„Cookie-based Authè·¨serverå•é¡Œ
 using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
 {
     // nuget Microsoft.AspNetCore.DataProtection.StackExchangeRedis
@@ -84,22 +96,19 @@ using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider()
 builder.Services.AddMvc()
     .AddJsonOptions(opts =>
     {
-        //¨ú®øjson¤p¾m®p¦¡©R¦Wªk
+        //å–æ¶ˆjsonå°é§å³°å¼å‘½åæ³•
         opts.JsonSerializerOptions.PropertyNamingPolicy = null;
-        //¤¹³\°ò¥»©Ô¤B­^¤å¤Î¤¤¤éÁú¤å¦rºû«ù­ì¦r¤¸
+        //å…è¨±åŸºæœ¬æ‹‰ä¸è‹±æ–‡åŠä¸­æ—¥éŸ“æ–‡å­—ç¶­æŒåŸå­—å…ƒ
         opts.JsonSerializerOptions.Encoder =
             JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
     });
 
-// ³]©wPORT
+// è¨­å®šPORT
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12970); // to listen for incoming http connection on port 5001
     //options.ListenAnyIP(80);
 });
-
-
-
 
 var app = builder.Build();
 
@@ -110,12 +119,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// ¨ú±oIP
+// æ­é…proxy serverå’Œload balancerï¼Œheaderè½‰é€
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor |

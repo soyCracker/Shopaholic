@@ -106,5 +106,15 @@ namespace Shopaholic.Web.Common.Environment
         {
             return configuration.GetValue<string>("Shopaholic_Url:CMS");
         }
+
+        public string GetMsClientId()
+        {
+            return configuration.GetValue<string>("MS_Auth:PRD:ClientID");
+        }
+
+        public string GetMsClientSecret()
+        {
+            return configuration.GetValue<string>("MS_Auth:PRD:ClientSecret");
+        }
     }
 }

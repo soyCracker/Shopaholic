@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Common.Environment;
@@ -103,6 +104,11 @@ namespace Shopaholic.Web.Controllers
                 Msg = res != null ? "取得商品購買TOP5" : "Fail",
                 Data = res
             };
+        }
+
+        public async void MsLogin()
+        {
+            await HttpContext.ChallengeAsync("Microsoft");
         }
     }
 }
