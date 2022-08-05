@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
@@ -8,7 +7,6 @@ using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using StackExchange.Redis;
-using System.Data;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
