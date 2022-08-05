@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using System.Security.Claims;
@@ -12,12 +13,15 @@ namespace Shopaholic.Web.Controllers
         private readonly ILogger<HomeController> logger;
         private readonly ICategoryService categoryService;
         private readonly IPopularService popularService;
+        private readonly IEnvironment envir;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService, 
+            IEnvironment envir)
         {
             logger = logger;
             this.categoryService = categoryService;
             this.popularService = popularService;
+            this.envir = envir;
         }
 
         public IActionResult Index()
@@ -38,6 +42,11 @@ namespace Shopaholic.Web.Controllers
         public IActionResult LoginPage()
         {
             return View();
+        }
+
+        public IActionResult GoToCMS()
+        {
+            return Redirect(envir.CMSWebUrl());
         }
 
         /// <summary>

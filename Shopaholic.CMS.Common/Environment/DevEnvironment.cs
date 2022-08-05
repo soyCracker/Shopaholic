@@ -12,6 +12,16 @@ namespace Shopaholic.CMS.Common.Environment
             this.configuration = configuration;
         }
 
+        public string CMSWebUrl()
+        {
+            return configuration.GetValue<string>("Shopaholic_Url:CMS");
+        }
+
+        public string FrontWebUrl()
+        {
+            return configuration.GetValue<string>("Shopaholic_Url:Front");
+        }
+
         public string GetDbConnStr()
         {
             return configuration.GetConnectionString("DEV");

@@ -33,14 +33,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
 // 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
 builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
-//給dapper用的
-builder.Services.AddScoped<IDbConnection, SqlConnection>(serviceProvider =>
-{
-    SqlConnection conn = new SqlConnection();
-    //指派連線字串
-    conn.ConnectionString = factory.GetEnvir().GetDbConnStr();
-    return conn;
-});
+builder.Services.AddSingleton(provider => factory.GetEnvir());
 
 // Add services to the container.
 builder.Services.AddMvc()

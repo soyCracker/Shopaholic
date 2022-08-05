@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-hant">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +9,6 @@
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
@@ -50,35 +48,8 @@
                     <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item d-sm-inline-block">
-                    <a class="nav-link" href="https://ec2-3-114-141-160.ap-northeast-1.compute.amazonaws.com">前台</a>
+                    <a asp-controller="Home" asp-action="GoToFrontWeb" class="nav-link">前台</a>
                 </li>
-            </ul>
-
-            <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
-                <!-- Navbar Search -->
-                <!--
-                <li class="nav-item">
-                  <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                    <i class="fas fa-search"></i>
-                  </a>
-                  <div class="navbar-search-block">
-                    <form class="form-inline">
-                      <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                          <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                          </button>
-                          <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                            <i class="fas fa-times"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </li>
-                -->
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -87,7 +58,7 @@
             <!-- Brand Logo -->
             <a asp-controller="Home" asp-action="Index" class="brand-link">
                 <img src="~/dist/img/Shopaholic-logo.png" alt="Shopaholic-logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Shopaholic.CMS</span>
+                <span class="brand-text font-weight-bold">Shopaholic.CMS</span>
             </a>
 
             <!-- Sidebar -->
@@ -98,7 +69,7 @@
                         <img src="~/dist/img/me.png" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">User Yu</a> <!--TODO-->
+                        <a href="#" class="d-block font-weight-bold">User Yu</a> <!--TODO-->
                     </div>
                 </div>
 
@@ -110,8 +81,8 @@
 
                         <li class="nav-item">
                             <a asp-controller="Category" asp-action="Index" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
+                                <i class="fa-solid fa-list"></i>
+                                <p font-weight-bold>
                                     類別
                                 </p>
                             </a>
@@ -119,8 +90,8 @@
 
                         <li class="nav-item">
                             <a asp-controller="Product" asp-action="Index" class="nav-link">
-                                <i class="nav-icon far fa-plus-square"></i>
-                                <p>
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <p font-weight-bold>
                                     商品
                                 </p>
                             </a>
@@ -128,8 +99,8 @@
 
                         <li class="nav-item">
                             <a asp-controller="Order" asp-action="Index" class="nav-link">
-                                <i class="nav-icon fas fa-copy"></i>
-                                <p>
+                                <i class="fa-solid fa-file-pen"></i>
+                                <p font-weight-bold>
                                     訂單
                                 </p>
                             </a>
@@ -151,7 +122,7 @@
         <!-- /.content-wrapper -->
 
         <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2021 Shopaholic</strong>
+            <strong>Copyright &copy; 2021 Shopaholic</strong>
             All rights reserved.
         </footer>
 
@@ -191,6 +162,8 @@
     <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/dist/js/adminlte.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/plugins/sweetalert2/sweetalert2.all.min.js"></script>
 
     <!--          My js            -->
     <!-- Vue -->
@@ -201,16 +174,18 @@
     <script src="https://unpkg.com/vue-easy-lightbox@vue2/dist/vue-easy-lightbox.umd.min.js"></script>
     <!-- 表單驗證 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.1/dist/sweetalert2.all.min.js"></script>
-    <script src="~/js/ToastUtil.js"></script>
     <!-- vue-chartjs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script src="~/js/vue-chartjs.min.js"></script>
+    <!-- Font Awesome   -->
+    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>
+
     <!-- 雜 -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/ExceptUtil.js"></script>
     <script src="~/js/PageUtil.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/js/ToastUtil.js"></script>
 
     <script>
         var baseurl = window.location.origin;

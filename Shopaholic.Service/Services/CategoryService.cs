@@ -2,16 +2,21 @@
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
+using StackExchange.Redis;
+using System.Text.Json;
 
 namespace Shopaholic.Service.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly ShopaholicContext dbContext;
+        private readonly IDatabase redis;
+        private readonly string categoryListRedisKey = "CategoryList";
 
-        public CategoryService(ShopaholicContext dbContext)
+        public CategoryService(ShopaholicContext dbContext, IConnectionMultiplexer connectionMultiplexer)
         {
             this.dbContext = dbContext;
+            redis = connectionMultiplexer.GetDatabase();
         }
 
         public bool AddCategory(string name)
@@ -27,6 +32,8 @@ namespace Shopaholic.Service.Services
                     };
                     dbContext.Categories.Add(category);
                     dbContext.SaveChanges();
+                    //更新資料後清空redis key item
+                    redis.KeyDelete(categoryListRedisKey);
                     return true;
                 }
                 return false;
@@ -43,6 +50,8 @@ namespace Shopaholic.Service.Services
                     category.IsDelete = true;
                     category.UpdateTime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     dbContext.SaveChanges();
+                    //更新資料後清空redis key item
+                    redis.KeyDelete(categoryListRedisKey);
                     return true;
                 }
                 return false;
@@ -51,21 +60,14 @@ namespace Shopaholic.Service.Services
 
         public List<CategoryDTO> GetCategoryList()
         {
-            using (dbContext)
+            var redisData = GetCategoryListFromRedis(categoryListRedisKey);
+            if (redisData != null)
             {
-                List<Category> categoryList = dbContext.Categories.Where(x => x.IsDelete == false).ToList();
-                List<CategoryDTO> categoryDTOList = new List<CategoryDTO>();
-                foreach(Category category in categoryList)
-                {
-                    CategoryDTO categoryDTO = new CategoryDTO
-                    {
-                        Name = category.Name,
-                        Id = category.Id
-                    };
-                    categoryDTOList.Add(categoryDTO);
-                }
-                return categoryDTOList;
+                return redisData;
             }
+            var dbData = GetCategoryListFromDB();
+            SaveCategoryListToRedis(categoryListRedisKey, dbData);
+            return dbData;
         }
 
         public CategoryDTO GetCategory(int id)
@@ -96,6 +98,8 @@ namespace Shopaholic.Service.Services
                     origin.Name = name;
                     origin.UpdateTime = TimeUtil.GetUtcDateTime().UtcDateTime;
                     dbContext.SaveChanges();
+                    //更新資料後清空redis key item
+                    redis.KeyDelete(categoryListRedisKey);
                     return true;
                 }
                 return false;
@@ -118,6 +122,42 @@ namespace Shopaholic.Service.Services
                 }
                 return null;
             }
+        }
+
+        private List<CategoryDTO> GetCategoryListFromDB()
+        {
+            using (dbContext)
+            {
+                List<Category> categoryList = dbContext.Categories.Where(x => x.IsDelete == false).ToList();
+                List<CategoryDTO> categoryDTOList = new List<CategoryDTO>();
+                foreach (Category category in categoryList)
+                {
+                    CategoryDTO categoryDTO = new CategoryDTO
+                    {
+                        Name = category.Name,
+                        Id = category.Id
+                    };
+                    categoryDTOList.Add(categoryDTO);
+                }
+                return categoryDTOList;
+            }
+        }
+
+        private void SaveCategoryListToRedis(string redisKey, List<CategoryDTO> categoryDTOs)
+        {
+            string str = JsonSerializer.Serialize(categoryDTOs);
+            TimeSpan expire = TimeSpan.FromMinutes(5);
+            redis.StringSet(redisKey, str, expire);
+        }
+
+        private List<CategoryDTO> GetCategoryListFromRedis(string redisKey)
+        {
+            if (redis.KeyExists(redisKey))
+            {
+                string str = redis.StringGet(redisKey);
+                return JsonSerializer.Deserialize<List<CategoryDTO>>(str);
+            }
+            return null;
         }
     }
 }
