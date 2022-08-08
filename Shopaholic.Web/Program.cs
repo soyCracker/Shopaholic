@@ -16,6 +16,17 @@ using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add MVC一定要放在前面，不然放到雲端會無法載入css之類的東西
+builder.Services.AddMvc()
+    .AddJsonOptions(opts =>
+    {
+        //取消json小駝峰式命名法
+        opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+        //允許基本拉丁英文及中日韓文字維持原字元
+        opts.JsonSerializerOptions.Encoder =
+            JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
+    });
+
 //決定執行環境
 EnvirFactory factory = new EnvirFactory();
 
@@ -84,7 +95,6 @@ builder.Services
         option.CallbackPath = "/auth/signin-microsoft";
     });
 
-
 // ASP.NET Data Protection，儲存於redis，解決load balancer的Cookie-based Auth跨server問題
 using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
 {
@@ -92,17 +102,6 @@ using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider()
     builder.Services.AddDataProtection()
         .PersistKeysToStackExchangeRedis(serviceProvider.GetRequiredService<IConnectionMultiplexer>(), "DataProtectionKeys");
 }
-
-// Add services to the container.
-builder.Services.AddMvc()
-    .AddJsonOptions(opts =>
-    {
-        //取消json小駝峰式命名法
-        opts.JsonSerializerOptions.PropertyNamingPolicy = null;
-        //允許基本拉丁英文及中日韓文字維持原字元
-        opts.JsonSerializerOptions.Encoder =
-            JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
-    });
 
 // 設定PORT
 builder.WebHost.ConfigureKestrel(options =>
