@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Shopaholic.Web.Common.Interface;
+using Shopaholic.Service.Common.Environment;
 
 namespace Shopaholic.Web.Common.Environment
 {
@@ -85,6 +85,36 @@ namespace Shopaholic.Web.Common.Environment
         public string GetLoginUrl()
         {
             return configuration.GetValue<string>("LoginUrl");
+        }
+
+        public string GetImgurClientID()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetImgurClientSecret()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string FrontWebUrl()
+        {
+            return configuration.GetValue<string>("Shopaholic_Url:Front");
+        }
+
+        public string CMSWebUrl()
+        {
+            return configuration.GetValue<string>("Shopaholic_Url:CMS");
+        }
+
+        public string GetMsClientId()
+        {
+            return configuration.GetValue<string>("MS_Auth:PRD:ClientID");
+        }
+
+        public string GetMsClientSecret()
+        {
+            return configuration.GetValue<string>("MS_Auth:PRD:ClientSecret");
         }
     }
 }

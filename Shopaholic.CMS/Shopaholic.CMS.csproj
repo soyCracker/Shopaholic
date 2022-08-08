@@ -12,11 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="appsettings-sample.json" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

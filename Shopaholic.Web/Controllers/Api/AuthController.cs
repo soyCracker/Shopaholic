@@ -24,7 +24,7 @@ namespace Shopaholic.Web.Controllers.Api
         [Authorize]
         [Route("[controller]/api/[action]")]
         [HttpPost]
-        public async Task<MessageModel<bool>> Login([FromBody]AuthLoginReq req)
+        public async Task<MessageModel<bool>> Login([FromBody] AuthLoginReq req)
         {
             var claims = new List<Claim>
             {
@@ -36,7 +36,7 @@ namespace Shopaholic.Web.Controllers.Api
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
             var isAuth = HttpContext.User.Identity.IsAuthenticated;
 
-            authService.UpdateUser(req.AccessToken, req.Uid, req.DisplayName, req.Email, 
+            authService.UpdateUser(req.AccessToken, req.Uid, req.DisplayName, req.Email,
                 req.EmailVerified, req.PhotoURL, req.IsAnonymous);
 
             return new MessageModel<bool>
@@ -86,6 +86,20 @@ namespace Shopaholic.Web.Controllers.Api
                 Msg = "確認帳號有效性",
                 Data = res
             };
+        }
+
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Route("[controller]/signin-microsoft")]
+        public async Task<IActionResult> MsSignIn()
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, "test"),
+                new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, "Microsoft");
+            await HttpContext.SignInAsync("Microsoft", new ClaimsPrincipal(claimsIdentity));
+            return RedirectToAction("/home/index");
         }
     }
 }

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Shopaholic.CMS.Common.Factory;
 using Shopaholic.Entity.Models;
@@ -9,17 +7,13 @@ using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
 using StackExchange.Redis;
-using System.Data;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 切換執行環境
-EnvirFactory factory = new EnvirFactory();
-
-// Add services to the container.
+// Add MVC一定要放在前面，不然放到雲端會無法載入css之類的東西
 builder.Services.AddMvc()
     .AddJsonOptions(opts =>
     {
@@ -29,6 +23,26 @@ builder.Services.AddMvc()
         opts.JsonSerializerOptions.Encoder =
             JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs);
     });
+
+// 切換執行環境
+EnvirFactory factory = new EnvirFactory();
+
+builder.Services.AddDbContext<ShopaholicContext>(options =>
+{
+    options.UseSqlServer(factory.GetEnvir().GetDbConnStr());
+});
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IStorageService>(provider => new ImgurService(factory.GetEnvir().GetImgurClientID(),
+    factory.GetEnvir().GetImgurClientSecret()));
+builder.Services.AddScoped<IPopularService, PopularService>();
+builder.Services.AddScoped<IWebFlowService, WebFlowService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+//redis singleton DI
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
+// 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
+builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
+builder.Services.AddSingleton(provider => factory.GetEnvir());
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -55,38 +69,11 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.Services.AddDbContext<ShopaholicContext>(options =>
-{
-    options.UseSqlServer(factory.GetEnvir().GetDbConnStr());
-});
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IStorageService>(provider => new ImgurService(factory.GetEnvir().GetImgurClientID(),
-    factory.GetEnvir().GetImgurClientSecret()));
-//redis singleton DI
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(factory.GetEnvir().GetReddisConnStr()));
-builder.Services.AddScoped<IWebFlowService, WebFlowService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-// 自訂 HtmlEcoder 將基本拉丁字元與中日韓字元納入允許範圍不做轉碼
-builder.Services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs }));
-//加入EnvirFactory DI
-builder.Services.AddSingleton(provider => factory);
-//給dapper用的
-builder.Services.AddScoped<IDbConnection, SqlConnection>(serviceProvider => {
-    SqlConnection conn = new SqlConnection();
-    //指派連線字串
-    conn.ConnectionString = factory.GetEnvir().GetDbConnStr();
-    return conn;
-});
-
 // set port
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(12770); // to listen for incoming http connection on port 5001
 });
-
-
-
 
 var app = builder.Build();
 

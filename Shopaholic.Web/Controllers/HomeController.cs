@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using System.Security.Claims;
@@ -11,13 +13,16 @@ namespace Shopaholic.Web.Controllers
     {
         private readonly ILogger<HomeController> logger;
         private readonly ICategoryService categoryService;
-        private readonly IWebFlowService flowService;
+        private readonly IPopularService popularService;
+        private readonly IEnvironment envir;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IWebFlowService flowService)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService, 
+            IEnvironment envir)
         {
             logger = logger;
             this.categoryService = categoryService;
-            this.flowService = flowService;
+            this.popularService = popularService;
+            this.envir = envir;
         }
 
         public IActionResult Index()
@@ -38,6 +43,11 @@ namespace Shopaholic.Web.Controllers
         public IActionResult LoginPage()
         {
             return View();
+        }
+
+        public IActionResult GoToCMS()
+        {
+            return Redirect(envir.CMSWebUrl());
         }
 
         /// <summary>
@@ -71,7 +81,7 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<List<ProductTopDTO>> GetFlowTopFive()
         {
-            List<ProductTopDTO> res = flowService.GetProductByMonthFlowTop();
+            List<ProductTopDTO> res = popularService.GetProductByMonthFlowTop();
             return new MessageModel<List<ProductTopDTO>>
             {
                 Success = res != null ? true : false,
@@ -87,13 +97,18 @@ namespace Shopaholic.Web.Controllers
         [HttpPost]
         public MessageModel<List<ProductTopDTO>> GetOrderTopFive()
         {
-            List<ProductTopDTO> res = flowService.GetProductByMonthOrderTop();
+            List<ProductTopDTO> res = popularService.GetProductByMonthOrderTop();
             return new MessageModel<List<ProductTopDTO>>
             {
                 Success = res != null ? true : false,
                 Msg = res != null ? "取得商品購買TOP5" : "Fail",
                 Data = res
             };
+        }
+
+        public async void MsLogin()
+        {
+            await HttpContext.ChallengeAsync("Microsoft");
         }
     }
 }

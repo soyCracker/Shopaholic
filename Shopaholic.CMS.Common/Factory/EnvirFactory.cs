@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Shopaholic.CMS.Common.Environment;
-using Shopaholic.CMS.Common.Interface;
+using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Common.Exceptions;
 
 namespace Shopaholic.CMS.Common.Factory

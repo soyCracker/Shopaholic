@@ -59,6 +59,7 @@ namespace Shopaholic.Service.Common.Middlewares
             else
             {
                 logger.LogError("HandleException() Error500:" + exception);
+                logger.LogError("HandleException() Error500:" + exception.Message);
                 context.Response.Redirect("/Error/Error500");
             }
         }

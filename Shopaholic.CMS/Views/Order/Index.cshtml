@@ -24,7 +24,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <div class="row mb-2">
-                        <div class="form-group col-sm-5">
+                        <div class="form-group col-sm-8">
                             <div class="form-group">
                                 <div class="input-group-append">
                                     <input class="form-control" placeholder="搜索訂單編號" v-model="searchStr" v-on:keydown.enter="RefreshUI(1)">
@@ -51,51 +51,64 @@
         </div>
 
         <div class="card-body p-0">
-            <table class="table table-striped projects">
-                <thead>
-                    <tr>
-                        <th style="width: 20%">
-                            訂單編號
-                        </th>
-                        <th style="width: 20%">
-                            出貨狀態
-                        </th>
-                        <th style="width: 20%">
-                            訂單狀態
-                        </th>
-                        <th style="width: 20%">
-                            建立日期
-                        </th>
-                        <th style="width: 20%">
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item) in orderList" v-bind:key="item.OrderId">
-                        <td>
-                            {{ item.OrderId }}
-                        </td>
-                        <td>
-                            <div v-if=item.IsSent>已出貨</div>
-                            <div v-else>未出貨</div>
-                        </td>
-                        <td>
-                            <div v-if=item.IsFinish>已完成</div>
-                            <div v-else>{{ item.StatusMsg }}</div>
-                        </td>
-                        <td>
-                            {{ item.FormatCreateTime }}
-                        </td>
-                        <td class="project-actions text-right">
-                            <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.OrderId">
-                                <i class="fas fa-pencil-alt">
-                                </i>
-                                修改
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-if="orderList">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">
+                                訂單編號
+                            </th>
+                            <th style="width: 20%">
+                                出貨狀態
+                            </th>
+                            <th style="width: 20%">
+                                訂單狀態
+                            </th>
+                            <th style="width: 20%">
+                                建立日期
+                            </th>
+                            <th style="width: 20%">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item) in orderList" v-bind:key="item.OrderId">
+                            <td>
+                                {{ item.OrderId }}
+                            </td>
+                            <td>
+                                <div v-if=item.IsSent>已出貨</div>
+                                <div v-else>未出貨</div>
+                            </td>
+                            <td>
+                                <div v-if=item.IsFinish>已完成</div>
+                                <div v-else>{{ item.StatusMsg }}</div>
+                            </td>
+                            <td>
+                                {{ item.FormatCreateTime }}
+                            </td>
+                            <td class="project-actions text-right">
+                                <a class="btn btn-info btn-sm" v-bind:href="'/Order/EditPage/'+item.OrderId">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    修改
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center" v-else>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
         </div>
 
         <div class="card-tools">
@@ -128,9 +141,9 @@
                 totalPages: 1,
                 pageSize: 20,
                 currentPage: 1,
-                orderList: {},
+                orderList: null,
                 pageMaxDisplay: 5,
-                pageDisplayArray: null,
+                pageDisplayArray: [],
                 searchStr: '',
                 minDate: '2000-01-01',
                 maxDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
@@ -146,9 +159,7 @@
                 RefreshUI: function (page) {
                     var self = this;
                     self.currentPage = page;
-
-                    ToastUtil.InfoFire('處理中')
-
+                    self.orderList = null;
                     var obj = {
                         ['Page']: page,
                         ['PageSize']: self.pageSize,

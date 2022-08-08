@@ -10,8 +10,8 @@
 
     <section class="content">
         <div class="container-fluid">
-            <h5 class="mb-2" v-if="productFlowTopList.length>0">每月最多人瀏覽</h5>
-            <div class="row">
+            <h5 class="mb-2">每月最多人瀏覽</h5>
+            <div class="row" v-if="productFlowTopList">
                 <div class="col-md-3 col-sm-6 col-12" v-for="(item) in productFlowTopList" v-bind:key="item.Count">
                     <div class="info-box">
                         <span><img v-bind:src="item.Image" height="50"></span>
@@ -27,9 +27,20 @@
                     <!-- /.info-box -->
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-12" v-else>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
 
-            <h5 class="mb-2" v-if="productOrderTopList.length>0">每月最多人購買</h5>
-            <div class="row">
+            <h5 class="mb-2">每月最多人購買</h5>
+            <div class="row" v-if="productOrderTopList">
                 <div class="col-md-3 col-sm-6 col-12" v-for="(item) in productOrderTopList" v-bind:key="item.Count">
                     <div class="info-box">
                         <span><img v-bind:src="item.Image" height="50"></span>
@@ -43,6 +54,17 @@
                         <!-- /.info-box-content -->
                     </div>
                     <!-- /.info-box -->
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12" v-else>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
                 </div>
             </div>
         </div>
@@ -61,8 +83,8 @@
             {
                 getProductFlowTopApi: baseurl + "/Home/api/GetFlowTopFive",
                 getProductOrderTopApi: baseurl + "/Home/api/GetOrderTopFive",
-                productFlowTopList: {},
-                productOrderTopList: {},
+                productFlowTopList: null,
+                productOrderTopList: null,
             },
             mounted: function () {
                 var self = this;
@@ -73,9 +95,6 @@
             {
                 GetProductFlowTop: function () {
                     var self = this;
-
-                    ToastUtil.InfoFire('處理中')
-
                     axios.post(self.getProductFlowTopApi)
                         .then(function (result) {
                             if (result.data.Success) {
@@ -86,9 +105,6 @@
 
                 GetProductOrderTop: function () {
                     var self = this;
-
-                    ToastUtil.InfoFire('處理中')
-
                     axios.post(self.getProductOrderTopApi)
                         .then(function (result) {
                             if (result.data.Success) {

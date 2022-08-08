@@ -49,60 +49,73 @@
         </div>
 
         <div id="TableTool" class="card-body p-0">
-            <table class="table table-striped projects">
-                <thead>
-                    <tr>
-                        <th style="width: 10%">
-                            商品編號
-                        </th>
-                        <th style="width: 20%">
-                            商品名稱
-                        </th>
-                        <th style="width: 10%">
-                            類別
-                        </th>
-                        <th style="width: 10%">
-                            價格
-                        </th>
-                        <th style="width: 10%">
-                            庫存
-                        </th>
-                        <th style="width: 40%">
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item) in productList" v-bind:key="item.id">
-                        <td>
-                            {{ item.Id }}
-                        </td>
-                        <td>
-                            {{ item.Name }}
-                        </td>
-                        <td>
-                            {{ item.CategoryName }}
-                        </td>
-                        <td>
-                            {{ item.Price }}
-                        </td>
-                        <td>
-                            {{ item.Stock }}
-                        </td>
-                        <td class="project-actions text-right">
-                            <a class="btn btn-info btn-sm" v-bind:href="editPageUrl+item.Id">
-                                <i class="fas fa-pencil-alt">
-                                </i>
-                                修改
-                            </a>
-                            <a class="btn btn-danger btn-sm" v-on:click="DeleteProduct(item.Id)">
-                                <i class="fas fa-trash">
-                                </i>
-                                刪除
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-if="productList">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">
+                                商品編號
+                            </th>
+                            <th style="width: 20%">
+                                商品名稱
+                            </th>
+                            <th style="width: 10%">
+                                類別
+                            </th>
+                            <th style="width: 10%">
+                                價格
+                            </th>
+                            <th style="width: 10%">
+                                庫存
+                            </th>
+                            <th style="width: 40%">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item) in productList" v-bind:key="item.id">
+                            <td>
+                                {{ item.Id }}
+                            </td>
+                            <td>
+                                {{ item.Name }}
+                            </td>
+                            <td>
+                                {{ item.CategoryName }}
+                            </td>
+                            <td>
+                                {{ item.Price }}
+                            </td>
+                            <td>
+                                {{ item.Stock }}
+                            </td>
+                            <td class="project-actions text-right">
+                                <a class="btn btn-info btn-sm" v-bind:href="editPageUrl+item.Id">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    修改
+                                </a>
+                                <a class="btn btn-danger btn-sm" v-on:click="DeleteProduct(item.Id)">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    刪除
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center" v-else>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
         </div>
 
         <div class="card-tools">
@@ -137,7 +150,7 @@
                 totalPages: 1,
                 pageSize: 20,
                 currentPage: 1,
-                productList: {},
+                productList: null,
                 categoryName: '',
                 pageMaxDisplay: 5,
                 pageDisplayArray: [],
@@ -146,15 +159,13 @@
             mounted: function () {
                 var self = this;
                 self.RefreshUI(1);
-                console.log(baseurl);
             },
             methods:
             {
                 RefreshUI: function (page) {
                     var self = this;
                     self.currentPage = page;
-
-                    ToastUtil.InfoFire('處理中')
+                    self.productList = null;
 
                     var obj = {
                         ['Page']: page,
