@@ -5,7 +5,7 @@
 
 
 ## My ignore
-# Shopaholic.CMS/appsettings.json
+**/wwwroot/js/**/*.map
 
 # User-specific files
 *.rsuser

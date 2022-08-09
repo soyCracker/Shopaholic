@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "strict": true, //啟用所有嚴格類型檢查選項
+    "esModuleInterop": true, //兼容模組導入的方式
+    "skipLibCheck": true, // 不會檢查引入的函式庫檔案       
+    "forceConsistentCasingInFileNames": true, //確保檔案的大小寫一致
+    "rootDir": "./" // 檔案應該要被放置的位置
+  },
+  "include": [
+    "wwwroot/js"
+  ]
+}

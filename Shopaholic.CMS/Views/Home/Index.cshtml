@@ -1,5 +1,4 @@
-﻿@using Shopaholic.Service.Model.Moels;
-@model List<FlowCountDTO>;
+﻿
 
 @{
     ViewData["Title"] = "購物網站管理介面";
@@ -18,45 +17,19 @@
 
 
 <div id="FlowChartApp" class="card-body p-0">
-    <bar-chart />
+    <div id="chart" ></div>
+    <div class="d-flex justify-content-center" v-if="!isShow">
+        <div class="spinner-grow text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    @*<bar-chart/>*@
 </div>
 
-@section Scripts{
-    <script>
-
-        var FlowChartApp = new Vue({
-            el: '#FlowChartApp',
-            components: {
-                'bar-chart': {
-                    extends: VueChartJs.Bar,
-                    data: () => ({
-                        // Net Core list to Javascript array
-                        flowOriginList: JSON.parse('@Html.Raw(Json.Serialize(@Model))'),
-                        dateArray: new Array(),
-                        flowCountArray: new Array()
-                    }),
-                    mounted() {
-                        let self = this;
-
-                        for (let i = 0; i < self.flowOriginList.length; i++) {
-                            self.dateArray.push(self.flowOriginList[i].FlowDate);
-                            self.flowCountArray.push(self.flowOriginList[i].Count);
-                        }
-
-                        self.renderChart({
-                            labels: self.dateArray,
-                            datasets: [
-                                {
-                                    label: '瀏覽量',
-                                    backgroundColor: '#bbded4',
-                                    data: self.flowCountArray
-                                }]
-                        }, { responsive: true, maintainAspectRatio: false })
-                    }
-                }
-            }
-        });
-
-    </script>
-
-}
+<script src="~/js/Home/Index.js"></script>
