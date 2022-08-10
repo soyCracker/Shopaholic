@@ -1,10 +1,4 @@
-﻿@*
-
-*@
-@{
-}
-
-<!-- Content Wrapper. Contains page content -->
+﻿<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -20,15 +14,41 @@
     <!-- Main content -->
     <section class="content">
         <div class="error-page">
-            <h2 class="headline text-warning"> 404</h2>
-            <div class="error-content">
-                <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    <h1 class="headline text-warning"> 404</h1>
+                </div>
+                <div class="col-sm-4">
+                    <div class="error-content">
+                        <css-doodle>
+                            @@grid: 1x10 / 85%;
 
-                <p>
-                    你好像很會迷路喔!!
-                    <a asp-controller="Home" asp-action="Index">return to dashboard</a>
-                </p>
+                            @@place: center;
+                            @@size: calc(@@i * 10%);
+
+                            border-radius: 50%;
+                            border-style: dashed;
+                            border-width: calc(@@i * 4px);
+                            border-color: hsla(
+                            calc(20 * @@i), 70%, 68%,
+                            calc(3 / @@i * .8)
+                            );
+
+                            transform: rotate(@@r(360deg));
+                        </css-doodle>
+                        <div>
+                            <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+
+                            <p>
+                                你好像很會迷路喔!!
+                                <a asp-controller="Home" asp-action="Index">return to dashboard</a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
             </div>
+            
             <!-- /.error-content -->
         </div>
         <!-- /.error-page -->
