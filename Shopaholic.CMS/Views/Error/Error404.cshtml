@@ -5,54 +5,38 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>404 Error Page</h1>
+                    <h1 class="headline text-warning">404 Error Page</h1>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="error-page">
-            <div class="row">
-                <div class="col-sm-2">
-                    <h1 class="headline text-warning"> 404</h1>
-                </div>
-                <div class="col-sm-4">
-                    <div class="error-content">
-                        <css-doodle>
-                            @@grid: 1x10 / 85%;
+    
+    <div>
+        <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
 
-                            @@place: center;
-                            @@size: calc(@@i * 10%);
+        <p>
+            你好像很會迷路喔!!
+            <a asp-controller="Home" asp-action="Index">return to dashboard</a>
+        </p>
+    </div>
 
-                            border-radius: 50%;
-                            border-style: dashed;
-                            border-width: calc(@@i * 4px);
-                            border-color: hsla(
-                            calc(20 * @@i), 70%, 68%,
-                            calc(3 / @@i * .8)
-                            );
+    <css-doodle>
+        @@grid: 1x10 / 85%;
 
-                            transform: rotate(@@r(360deg));
-                        </css-doodle>
-                        <div>
-                            <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+        @@place: center;
+        @@size: calc(@@i * 10%);
 
-                            <p>
-                                你好像很會迷路喔!!
-                                <a asp-controller="Home" asp-action="Index">return to dashboard</a>
-                            </p>
-                        </div>
+        border-radius: 50%;
+        border-style: dashed;
+        border-width: calc(@@i * 4px);
+        border-color: hsla(
+        calc(20 * @@i), 70%, 68%,
+        calc(3 / @@i * .8)
+        );
 
-                    </div>
-                </div>
-            </div>
-            
-            <!-- /.error-content -->
-        </div>
-        <!-- /.error-page -->
-    </section>
+        transform: rotate(@@r(360deg));
+    </css-doodle>
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
