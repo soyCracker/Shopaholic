@@ -11,32 +11,63 @@
         </div><!-- /.container-fluid -->
     </section>
 
-    
-    <div>
-        <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+    <!-- Main content -->
+    <section class="content">
+        <div class="error-page">
+            <div class="row">
+                <h5><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h5>
 
-        <p>
-            你好像很會迷路喔!!
-            <a asp-controller="Home" asp-action="Index">return to dashboard</a>
-        </p>
-    </div>
+                <h5>
+                    你好像很會迷路喔!!
+                    <a asp-controller="Home" asp-action="Index">回首頁</a>
+                </h5>
+            </div>
+            <div class="row" id=doodle_content>
+                <css-doodle id="doodle_element">
+                    :doodle {
+                        @@grid: 8 / 90%;
+                        @@shape: circle;
+                    }
 
-    <css-doodle>
-        @@grid: 1x10 / 85%;
+                    transition: .2s @@r(.6s);
+                    border-radius: @@pick(100% 0, 0 100%);
+                    transform: scale(@@r(.25, 1.25));
 
-        @@place: center;
-        @@size: calc(@@i * 10%);
+                    background: hsla(
+                        calc(240 - 6 * @@x * @@y),
+                        70%, 68%, @@r.8
+                    );
+                </css-doodle>
 
-        border-radius: 50%;
-        border-style: dashed;
-        border-width: calc(@@i * 4px);
-        border-color: hsla(
-        calc(20 * @@i), 70%, 68%,
-        calc(3 / @@i * .8)
-        );
+            </div>
 
-        transform: rotate(@@r(360deg));
-    </css-doodle>
+            <!-- /.error-content -->
+        </div>
+        <!-- /.error-page -->
+    </section>
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
+<script src="~/js/Error/Error.js"></script>
+
+<style>
+    #doodle_content {
+        width:40vw;
+        height:40vw;
+    }
+    @@media (max-width: 767.98px) {
+        #doodle_content {
+            width:300px;
+            height:250px;
+        }
+    }
+    #doodle_element {
+        margin-left: 0;
+    }
+    @@media (max-width: 767.98px) {
+        #doodle_element {
+            margin-left: 50px;
+        }
+    }
+</style>
