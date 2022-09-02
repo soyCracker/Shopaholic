@@ -110,13 +110,11 @@ namespace Shopaholic.Web.Controllers
 
         public ActionResult MsLogin()
         {
-            //var props = new AuthenticationProperties();
-            //props.RedirectUri = "https://localhost:44347/Auth";
-            return Challenge("Microsoft");
-            //string redirectUrl = Url.Action("signin-google");
-            //var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
-            //var p = new AuthenticationProperties { RedirectUri = redirectUrl };
-            //return new ChallengeResult("Google");
+            var props = new AuthenticationProperties();
+            //props.RedirectUri = "https://localhost:44347/Auth/signin-microsoft";
+            //return Challenge(props, "Microsoft");
+            props.RedirectUri = "https://localhost:44347/Auth/GoogleSignin";     
+            return new ChallengeResult("Google", props);
         }
     }
 }
