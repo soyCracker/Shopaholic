@@ -88,18 +88,30 @@ namespace Shopaholic.Web.Controllers.Api
             };
         }
 
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
-        [Route("[controller]/signin-microsoft")]
-        public async Task<IActionResult> MsSignIn()
+        [Route("signin-microsoft")]
+        public IActionResult MsSignIn()
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, "test"),
-                new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, "Microsoft");
-            await HttpContext.SignInAsync("Microsoft", new ClaimsPrincipal(claimsIdentity));
-            return RedirectToAction("/home/index");
+            //var claims = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, "test"),
+            //    new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
+            //};
+            //var claimsIdentity = new ClaimsIdentity(claims, "Microsoft");
+            //await HttpContext.SignInAsync("Microsoft", new ClaimsPrincipal(claimsIdentity));
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Route("[controller]/google-callback")]
+        public IActionResult GoogleSignin()
+        {
+            //var claims = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, "test"),
+            //    new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
+            //};
+            //var claimsIdentity = new ClaimsIdentity(claims, "Microsoft");
+            //await HttpContext.SignInAsync("Microsoft", new ClaimsPrincipal(claimsIdentity));
+            return RedirectToAction("Index", "Home");
         }
     }
 }

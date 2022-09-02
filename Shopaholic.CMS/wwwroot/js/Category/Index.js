@@ -29,7 +29,7 @@
                     console.log('Data:');
                     console.log(result.data.data);
                     if (result.data.Success) {
-                        location.href = '@Url.Action("Index")';
+                        location.href = "/Category";
                     }
                 })
                 .catch(function (error) {

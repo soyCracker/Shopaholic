@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
@@ -52,6 +52,7 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
+//builder.Services.AddOidcStateDataFormatterCache();
 builder.Services
     .AddAuthentication(options =>
     {
@@ -76,24 +77,48 @@ builder.Services
         //登入後過期時間內没有進行操作就會過期;false有操作還是會過期
         options.SlidingExpiration = true;
     })
-    .AddJwtBearer("Firebase", option =>
-    {
-        option.Authority = factory.GetEnvir().GetFirebaseUrl();
-        option.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
-            ValidateAudience = true,
-            ValidAudience = factory.GetEnvir().GetFirebaseID(),
-            ValidateLifetime = true
-        };
-    })
+    //.AddOpenIdConnect("Google", "Google", options =>
+    //{
+    //    options.Authority = "https://accounts.google.com";
+    //    options.ClientId = "198239108223-pkjlt5kerinovh2du3npf514vfvtrrlp.apps.googleusercontent.com";
+    //    options.ClientSecret = "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";
+    //    options.ResponseType = "code";
+    //    options.Scope.Add("openid");
+    //    options.Scope.Add("profile");
+    //    options.SaveTokens = true;
+    //});
+    //.AddGoogle("Google", options =>
+    //{
+    //    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //    options.ClientId = "198239108223-pkjlt5kerinovh2du3npf514vfvtrrlp.apps.googleusercontent.com";
+    //    options.ClientSecret = "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";
+    //    options.CallbackPath = "/Auth/google-callback";
+    //});
+    //.AddJwtBearer("Firebase", option =>
+    //{
+    //    option.Authority = factory.GetEnvir().GetFirebaseUrl();
+    //    option.TokenValidationParameters = new TokenValidationParameters
+    //    {
+    //        ValidateIssuer = true,
+    //        ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
+    //        ValidateAudience = true,
+    //        ValidAudience = factory.GetEnvir().GetFirebaseID(),
+    //        ValidateLifetime = true,
+    //        ClockSkew = TimeSpan.Zero
+    //    };
+    //})
     .AddMicrosoftAccount("Microsoft", option =>
     {
+        option.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         option.ClientId = factory.GetEnvir().GetMsClientId();
         option.ClientSecret = factory.GetEnvir().GetMsClientSecret();
-        option.CallbackPath = "/auth/signin-microsoft";
+        //option.CallbackPath = "/Auth/signin-microsoft";
     });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+});
 
 // ASP.NET Data Protection，儲存於redis，解決load balancer的Cookie-based Auth跨server問題
 using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
@@ -135,6 +160,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

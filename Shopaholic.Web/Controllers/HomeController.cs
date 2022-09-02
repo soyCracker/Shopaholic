@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Interfaces;
@@ -15,6 +16,7 @@ namespace Shopaholic.Web.Controllers
         private readonly ICategoryService categoryService;
         private readonly IPopularService popularService;
         private readonly IEnvironment envir;
+        private readonly SignInManager<HomeController> signInManager;
 
         public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService, 
             IEnvironment envir)
@@ -106,9 +108,15 @@ namespace Shopaholic.Web.Controllers
             };
         }
 
-        public async void MsLogin()
+        public ActionResult MsLogin()
         {
-            await HttpContext.ChallengeAsync("Microsoft");
+            //var props = new AuthenticationProperties();
+            //props.RedirectUri = "https://localhost:44347/Auth";
+            return Challenge("Microsoft");
+            //string redirectUrl = Url.Action("signin-google");
+            //var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            //var p = new AuthenticationProperties { RedirectUri = redirectUrl };
+            //return new ChallengeResult("Google");
         }
     }
 }
