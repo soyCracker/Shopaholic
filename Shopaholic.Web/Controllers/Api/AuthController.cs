@@ -88,16 +88,19 @@ namespace Shopaholic.Web.Controllers.Api
             };
         }
 
+        [Authorize]
         [Route("[controller]/signin-microsoft")]
-        public async Task<IActionResult> MsSignInAsync()
+        public IActionResult MsSignIn()
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, "test"),
-                new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-            await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
+            //var claims = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, "test"),
+            //    new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
+            //};
+            //var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+            //await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
+            
+            //return Content(User.Identity.Name);
             return RedirectToAction("Index", "Home");
         }
 

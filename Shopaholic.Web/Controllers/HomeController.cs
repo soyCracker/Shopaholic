@@ -36,10 +36,14 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Privacy()
         {
-            var tokenInfo = HttpContext.User;
-            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
-            var isAuth = HttpContext.User.Identity.IsAuthenticated;
-            return View();
+            //var tokenInfo = HttpContext.User;
+            //string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
+            //var isAuth = HttpContext.User.Identity.IsAuthenticated;
+            //return View();
+
+            //User.Identity.Name
+            string email = User.FindFirst(ClaimTypes.Email).Value;
+            return Content(User.Identity.Name + " email: " + email);
         }
 
         public IActionResult LoginPage()
@@ -112,9 +116,10 @@ namespace Shopaholic.Web.Controllers
         {
             var props = new AuthenticationProperties();
             //props.RedirectUri = "https://localhost:44347/Auth/signin-microsoft";
-            //return Challenge(props, "Microsoft");
-            props.RedirectUri = "https://localhost:44347/Auth/GoogleSignin";     
-            return new ChallengeResult("Google", props);
+            props.RedirectUri = Url.Action("MsSignIn", "Auth");
+            return new ChallengeResult("Microsoft", props);
+            //props.RedirectUri = "https://localhost:44347/Auth/GoogleSignin";     
+            //return new ChallengeResult("Google", props);
         }
     }
 }

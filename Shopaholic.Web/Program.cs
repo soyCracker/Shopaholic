@@ -57,7 +57,7 @@ builder.Services
     .AddAuthentication(options =>
     {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = "Google";
+        options.DefaultChallengeScheme = "Microsoft";
     })
     //網站本身的Cookie - based Authentication
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
@@ -87,31 +87,31 @@ builder.Services
     //    options.Scope.Add("profile");
     //    options.SaveTokens = true;
     //});
-    .AddGoogle("Google", options =>
+    //.AddGoogle("Google", options =>
+    //{
+    //    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //    options.ClientId = "198239108223-pkjlt5kerinovh2du3npf514vfvtrrlp.apps.googleusercontent.com";
+    //    options.ClientSecret = "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";
+    //});
+    //.AddJwtBearer("Firebase", option =>
+    //{
+    //    option.Authority = factory.GetEnvir().GetFirebaseUrl();
+    //    option.TokenValidationParameters = new TokenValidationParameters
+    //    {
+    //        ValidateIssuer = true,
+    //        ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
+    //        ValidateAudience = true,
+    //        ValidAudience = factory.GetEnvir().GetFirebaseID(),
+    //        ValidateLifetime = true,
+    //        ClockSkew = TimeSpan.Zero
+    //    };
+    //})
+    .AddMicrosoftAccount("Microsoft", options =>
     {
         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.ClientId = "198239108223-pkjlt5kerinovh2du3npf514vfvtrrlp.apps.googleusercontent.com";
-        options.ClientSecret = "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";
+        options.ClientId = factory.GetEnvir().GetMsClientId();
+        options.ClientSecret = factory.GetEnvir().GetMsClientSecret();
     });
-//.AddJwtBearer("Firebase", option =>
-//{
-//    option.Authority = factory.GetEnvir().GetFirebaseUrl();
-//    option.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
-//        ValidateAudience = true,
-//        ValidAudience = factory.GetEnvir().GetFirebaseID(),
-//        ValidateLifetime = true,
-//        ClockSkew = TimeSpan.Zero
-//    };
-//})
-//.AddMicrosoftAccount("Microsoft", option =>
-//{
-//    option.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//    option.ClientId = factory.GetEnvir().GetMsClientId();
-//    option.ClientSecret = factory.GetEnvir().GetMsClientSecret();
-//});
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
