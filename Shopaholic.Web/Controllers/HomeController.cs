@@ -18,7 +18,7 @@ namespace Shopaholic.Web.Controllers
         private readonly IEnvironment envir;
         private readonly SignInManager<HomeController> signInManager;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService, 
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService,
             IEnvironment envir)
         {
             logger = logger;
@@ -44,6 +44,11 @@ namespace Shopaholic.Web.Controllers
             //User.Identity.Name
             string email = User.FindFirst(ClaimTypes.Email).Value;
             return Content(User.Identity.Name + " email: " + email);
+        }
+
+        public IActionResult LoginHub()
+        {
+            return View();
         }
 
         public IActionResult LoginPage()

@@ -17,7 +17,7 @@ namespace Shopaholic.Web.Controllers.Api
 
         public AuthController(ILogger<AuthController> logger, IAuthService authService)
         {
-            this.Logger = logger;   
+            this.Logger = logger;
             this.authService = authService;
         }
 
@@ -76,7 +76,7 @@ namespace Shopaholic.Web.Controllers.Api
                 string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
                 res = authService.ChkExist("", email);
             }
-            if(!res)
+            if (!res)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }
@@ -99,8 +99,28 @@ namespace Shopaholic.Web.Controllers.Api
             //};
             //var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
             //await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
-            
+
             //return Content(User.Identity.Name);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Route("[controller]/[action]")]
+        public IActionResult GoMsSignOut()
+        {
+            var callbackUrl = Url.Page("/Auth/signout-microsoft", pageHandler: null, values: null, protocol: Request.Scheme);
+            return SignOut(
+                 new AuthenticationProperties
+                 {
+                     RedirectUri = callbackUrl,
+                 },
+                 CookieAuthenticationDefaults.AuthenticationScheme,
+                 "Microsoft");
+        }
+
+        [Route("[controller]/signout-microsoft")]
+        public IActionResult MsSignOut()
+        {
             return RedirectToAction("Index", "Home");
         }
 

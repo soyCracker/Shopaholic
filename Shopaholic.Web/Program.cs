@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
+using Shopaholic.Web.Common.Configure;
 using Shopaholic.Web.Common.Factory;
 using StackExchange.Redis;
-using System.Net;
 using System.Text.Encodings.Web;
-using System.Text.RegularExpressions;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,65 +50,7 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
 });
 
 //builder.Services.AddOidcStateDataFormatterCache();
-builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = "Microsoft";
-    })
-    //網站本身的Cookie - based Authentication
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-    {
-        options.Events.OnRedirectToLogin = context =>
-        {
-            //讓MVC及API驗證失敗時有不同的行為
-            if (Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase))
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return Task.CompletedTask;
-            }
-            context.Response.Redirect(new PathString(factory.GetEnvir().GetLoginUrl()));
-            return Task.CompletedTask;
-        };
-        options.ExpireTimeSpan = TimeSpan.FromDays(1);
-        //登入後過期時間內没有進行操作就會過期;false有操作還是會過期
-        options.SlidingExpiration = true;
-    })
-    //.AddOpenIdConnect("Google", "Google", options =>
-    //{
-    //    options.Authority = "https://accounts.google.com";
-    //    options.ClientId = "198239108223-pkjlt5kerinovh2du3npf514vfvtrrlp.apps.googleusercontent.com";
-    //    options.ClientSecret = "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";
-    //    options.ResponseType = "code";
-    //    options.Scope.Add("openid");
-    //    options.Scope.Add("profile");
-    //    options.SaveTokens = true;
-    //});
-    //.AddGoogle("Google", options =>
-    //{
-    //    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    //    options.ClientId = "198239108223-pkjlt5kerinovh2du3npf514vfvtrrlp.apps.googleusercontent.com";
-    //    options.ClientSecret = "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";
-    //});
-    //.AddJwtBearer("Firebase", option =>
-    //{
-    //    option.Authority = factory.GetEnvir().GetFirebaseUrl();
-    //    option.TokenValidationParameters = new TokenValidationParameters
-    //    {
-    //        ValidateIssuer = true,
-    //        ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
-    //        ValidateAudience = true,
-    //        ValidAudience = factory.GetEnvir().GetFirebaseID(),
-    //        ValidateLifetime = true,
-    //        ClockSkew = TimeSpan.Zero
-    //    };
-    //})
-    .AddMicrosoftAccount("Microsoft", options =>
-    {
-        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.ClientId = factory.GetEnvir().GetMsClientId();
-        options.ClientSecret = factory.GetEnvir().GetMsClientSecret();
-    });
+builder.Services.SetAuth(factory.GetEnvir());
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -164,3 +103,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
