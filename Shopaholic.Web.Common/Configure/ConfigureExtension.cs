@@ -70,6 +70,11 @@ namespace Shopaholic.Web.Common.Configure
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.ClientId = env.GetMsClientId();
                 options.ClientSecret = env.GetMsClientSecret();
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    context.HttpContext.Response.Redirect(context.RedirectUri + "&prompt=select_account");
+                    return Task.CompletedTask;
+                };
             });
         }
     }

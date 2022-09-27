@@ -3,16 +3,15 @@ using Shopaholic.Service.Interfaces;
 
 namespace Shopaholic.Service.Services
 {
-    public class FirebaseGoogleAuthService : IAuthService
+    public class MicrosoftAuthService : IAuthService
     {
         private readonly ShopaholicContext dbContext;
-        private readonly string userType = "Google";
+        private readonly string userType = "Microsoft";
 
-        public FirebaseGoogleAuthService(ShopaholicContext dbContext)
+        public MicrosoftAuthService(ShopaholicContext dbContext)
         {
             this.dbContext = dbContext;
         }
-
         public bool ChkExist(string uid, string email)
         {
             using (dbContext)
@@ -26,8 +25,7 @@ namespace Shopaholic.Service.Services
             }
         }
 
-        public void UpdateUser(string accessToken, string uid, string displayName, string email,
-            bool emailVerified, string photoUrl, bool isAnonymous)
+        public void UpdateUser(string accessToken, string uid, string displayName, string email, bool emailVerified, string photoUrl, bool isAnonymous)
         {
             using (dbContext)
             {

@@ -34,6 +34,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
+builder.Services.AddScoped<IAuthService, MicrosoftAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<IPopularService, PopularService>();
 builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
