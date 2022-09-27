@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
-using Shopaholic.Service.Services;
 using Shopaholic.Web.Model.Requests;
 using Shopaholic.Web.Model.Responses;
 using System.Security.Claims;
@@ -12,17 +11,17 @@ namespace Shopaholic.Web.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly ILogger Logger;
+        private readonly ILogger logger;
         private readonly IPurchaseService linePayPurchaseService;
         private readonly IPurchaseService ecPayPurchaseService;
         private readonly IOrderService orderService;
 
-        public OrderController(ILogger<ProductController> logger, LinePayPurchaseService linePayPurchaseService,
-            IOrderService orderService, EcPayPurchaseService ecPayPurchaseService, IEnumerable<IPurchaseService> purchaseServices)
+        public OrderController(ILogger<OrderController> logger, IOrderService orderService,
+            IEnumerable<IPurchaseService> purchaseServices)
         {
-            this.Logger = logger;
-            this.linePayPurchaseService = purchaseServices.Single(x => x.PType == PurchaseType.LinePay);           
-            this.ecPayPurchaseService = purchaseServices.Single(x => x.PType == PurchaseType.EcPay);
+            this.logger = logger;
+            linePayPurchaseService = purchaseServices.Single(x => x.PType == PurchaseType.LinePay);
+            ecPayPurchaseService = purchaseServices.Single(x => x.PType == PurchaseType.EcPay);
             this.orderService = orderService;
         }
 
@@ -78,7 +77,7 @@ namespace Shopaholic.Web.Controllers
         public async Task<MessageModel<string>> LinePayCreateOrder([FromBody] PurchaseOrderCreateReq req)
         {
             var tokenInfo = HttpContext.User;
-            req.Email = tokenInfo.FindFirst(ClaimTypes.Email).Value;            
+            req.Email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
             var orderId = await linePayPurchaseService.CreateOrder(req);
             return new MessageModel<string>
             {
@@ -110,7 +109,7 @@ namespace Shopaholic.Web.Controllers
         /// </summary>
         [Route("[controller]/api/[action]")]
         [HttpGet]
-        public IActionResult LinePayConfirm([FromQuery] string orderId, [FromQuery]string transactionId)
+        public IActionResult LinePayConfirm([FromQuery] string orderId, [FromQuery] string transactionId)
         {
             LinePayConfirmReq req = new LinePayConfirmReq
             {
@@ -167,7 +166,7 @@ namespace Shopaholic.Web.Controllers
         public IActionResult EcPayConfirm([FromForm] EcPayConfirmReq req)
         {
             bool res = ecPayPurchaseService.PayConfirm(req);
-            if(res)
+            if (res)
             {
                 return Ok("1|OK");
             }

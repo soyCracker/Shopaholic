@@ -34,7 +34,7 @@ namespace Shopaholic.Service.Services
                 {
                     dbContext.CustomerAccounts.Add(new CustomerAccount
                     {
-                        AccountId = uid,
+                        AccountId = Guid.NewGuid().ToString(),
                         DisplayName = displayName,
                         Email = email,
                         EmailVerified = emailVerified,
@@ -44,12 +44,9 @@ namespace Shopaholic.Service.Services
                 }
                 else
                 {
-                    user.AccountId = uid;
                     user.DisplayName = displayName;
                     user.EmailVerified = emailVerified;
                     user.PhotoUrl = photoUrl;
-                    user.Type = userType;
-
                 }
                 dbContext.SaveChanges();
             }

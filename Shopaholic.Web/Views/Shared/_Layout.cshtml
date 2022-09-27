@@ -106,32 +106,37 @@
                         <i class="fa-brands fa-windows">登入</i>
                     </a>
                 </li>*@
-                <li class="nav-item">
-                    <a asp-controller="Home" asp-action="LoginHub" class="nav-link">
-                        <i class="fa-brands fa-google">登入</i>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#" @*v-if="isLogin"*@>
-                        <i class="fa-solid fa-user-astronaut">會員資料</i>
-                        <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
-                        <a asp-controller="Cart" asp-action="Index" class="dropdown-item text-center">
-                            <i class="fa-solid fa-cart-arrow-down">
-                                <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
-                                購物車
-                            </i>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="LoginHub" class="nav-link">
+                            <i class="fa-solid fa-fire">登入</i>
                         </a>
-                        <a asp-controller="Order" asp-action="Index" class="dropdown-item text-center">
-                            <i class="fa-regular fa-file-lines">訂單</i>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" data-toggle="dropdown" href="#" @*v-if="isLogin"*@>
+                            <i class="fa-solid fa-user-astronaut">會員資料</i>
+                            <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
                         </a>
-                        <a asp-controller="Auth" asp-action="GoMsSignOut" class="dropdown-item text-center">
-                            <i class="fa-solid fa-right-from-bracket">登出</i>
-                        </a>
-                    </div>
-                </li>
-                
+                        <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
+                            <a asp-controller="Cart" asp-action="Index" class="dropdown-item text-center">
+                                <i class="fa-solid fa-cart-arrow-down">
+                                    <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
+                                    購物車
+                                </i>
+                            </a>
+                            <a asp-controller="Order" asp-action="Index" class="dropdown-item text-center">
+                                <i class="fa-regular fa-file-lines">訂單</i>
+                            </a>
+                            <a asp-controller="Auth" asp-action="GoMsSignOut" class="dropdown-item text-center">
+                                <i class="fa-solid fa-right-from-bracket">登出</i>
+                            </a>
+                        </div>
+                    </li>
+                }
             </ul>
         </nav>
         <!-- /.navbar -->
