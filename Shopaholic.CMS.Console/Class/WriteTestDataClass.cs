@@ -1,14 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Shopaholic.Service.Common.Constants;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Service.Services;
-using Shopaholic.Web.Model.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shopaholic.Base.Console.Class
 {
@@ -23,8 +16,8 @@ namespace Shopaholic.Base.Console.Class
 
         public void WriteCategory(string conStr)
         {
-            ICategoryService categoryService = new CategoryService(DBClass.GetDbContext(conStr));
-            categoryService.AddCategory("未分類");
+            //ICategoryService categoryService = new CategoryService(DBClass.GetDbContext(conStr));
+            //categoryService.AddCategory("未分類");
         }
 
         public void WriteProduct(string conStr)

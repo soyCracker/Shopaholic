@@ -2,11 +2,6 @@
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
 using Shopaholic.Service.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shopaholic.Base.Console.Class
 {
@@ -21,16 +16,16 @@ namespace Shopaholic.Base.Console.Class
 
         public void WriteCategory(string conStr)
         {
-            ICategoryService categoryService1 = new CategoryService(DBClass.GetDbContext(conStr));
-            categoryService1.AddCategory("食品");
-            ICategoryService categoryService2 = new CategoryService(DBClass.GetDbContext(conStr));
-            categoryService2.AddCategory("通訊");
-            ICategoryService categoryService3 = new CategoryService(DBClass.GetDbContext(conStr));
-            categoryService3.AddCategory("遊戲");
-            ICategoryService categoryService4 = new CategoryService(DBClass.GetDbContext(conStr));
-            categoryService4.AddCategory("裝飾");
-            ICategoryService categoryService5 = new CategoryService(DBClass.GetDbContext(conStr));
-            categoryService5.AddCategory("日用");
+            //ICategoryService categoryService1 = new CategoryService(DBClass.GetDbContext(conStr));
+            //categoryService1.AddCategory("食品");
+            //ICategoryService categoryService2 = new CategoryService(DBClass.GetDbContext(conStr));
+            //categoryService2.AddCategory("通訊");
+            //ICategoryService categoryService3 = new CategoryService(DBClass.GetDbContext(conStr));
+            //categoryService3.AddCategory("遊戲");
+            //ICategoryService categoryService4 = new CategoryService(DBClass.GetDbContext(conStr));
+            //categoryService4.AddCategory("裝飾");
+            //ICategoryService categoryService5 = new CategoryService(DBClass.GetDbContext(conStr));
+            //categoryService5.AddCategory("日用");
         }
 
         public void WriteFoodProduct(string conStr)
