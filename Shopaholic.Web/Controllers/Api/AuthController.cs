@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Model.Moels;
-using Shopaholic.Web.Model.Requests;
+using Shopaholic.Service.Services;
 using System.Security.Claims;
 
 namespace Shopaholic.Web.Controllers.Api
@@ -13,15 +13,18 @@ namespace Shopaholic.Web.Controllers.Api
     public class AuthController : Controller
     {
         private readonly ILogger Logger;
-        private readonly IAuthService authService;
+        private readonly IAuthService firebaseAuthService;
+        private readonly IAuthService microsoftAuthService;
 
-        public AuthController(ILogger<AuthController> logger, IAuthService authService)
+        public AuthController(ILogger<AuthController> logger, IEnumerable<IAuthService> authServices)
         {
-            this.Logger = logger;   
-            this.authService = authService;
+            this.Logger = logger;
+            firebaseAuthService = authServices.SingleOrDefault(x => x.GetType() == typeof(FirebaseGoogleAuthService));
+            microsoftAuthService = authServices.SingleOrDefault(x => x.GetType() == typeof(MicrosoftAuthService));
         }
 
-        [Authorize]
+        // firebase login
+        /*[Authorize]
         [Route("[controller]/api/[action]")]
         [HttpPost]
         public async Task<MessageModel<bool>> Login([FromBody] AuthLoginReq req)
@@ -45,9 +48,10 @@ namespace Shopaholic.Web.Controllers.Api
                 Msg = "登入",
                 Data = true
             };
-        }
+        }*/
 
-        [Route("[controller]/api/[action]")]
+        // firebase Logout
+        /*[Route("[controller]/api/[action]")]
         [HttpPost]
         public async Task<MessageModel<bool>> Logout()
         {
@@ -58,7 +62,7 @@ namespace Shopaholic.Web.Controllers.Api
                 Msg = "登出",
                 Data = true
             };
-        }
+        }*/
 
         /// <summary>
         /// 確認帳號有效性
@@ -74,9 +78,9 @@ namespace Shopaholic.Web.Controllers.Api
             {
                 var tokenInfo = HttpContext.User;
                 string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
-                res = authService.ChkExist("", email);
+                res = firebaseAuthService.ChkExist("", email);
             }
-            if(!res)
+            if (!res)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }
@@ -88,18 +92,42 @@ namespace Shopaholic.Web.Controllers.Api
             };
         }
 
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize]
         [Route("[controller]/signin-microsoft")]
-        public async Task<IActionResult> MsSignIn()
+        public IActionResult MsSignIn()
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, "test"),
-                new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, "Microsoft");
-            await HttpContext.SignInAsync("Microsoft", new ClaimsPrincipal(claimsIdentity));
-            return RedirectToAction("/home/index");
+            string email = User.FindFirst(ClaimTypes.Email).Value;
+            string username = User.Identity.Name;
+            microsoftAuthService.UpdateUser("", "", username, email, true, "", false);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Route("[controller]/[action]")]
+        public IActionResult GoMsSignOut()
+        {
+            HttpContext.SignOutAsync().Wait();
+            //return Redirect("https://login.microsoftonline.com/common/oauth2/v2.0/logout");
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Route("[controller]/signout-microsoft")]
+        public IActionResult MsSignOut()
+        {
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult GoogleSignin()
+        {
+            //var claims = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, "test"),
+            //    new Claim(ClaimTypes.Email, "joy1212121212@yahoo.com.tw"),
+            //};
+            //var claimsIdentity = new ClaimsIdentity(claims, "Microsoft");
+            //await HttpContext.SignInAsync("Microsoft", new ClaimsPrincipal(claimsIdentity));
+            return RedirectToAction("Index", "Home");
         }
     }
 }

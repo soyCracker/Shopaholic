@@ -72,9 +72,9 @@
                 <li class="nav-item d-sm-inline-block">
                     <a asp-controller="Home" asp-action="GoToCMS" class="nav-link">管理後台</a>
                 </li>
-                @*<li class="nav-item d-none d-sm-inline-block">
+                <li class="nav-item d-none d-sm-inline-block">
                     <a asp-controller="Home" asp-action="Privacy" class="nav-link">TestAuth</a>
-                </li>*@
+                </li>
             </ul>
 
             <!-- Right navbar links -->
@@ -101,36 +101,42 @@
                     </div>
                 </li>
 
-                <li class="nav-item" v-if="!isLogin">
+                @*<li class="nav-item" v-if="!isLogin">
                     <a asp-controller="Home" asp-action="MsLogin" class="nav-link">
                         <i class="fa-brands fa-windows">登入</i>
                     </a>
-                </li>
-                <li class="nav-item" v-if="!isLogin">
-                    <a asp-controller="Home" asp-action="LoginPage" class="nav-link">
-                        <i class="fa-brands fa-google">登入</i>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#" v-if="isLogin">
-                        <i class="fa-solid fa-user-astronaut">會員資料</i>
-                        <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
-                        <a asp-controller="Cart" asp-action="Index" class="dropdown-item text-center">
-                            <i class="fa-solid fa-cart-arrow-down">
-                                <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
-                                購物車
-                            </i>
+                </li>*@
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="LoginHub" class="nav-link">
+                            <i class="fa-solid fa-fire">登入</i>
                         </a>
-                        <a asp-controller="Order" asp-action="Index" class="dropdown-item text-center">
-                            <i class="fa-regular fa-file-lines">訂單</i>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" data-toggle="dropdown" href="#" @*v-if="isLogin"*@>
+                            <i class="fa-solid fa-user-astronaut">會員資料</i>
+                            <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
                         </a>
-                        <a class="dropdown-item text-center" v-on:click="Logout">
-                            <i class="fa-solid fa-right-from-bracket">登出</i>
-                        </a>
-                    </div>
-                </li>
+                        <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
+                            <a asp-controller="Cart" asp-action="Index" class="dropdown-item text-center">
+                                <i class="fa-solid fa-cart-arrow-down">
+                                    <span v-if="cartCount>0" class="badge badge-danger navbar-badge">!?</span>
+                                    購物車
+                                </i>
+                            </a>
+                            <a asp-controller="Order" asp-action="Index" class="dropdown-item text-center">
+                                <i class="fa-regular fa-file-lines">訂單</i>
+                            </a>
+                            <a asp-controller="Auth" asp-action="GoMsSignOut" class="dropdown-item text-center">
+                                <i class="fa-solid fa-right-from-bracket">登出</i>
+                            </a>
+                        </div>
+                    </li>
+                }
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -252,10 +258,10 @@
 
     <script>
         var baseurl = window.location.origin;
-        var provider = new firebase.auth.GoogleAuthProvider();
+        //var provider = new firebase.auth.GoogleAuthProvider();
 
         // 登入狀態變換
-        firebase.auth().onAuthStateChanged(function (user) {
+        /*firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 // User is signed in.
                 LayoutTopBarTool.isLogin = true;
@@ -265,7 +271,7 @@
             else {
                 LayoutTopBarTool.isLogin = false;
             }
-        });
+        });*/
 
         var LayoutApp = new Vue({
             el: '#LayoutApp',
@@ -305,8 +311,8 @@
             data:
             {
                 isLogin: false,
-                logoutApi: baseurl + '/Auth/api/Logout',
-                chkLoginStateApi: baseurl + '/Auth/api/ChkExist',
+                //logoutApi: baseurl + '/Auth/api/Logout',
+                //chkLoginStateApi: baseurl + '/Auth/api/ChkExist',
                 getCartCountApi: baseurl + '/Cart/api/Count',
                 cartCount: 0,
                 layoutSearchStr: '',
@@ -316,7 +322,7 @@
             },
             methods:
             {
-                Logout: async function () {
+                /*Logout: async function () {
                     var self = this;
                     ToastUtil.InfoFire('登出中...');
                     firebase.auth().signOut().then(async function () {
@@ -339,9 +345,9 @@
                         // An error happened.
                         ToastUtil.ErrorAlert('Firebase logout error')
                     });
-                },
+                },*/
 
-                ChkLoginState: async function () {
+                /*ChkLoginState: async function () {
                     var self = this;
                     await axios.post(self.chkLoginStateApi)
                         .then(function (result) {
@@ -351,7 +357,7 @@
                         }).catch(function (error) {
                             ExceptUtil.PostExceptionFuc(error);
                         });
-                },
+                },*/
 
                 GetCartCount: function () {
                     var self = this;

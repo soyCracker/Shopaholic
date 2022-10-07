@@ -1,17 +1,11 @@
-﻿@*
-
-*@
-@{
-}
-
-<!-- Content Wrapper. Contains page content -->
+﻿<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>404 Error Page</h1>
+                    <h1 class="headline text-warning">404 Error Page</h1>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -20,15 +14,33 @@
     <!-- Main content -->
     <section class="content">
         <div class="error-page">
-            <h2 class="headline text-warning"> 404</h2>
-            <div class="error-content">
-                <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+            <div class="row">
+                <h5><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h5>
 
-                <p>
+                <h5>
                     你好像很會迷路喔!!
-                    <a asp-controller="Home" asp-action="Index">return to dashboard</a>
-                </p>
+                    <a asp-controller="Home" asp-action="Index">回首頁</a>
+                </h5>
             </div>
+            <div class="row" id=doodle_content>
+                <css-doodle id="doodle_element">
+                    :doodle {
+                        @@grid: 8 / 90%;
+                        @@shape: circle;
+                    }
+
+                    transition: .2s @@r(.6s);
+                    border-radius: @@pick(100% 0, 0 100%);
+                    transform: scale(@@r(.25, 1.25));
+
+                    background: hsla(
+                        calc(240 - 6 * @@x * @@y),
+                        70%, 68%, @@r.8
+                    );
+                </css-doodle>
+
+            </div>
+
             <!-- /.error-content -->
         </div>
         <!-- /.error-page -->
@@ -36,3 +48,26 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
+<script src="~/js/Error/Error.js"></script>
+
+<style>
+    #doodle_content {
+        width:40vw;
+        height:40vw;
+    }
+    @@media (max-width: 767.98px) {
+        #doodle_content {
+            width:300px;
+            height:250px;
+        }
+    }
+    #doodle_element {
+        margin-left: 0;
+    }
+    @@media (max-width: 767.98px) {
+        #doodle_element {
+            margin-left: 50px;
+        }
+    }
+</style>

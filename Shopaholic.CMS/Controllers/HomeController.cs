@@ -21,8 +21,7 @@ namespace Shopaholic.CMS.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
-            List<FlowCountDTO> flows = webFlowService.GetMonthFlow();
-            return View(flows);
+            return View();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -35,6 +34,19 @@ namespace Shopaholic.CMS.Controllers
         public IActionResult GoToFrontWeb()
         {
             return Redirect(frontUrl);
+        }
+
+        [Route("[controller]/api/[action]")]
+        [HttpPost]
+        public MessageModel<List<FlowCountDTO>> GetMonthFlow()
+        {
+            List<FlowCountDTO> flows = webFlowService.GetMonthFlow();
+            return new MessageModel<List<FlowCountDTO>>
+            {
+                Success = true,
+                Msg = "網站月流量",
+                Data = flows
+            };
         }
     }
 }

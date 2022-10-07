@@ -130,73 +130,10 @@
 
 </div>
 
-@section Scripts{
-    <script>
+<style>
+    .page-num-clicked {
+        background-color: #dee2e6;
+    }
+</style>
 
-        var FormTool = new Vue({
-            el: '#FormTool',
-            data:
-            {
-                orderSearchApi: baseurl + "/Order/api/Search",
-                totalPages: 1,
-                pageSize: 20,
-                currentPage: 1,
-                orderList: null,
-                pageMaxDisplay: 5,
-                pageDisplayArray: [],
-                searchStr: '',
-                minDate: '2000-01-01',
-                maxDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
-                searchBeginDate: '2000-01-01',
-                searchEndDate: '@TimeUtil.CovertToTaipeiDatetime(TimeUtil.GetUtcDateTime().UtcDateTime).ToString(TimeUtil.yyyyMMdd_03)',
-            },
-            mounted: function () {
-                var self = this;
-                self.RefreshUI(1);
-            },
-            methods:
-            {
-                RefreshUI: function (page) {
-                    var self = this;
-                    self.currentPage = page;
-                    self.orderList = null;
-                    var obj = {
-                        ['Page']: page,
-                        ['PageSize']: self.pageSize,
-                        ['SearchStr']: self.searchStr,
-                        ['BeginTime']: self.searchBeginDate,
-                        ['EndTime']: self.searchEndDate,
-                    };
-
-                    axios.post(self.orderSearchApi, obj)
-                        .then(function (result) {
-                            if (result.data.Success) {
-                                self.orderList = result.data.Data.OrderHeaderDTOs;
-                                self.totalPages = result.data.Data.TotalPages;
-                                self.pageDisplayArray = PageUtil.GetDisplayPageArray(page, self.pageMaxDisplay, self.totalPages);
-                            }
-                            else {
-                                ToastUtil.ErrorAlert('Success:' + result.data.Success + '\n' +
-                                    'Msg:' + result.data.Msg)
-                            }
-                        })
-                        .catch(function (error) {
-                            ExceptUtil.PostExceptionFuc(error);
-                        });
-                },
-
-                ClearFilter: function () {
-                    var self = this;
-                    self.searchStr = '';
-                    self.RefreshUI(1);
-                }
-            }
-        });
-    </script>
-}
-
-    <style>
-        .page-num-clicked {
-            background-color: #dee2e6;
-        }
-    </style>
+<script src="~/js/Order/Index.js"></script>

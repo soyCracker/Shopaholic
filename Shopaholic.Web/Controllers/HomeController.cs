@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shopaholic.Service.Common.Environment;
 using Shopaholic.Service.Interfaces;
@@ -15,8 +16,9 @@ namespace Shopaholic.Web.Controllers
         private readonly ICategoryService categoryService;
         private readonly IPopularService popularService;
         private readonly IEnvironment envir;
+        private readonly SignInManager<HomeController> signInManager;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService, 
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IPopularService popularService,
             IEnvironment envir)
         {
             logger = logger;
@@ -34,9 +36,18 @@ namespace Shopaholic.Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public IActionResult Privacy()
         {
-            var tokenInfo = HttpContext.User;
-            string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
-            var isAuth = HttpContext.User.Identity.IsAuthenticated;
+            //var tokenInfo = HttpContext.User;
+            //string email = tokenInfo.FindFirst(ClaimTypes.Email).Value;
+            //var isAuth = HttpContext.User.Identity.IsAuthenticated;
+            //return View();
+
+            //User.Identity.Name
+            string email = User.FindFirst(ClaimTypes.Email).Value;
+            return Content(User.Identity.Name + " email: " + email);
+        }
+
+        public IActionResult LoginHub()
+        {
             return View();
         }
 
@@ -106,9 +117,14 @@ namespace Shopaholic.Web.Controllers
             };
         }
 
-        public async void MsLogin()
+        public ActionResult MsLogin()
         {
-            await HttpContext.ChallengeAsync("Microsoft");
+            var props = new AuthenticationProperties();
+            //props.RedirectUri = "https://localhost:44347/Auth/signin-microsoft";
+            props.RedirectUri = Url.Action("MsSignIn", "Auth");
+            return new ChallengeResult("Microsoft", props);
+            //props.RedirectUri = "https://localhost:44347/Auth/GoogleSignin";     
+            //return new ChallengeResult("Google", props);
         }
     }
 }

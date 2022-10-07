@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Shopaholic.Entity.Models;
 using Shopaholic.Service.Common.Middlewares;
 using Shopaholic.Service.Interfaces;
 using Shopaholic.Service.Services;
+using Shopaholic.Web.Common.Configure;
 using Shopaholic.Web.Common.Factory;
 using StackExchange.Redis;
-using System.Net;
 using System.Text.Encodings.Web;
-using System.Text.RegularExpressions;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +34,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IWebFlowService, WebFlowService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAuthService, FirebaseGoogleAuthService>();
+builder.Services.AddScoped<IAuthService, MicrosoftAuthService>();
 builder.Services.AddScoped<ICartService, ShoppingCartService>();
 builder.Services.AddScoped<IPopularService, PopularService>();
 builder.Services.AddScoped<IPurchaseService, LinePayPurchaseService>();
@@ -52,48 +50,13 @@ builder.Services.AddDbContext<ShopaholicContext>(options =>
         providerOptions => { providerOptions.EnableRetryOnFailure(); });
 });
 
-builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = "Microsoft";
-    })
-    //網站本身的Cookie - based Authentication
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-    {
-        options.Events.OnRedirectToLogin = context =>
-        {
-            //讓MVC及API驗證失敗時有不同的行為
-            if (Regex.IsMatch(context.Request.Path.Value, "/api/", RegexOptions.IgnoreCase))
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return Task.CompletedTask;
-            }
-            context.Response.Redirect(new PathString(factory.GetEnvir().GetLoginUrl()));
-            return Task.CompletedTask;
-        };
-        options.ExpireTimeSpan = TimeSpan.FromDays(1);
-        //登入後過期時間內没有進行操作就會過期;false有操作還是會過期
-        options.SlidingExpiration = true;
-    })
-    .AddJwtBearer("Firebase", option =>
-    {
-        option.Authority = factory.GetEnvir().GetFirebaseUrl();
-        option.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = factory.GetEnvir().GetFirebaseUrl(),
-            ValidateAudience = true,
-            ValidAudience = factory.GetEnvir().GetFirebaseID(),
-            ValidateLifetime = true
-        };
-    })
-    .AddMicrosoftAccount("Microsoft", option =>
-    {
-        option.ClientId = factory.GetEnvir().GetMsClientId();
-        option.ClientSecret = factory.GetEnvir().GetMsClientSecret();
-        option.CallbackPath = "/auth/signin-microsoft";
-    });
+//builder.Services.AddOidcStateDataFormatterCache();
+builder.Services.SetAuth(factory.GetEnvir());
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+});
 
 // ASP.NET Data Protection，儲存於redis，解決load balancer的Cookie-based Auth跨server問題
 using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
@@ -135,8 +98,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

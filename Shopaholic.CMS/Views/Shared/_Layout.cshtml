@@ -28,6 +28,62 @@
 
     <!-- My css -->
     <link rel="stylesheet" href="~/css/site.css">
+
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Sparkline -->
+    <script src="~/plugins/sparklines/sparkline.js"></script>
+    <!-- JQVMap -->
+    <script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="~/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Summernote -->
+    <script src="~/plugins/summernote/summernote-bs4.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <!--          My js            -->
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Vue.js Ajax(axios) -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- vue-easy-lightbox -->
+    <script src="https://unpkg.com/vue-easy-lightbox@vue2/dist/vue-easy-lightbox.umd.min.js"></script>
+    <!-- 表單驗證 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>
+    <!-- apexcharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Font Awesome   -->
+    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>
+    <!-- css-doodle   -->
+    <script src="https://unpkg.com/css-doodle@0.29.0/css-doodle.min.js"></script>
+
+    <!-- 雜 -->
+    <script src="~/js/ExceptUtil.js"></script>
+    <script src="~/js/PageUtil.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/js/ToastUtil.js"></script>
+    <script>
+        var baseurl = window.location.origin;
+    </script>
 </head>
 <body>
     <div class="wrapper">
@@ -133,63 +189,6 @@
         <!-- /.control-sidebar -->
 
     </div>
-
-    <!-- jQuery -->
-    <script src="~/plugins/jquery/jquery.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-        $.widget.bridge('uibutton', $.ui.button)
-    </script>
-    <!-- Bootstrap 4 -->
-    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Sparkline -->
-    <script src="~/plugins/sparklines/sparkline.js"></script>
-    <!-- JQVMap -->
-    <script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
-    <script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
-    <!-- daterangepicker -->
-    <script src="~/plugins/moment/moment.min.js"></script>
-    <script src="~/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="~/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-    <!-- Summernote -->
-    <script src="~/plugins/summernote/summernote-bs4.min.js"></script>
-    <!-- overlayScrollbars -->
-    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/dist/js/adminlte.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="~/plugins/sweetalert2/sweetalert2.all.min.js"></script>
-
-    <!--          My js            -->
-    <!-- Vue -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <!-- Vue.js Ajax(axios) -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <!-- vue-easy-lightbox -->
-    <script src="https://unpkg.com/vue-easy-lightbox@vue2/dist/vue-easy-lightbox.umd.min.js"></script>
-    <!-- 表單驗證 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/3.4.14/vee-validate.full.min.js"></script>
-    <!-- vue-chartjs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    <script src="~/js/vue-chartjs.min.js"></script>
-    <!-- Font Awesome   -->
-    <script src="https://kit.fontawesome.com/4206fe85f1.js" crossorigin="anonymous"></script>
-
-    <!-- 雜 -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/ExceptUtil.js"></script>
-    <script src="~/js/PageUtil.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="~/js/ToastUtil.js"></script>
-
-    <script>
-        var baseurl = window.location.origin;
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
